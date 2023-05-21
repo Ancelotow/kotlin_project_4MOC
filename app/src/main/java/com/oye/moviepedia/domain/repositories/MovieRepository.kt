@@ -18,6 +18,8 @@ interface MovieRepository {
 
     fun getNowPlayingMovies(): List<Movie>
 
+    fun getPopularMovies(): List<Movie>
+
 }
 
 @Module

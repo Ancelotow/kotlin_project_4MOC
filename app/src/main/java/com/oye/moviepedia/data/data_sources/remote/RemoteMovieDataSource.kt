@@ -6,6 +6,7 @@ import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
 import com.oye.moviepedia.data.services.RetrofitSingletonService
+import com.oye.moviepedia.domain.entities.Movie
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -51,6 +52,15 @@ class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
         val response = service.getCreditMovie(id).execute()
         if(response.isSuccessful) {
             return response.body()!!
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun fetchPopularMovies(): List<MovieDto> {
+        val response = service.getPopularMovies().execute()
+        if(response.isSuccessful) {
+            return response.body()!!.results
         } else {
             throw RemoteException(response.code(), response.errorBody().toString())
         }

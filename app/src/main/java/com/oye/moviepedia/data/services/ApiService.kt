@@ -24,4 +24,7 @@ interface ApiService {
     @GET("movie/{id}/credits")
     fun getCreditMovie(@Path("id") id: Int): Call<CreditsResultDto>
 
+    @GET("movie/popular?language=fr-FR&page=1")
+    fun getPopularMovies(): Call<ListMovieResultDto>
+
 }

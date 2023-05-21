@@ -3,6 +3,7 @@ package com.oye.moviepedia.data.data_sources
 import com.oye.moviepedia.data.data_sources.remote.RemoteMovieDataSource
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.MovieDto
+import com.oye.moviepedia.domain.entities.Movie
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -20,6 +21,8 @@ interface MovieDataSource {
     fun fetchNowPlayingMovies(): List<MovieDto>
 
     fun fetchCreditsMovies(id: Int): CreditsResultDto
+
+    fun fetchPopularMovies(): List<MovieDto>
 
 }
 

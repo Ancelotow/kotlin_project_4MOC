@@ -20,6 +20,9 @@ import com.oye.moviepedia.domain.uses_cases.NewMovieSuccess
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieDataError
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieError
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieSuccess
+import com.oye.moviepedia.domain.uses_cases.PopularMovieDataError
+import com.oye.moviepedia.domain.uses_cases.PopularMovieError
+import com.oye.moviepedia.domain.uses_cases.PopularMovieSuccess
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieDataError
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieError
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieSuccess
@@ -64,6 +67,7 @@ class HomeFragment : Fragment() {
         initNewMovies()
         initNowPlayingMovies()
         initUpcomingMovies()
+        initPopularMovies()
 
         return root
     }
@@ -75,7 +79,6 @@ class HomeFragment : Fragment() {
                     val newMovies =
                         it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
                             .toMutableList()
-                    Log.d("DATA", newMovies.size.toString())
                     movieList[0] = ListMovieItem(getString(R.string.home_new_movies), newMovies)
                     binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
                 }
@@ -100,7 +103,6 @@ class HomeFragment : Fragment() {
                 is NowPlayingMovieSuccess -> {
                     val movies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
                         .toMutableList()
-                    Log.d("DATA", movies.size.toString())
                     movieList[1] = ListMovieItem(getString(R.string.home_movies_showing), movies)
                     binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
                 }
@@ -131,7 +133,6 @@ class HomeFragment : Fragment() {
                             e.releaseDate.format(formatter)
                         )
                     }.toMutableList()
-                    Log.d("DATA", movies.size.toString())
                     movieList[2] = ListMovieItem(getString(R.string.home_movies_upcoming), movies)
                     binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
                 }
@@ -141,6 +142,35 @@ class HomeFragment : Fragment() {
                 }
 
                 is UpcomingMovieError -> {
+                    Log.e("ERROR", it.ex.message!!)
+                }
+
+                else -> {
+                }
+            }
+        }
+    }
+
+    private fun initPopularMovies() {
+        viewModel.popularMovies.observe(viewLifecycleOwner) {
+            when (it) {
+                is PopularMovieSuccess -> {
+                    val movies = it.movies.map { e ->
+                        MovieItem(
+                            e.title,
+                            e.posterUrl,
+                            e.director
+                        )
+                    }.toMutableList()
+                    movieList[3] = ListMovieItem(getString(R.string.home_movies_popular), movies)
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
+                }
+
+                is PopularMovieDataError -> {
+                    Log.e("DATA ERROR", it.ex.message)
+                }
+
+                is PopularMovieError -> {
                     Log.e("ERROR", it.ex.message!!)
                 }
 
