@@ -4,4 +4,13 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_you">You</string>
+
+    <!-- Home-->
+    <string name="home_new_movies">Nouvelles sorties</string>
+    <string name="home_movies_showing">Films à l\'affiche</string>
+    <string name="home_movies_coming">À venir</string>
+    <string name="home_movies_popular">Populaire</string>
+
+    <!-- Item movie -->
+    <string name="item_movie_director">de %s</string>
 </resources>
