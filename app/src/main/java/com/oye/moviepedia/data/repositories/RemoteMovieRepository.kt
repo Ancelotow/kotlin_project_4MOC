@@ -26,4 +26,16 @@ class RemoteMovieRepository @Inject constructor(
         return newMovies;
     }
 
+    override fun getNowPLayingMovie(): List<Movie> {
+        val moviesDto = dataSource.fetchNowPlayingMovies()
+        val movies = ArrayList<Movie>()
+        for (movie in moviesDto) {
+            val credits = dataSource.fetchCreditsMovies(movie.id)
+            val director = credits.crew.first { e -> e.job == "Director" }
+            movies.add(Movie.fromMovieDto(movie, director.name))
+        }
+        return movies;
+    }
+
+
 }

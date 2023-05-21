@@ -17,6 +17,9 @@ import com.oye.moviepedia.databinding.FragmentHomeBinding
 import com.oye.moviepedia.domain.uses_cases.NewMovieDataError
 import com.oye.moviepedia.domain.uses_cases.NewMovieError
 import com.oye.moviepedia.domain.uses_cases.NewMovieSuccess
+import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieDataError
+import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieError
+import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieSuccess
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,6 +29,7 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private val movieList = ArrayList<ListMovieItem>(4)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,20 +52,20 @@ class HomeFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
 
-        var moviesLists = mutableListOf(
-            ListMovieItem(getString(R.string.home_new_movies), mutableListOf()),
-            ListMovieItem(getString(R.string.home_movies_showing), mutableListOf()),
-            ListMovieItem(getString(R.string.home_movies_coming), mutableListOf()),
-            ListMovieItem(getString(R.string.home_movies_popular), mutableListOf()),
-        )
+        initNewMovies()
+        initNowPlayingMovies()
 
+        return root
+    }
+
+    private fun initNewMovies(){
         viewModel.newMoviesState.observe(viewLifecycleOwner) {
             when (it) {
                 is NewMovieSuccess -> {
                     val newMovies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }.toMutableList()
                     Log.d("DATA", newMovies.size.toString())
-                    moviesLists[0] = ListMovieItem(getString(R.string.home_new_movies), newMovies)
-                    recyclerView.adapter = ListMovieListAdapter(moviesLists, activity)
+                    movieList.add(0, ListMovieItem(getString(R.string.home_new_movies), newMovies))
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
                 }
 
                 is NewMovieDataError -> {
@@ -76,8 +80,30 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
 
-        return root
+    private fun initNowPlayingMovies(){
+        viewModel.nowPlayingMovies.observe(viewLifecycleOwner) {
+            when (it) {
+                is NowPlayingMovieSuccess -> {
+                    val movies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }.toMutableList()
+                    Log.d("DATA", movies.size.toString())
+                    movieList.add(1, ListMovieItem(getString(R.string.home_movies_showing), movies))
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
+                }
+
+                is NowPlayingMovieDataError -> {
+                    Log.e("DATA ERROR", it.ex.message)
+                }
+
+                is NowPlayingMovieError -> {
+                    Log.e("ERROR", it.ex.message!!)
+                }
+
+                else -> {
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
