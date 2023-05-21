@@ -9,9 +9,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
+import java.time.LocalDate
+import java.util.Date
 import javax.inject.Singleton
 
 interface MovieDataSource {
+
+    fun fetchMovies(primaryDateRelease: LocalDate?, sortBy: String?, includeAdult: Boolean = false): List<MovieDto>
 
     fun fetchNowPlayingMovies(): List<MovieDto>
 

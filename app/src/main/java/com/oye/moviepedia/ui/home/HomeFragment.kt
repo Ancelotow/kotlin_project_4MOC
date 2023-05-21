@@ -20,7 +20,11 @@ import com.oye.moviepedia.domain.uses_cases.NewMovieSuccess
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieDataError
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieError
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieSuccess
+import com.oye.moviepedia.domain.uses_cases.UpcomingMovieDataError
+import com.oye.moviepedia.domain.uses_cases.UpcomingMovieError
+import com.oye.moviepedia.domain.uses_cases.UpcomingMovieSuccess
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,7 +33,11 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val movieList = ArrayList<ListMovieItem>(4)
+    private val movieList = ArrayList<ListMovieItem>(4).apply {
+        repeat(4) {
+            add(ListMovieItem("", mutableListOf()))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,19 +60,23 @@ class HomeFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
 
+        movieList.ensureCapacity(4)
         initNewMovies()
         initNowPlayingMovies()
+        initUpcomingMovies()
 
         return root
     }
 
-    private fun initNewMovies(){
+    private fun initNewMovies() {
         viewModel.newMoviesState.observe(viewLifecycleOwner) {
             when (it) {
                 is NewMovieSuccess -> {
-                    val newMovies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }.toMutableList()
+                    val newMovies =
+                        it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
+                            .toMutableList()
                     Log.d("DATA", newMovies.size.toString())
-                    movieList.add(0, ListMovieItem(getString(R.string.home_new_movies), newMovies))
+                    movieList[0] = ListMovieItem(getString(R.string.home_new_movies), newMovies)
                     binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
                 }
 
@@ -82,13 +94,14 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun initNowPlayingMovies(){
+    private fun initNowPlayingMovies() {
         viewModel.nowPlayingMovies.observe(viewLifecycleOwner) {
             when (it) {
                 is NowPlayingMovieSuccess -> {
-                    val movies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }.toMutableList()
+                    val movies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
+                        .toMutableList()
                     Log.d("DATA", movies.size.toString())
-                    movieList.add(1, ListMovieItem(getString(R.string.home_movies_showing), movies))
+                    movieList[1] = ListMovieItem(getString(R.string.home_movies_showing), movies)
                     binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
                 }
 
@@ -97,6 +110,37 @@ class HomeFragment : Fragment() {
                 }
 
                 is NowPlayingMovieError -> {
+                    Log.e("ERROR", it.ex.message!!)
+                }
+
+                else -> {
+                }
+            }
+        }
+    }
+
+    private fun initUpcomingMovies() {
+        viewModel.upcomingMovies.observe(viewLifecycleOwner) {
+            when (it) {
+                is UpcomingMovieSuccess -> {
+                    val formatter = DateTimeFormatter.ofPattern(getString(R.string.date_format))
+                    val movies = it.movies.map { e ->
+                        MovieItem(
+                            e.title,
+                            e.posterUrl,
+                            e.releaseDate.format(formatter)
+                        )
+                    }.toMutableList()
+                    Log.d("DATA", movies.size.toString())
+                    movieList[2] = ListMovieItem(getString(R.string.home_movies_upcoming), movies)
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity)
+                }
+
+                is UpcomingMovieDataError -> {
+                    Log.e("DATA ERROR", it.ex.message)
+                }
+
+                is UpcomingMovieError -> {
                     Log.e("ERROR", it.ex.message!!)
                 }
 

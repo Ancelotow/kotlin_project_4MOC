@@ -9,6 +9,8 @@ import com.oye.moviepedia.domain.uses_cases.NewMovieState
 import com.oye.moviepedia.domain.uses_cases.NewMovieUseCase
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieState
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieUseCase
+import com.oye.moviepedia.domain.uses_cases.UpcomingMovieState
+import com.oye.moviepedia.domain.uses_cases.UpcomingMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val useCaseNewMovie: NewMovieUseCase,
     private val useCaseNowPlayingMovie: NowPlayingMovieUseCase,
+    private val useCaseUpcomingMovie: UpcomingMovieUseCase,
 ) : ViewModel() {
 
     private val _newMoviesState = MutableLiveData<NewMovieState>()
@@ -25,12 +28,13 @@ class HomeViewModel @Inject constructor(
     private val _nowPlayingMovies = MutableLiveData<NowPlayingMovieState>()
     val nowPlayingMovies: LiveData<NowPlayingMovieState> = _nowPlayingMovies
 
-    private val _comingMovies = MutableLiveData<MutableList<Movie>>()
-    val comingMovies: LiveData<MutableList<Movie>> = _comingMovies
+    private val _upcomingMovies = MutableLiveData<UpcomingMovieState>()
+    val upcomingMovies: LiveData<UpcomingMovieState> = _upcomingMovies
 
     init {
         getNewMovies()
         getNowPlayingMovies()
+        getUpcomingPlayingMovies()
     }
 
     private fun getNewMovies() {
@@ -45,6 +49,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             useCaseNowPlayingMovie.fetchNowPlayingMovies().collect {
                 _nowPlayingMovies.value = it
+            }
+        }
+    }
+
+    private fun getUpcomingPlayingMovies() {
+        viewModelScope.launch {
+            useCaseUpcomingMovie.fetchUpcomingPlayingMovies().collect {
+                _upcomingMovies.value = it
             }
         }
     }
