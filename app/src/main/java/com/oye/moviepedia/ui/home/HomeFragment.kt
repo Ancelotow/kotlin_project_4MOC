@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
         val paint = title.paint
         val width = paint.measureText(title.text.toString())
         title.paint.shader = LinearGradient(
-            0f, 0f, width, 0f, Color.parseColor("#9CCCA5"), Color.parseColor("#51B1DF"),
+            0f, 0f, width, 0f, Color.parseColor("#FF9CCCA5"), Color.parseColor("#FF51B1DF"),
             Shader.TileMode.CLAMP
         )
 
