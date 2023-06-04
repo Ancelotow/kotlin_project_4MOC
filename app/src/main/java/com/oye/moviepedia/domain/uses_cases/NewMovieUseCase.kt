@@ -17,7 +17,7 @@ class NewMovieUseCase @Inject constructor(private val repository: MovieRepositor
         return flow {
             emit(NewMovieLoading)
             try {
-                emit(NewMovieSuccess(repository.getNewMovie()))
+                emit(NewMovieSuccess(repository.getNewMovies()))
             } catch (e: DataException) {
                 emit(NewMovieDataError(e))
             }  catch (e: Exception) {

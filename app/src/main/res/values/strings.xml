@@ -8,9 +8,12 @@
     <!-- Home-->
     <string name="home_new_movies">Nouvelles sorties</string>
     <string name="home_movies_showing">Films à l\'affiche</string>
-    <string name="home_movies_coming">À venir</string>
+    <string name="home_movies_upcoming">À venir</string>
     <string name="home_movies_popular">Populaire</string>
 
     <!-- Item movie -->
     <string name="item_movie_director">de %s</string>
+
+    <!-- Date format -->
+    <string name="date_format">dd/MM/yyyy</string>
 </resources>

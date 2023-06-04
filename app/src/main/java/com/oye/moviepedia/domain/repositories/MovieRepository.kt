@@ -12,7 +12,13 @@ import javax.inject.Singleton
 
 interface MovieRepository {
 
-    fun getNewMovie(): List<Movie>;
+    fun getUpcomingMovies(): List<Movie>
+
+    fun getNewMovies(): List<Movie>
+
+    fun getNowPlayingMovies(): List<Movie>
+
+    fun getPopularMovies(): List<Movie>
 
 }
 
