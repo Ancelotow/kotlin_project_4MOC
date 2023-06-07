@@ -11,6 +11,9 @@
     <string name="home_movies_upcoming">À venir</string>
     <string name="home_movies_popular">Populaire</string>
 
+    <!-- Search -->
+    <string name="search_hint">Rechercher un film, une série, …</string>
+
     <!-- Item movie -->
     <string name="item_movie_director">de %s</string>
 
