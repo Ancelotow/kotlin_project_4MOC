@@ -3,13 +3,13 @@ package com.oye.moviepedia.data.data_sources.remote
 import com.oye.moviepedia.data.data_sources.MovieDataSource
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.MovieDto
+import com.oye.moviepedia.data.dto.ListSearchResultDto
+import com.oye.moviepedia.data.dto.SearchDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
 import com.oye.moviepedia.data.services.RetrofitSingletonService
-import com.oye.moviepedia.domain.entities.Movie
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -59,6 +59,15 @@ class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
 
     override fun fetchPopularMovies(): List<MovieDto> {
         val response = service.getPopularMovies().execute()
+        if(response.isSuccessful) {
+            return response.body()!!.results
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun fetchSearchResult(query: String): List<SearchDto> {
+        val response = service.searchMovies(query).execute()
         if(response.isSuccessful) {
             return response.body()!!.results
         } else {

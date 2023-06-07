@@ -1,6 +1,7 @@
 package com.oye.moviepedia.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,10 +42,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.oye.moviepedia.R
+import com.oye.moviepedia.domain.entities.MovieSearchResult
+import com.oye.moviepedia.domain.entities.PersonSearchResult
+import com.oye.moviepedia.domain.entities.TvSearchResult
+import com.oye.moviepedia.domain.uses_cases.NewMovieDataError
+import com.oye.moviepedia.domain.uses_cases.NewMovieError
+import com.oye.moviepedia.domain.uses_cases.NewMovieSuccess
+import com.oye.moviepedia.domain.uses_cases.SearchDataError
+import com.oye.moviepedia.domain.uses_cases.SearchError
+import com.oye.moviepedia.domain.uses_cases.SearchLoading
+import com.oye.moviepedia.domain.uses_cases.SearchState
+import com.oye.moviepedia.domain.uses_cases.SearchSuccess
+import com.oye.moviepedia.ui.home.ListMovieItem
+import com.oye.moviepedia.ui.home.ListMovieListAdapter
+import com.oye.moviepedia.ui.home.MovieItem
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
+    private val searchViewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,8 +78,37 @@ class SearchFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        searchViewModel.searchState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is SearchLoading -> {
+                    Log.d("SearchFragment", "Loading")
+                }
+                is SearchSuccess -> {
+                    it.results.forEach() { e -> when(e) {
+                        is MovieSearchResult -> Log.d("MOVIE", e.title)
+                        is TvSearchResult -> Log.d("TV", e.name)
+                        is PersonSearchResult -> Log.d("PERSON", e.name)
+                        else -> Log.d("UNKNOW", "???")
+                    } }
+                }
+                is SearchDataError -> {
+                    Log.e("Data Error", it.ex.toString())
+                }
+                is SearchError -> {
+                    it.ex.printStackTrace()
+                    Log.e("Error", it.ex.toString())
+                }
+                else -> {
+                    Log.d("SearchFragment", "Else")
+                }
+            }
+        })
+    }
+
     @Composable
-    fun Body() {
+    private fun Body() {
         Column {
             Box(
                 modifier = Modifier.padding(10.dp)
@@ -65,7 +117,9 @@ class SearchFragment : Fragment() {
             }
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
             ) {
                 SearchTextField()
             }
@@ -75,7 +129,7 @@ class SearchFragment : Fragment() {
 
     @OptIn(ExperimentalTextApi::class)
     @Composable
-    fun Title() {
+    private fun Title() {
         Text(
             text = stringResource(id = R.string.app_name),
             style = TextStyle(
@@ -93,11 +147,14 @@ class SearchFragment : Fragment() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun SearchTextField() {
+    private fun SearchTextField() {
         var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
         TextField(
             value = textFieldValue,
-            onValueChange = { newValue -> textFieldValue = newValue },
+            onValueChange = {
+                newValue -> textFieldValue = newValue
+                searchViewModel.getSearchResult(newValue.text)
+            },
             shape = RoundedCornerShape(5.dp),
             label = {
                 Text(stringResource(id = R.string.search_hint))
