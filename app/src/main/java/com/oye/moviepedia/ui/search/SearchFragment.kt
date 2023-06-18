@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -216,14 +217,31 @@ class SearchFragment : Fragment() {
     private fun MovieItem(movieResult: MovieSearchResult) {
         val painter: Painter = rememberImagePainter(movieResult.posterPath)
         Row(modifier = Modifier.padding(vertical = 8.dp)) {
-            Image(
-                painter = painter,
-                contentDescription = "movie poster",
-                modifier = Modifier
-                    .width(68.dp)
-                    .height(99.dp)
-                    .clip(RoundedCornerShape(5.dp))
-            )
+            if(!movieResult.posterPath.isNullOrBlank()) {
+                Image(
+                    painter = painter,
+                    contentDescription = "movie poster",
+                    modifier = Modifier
+                        .width(68.dp)
+                        .height(99.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                )
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .width(68.dp)
+                        .height(99.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(Color(0xFFD4D4D4))
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_movie),
+                        contentDescription = "movie poster",
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
             Text(
                 modifier = Modifier.padding(all = 5.dp),
                 text = movieResult.title,
@@ -240,14 +258,31 @@ class SearchFragment : Fragment() {
     private fun TvItem(tvResult: TvSearchResult) {
         val painter: Painter = rememberImagePainter(tvResult.posterPath)
         Row(modifier = Modifier.padding(vertical = 8.dp)) {
-            Image(
-                painter = painter,
-                contentDescription = "tv poster",
-                modifier = Modifier
-                    .width(68.dp)
-                    .height(99.dp)
-                    .clip(RoundedCornerShape(5.dp))
-            )
+            if(!tvResult.posterPath.isNullOrBlank()) {
+                Image(
+                    painter = painter,
+                    contentDescription = "tv poster",
+                    modifier = Modifier
+                        .width(68.dp)
+                        .height(99.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                )
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .width(68.dp)
+                        .height(99.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(Color(0xFFD4D4D4))
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_tv),
+                        contentDescription = "tv poster",
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
             Text(
                 modifier = Modifier.padding(all = 5.dp),
                 text = tvResult.name,
@@ -264,20 +299,39 @@ class SearchFragment : Fragment() {
     private fun PersonItem(personResult: PersonSearchResult) {
         val painter: Painter = rememberImagePainter(personResult.profilePath)
         Row(modifier = Modifier.padding(vertical = 8.dp)) {
-            Box(
-                modifier = Modifier
-                    .size(68.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray)
-                    .aspectRatio(1f)
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = "profile",
+            if(personResult.profilePath != null) {
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .size(68.dp)
                         .clip(CircleShape)
-                )
+                        .background(Color.Gray)
+                        .aspectRatio(1f)
+                ) {
+                    Image(
+                        painter = painter,
+                        contentDescription = "profile",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                    )
+                }
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(68.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFD4D4D4))
+                        .aspectRatio(1f)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_director_chair),
+                        contentDescription = "profile",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(CircleShape)
+                    )
+                }
             }
             Column(
                 verticalArrangement = Arrangement.Center,
