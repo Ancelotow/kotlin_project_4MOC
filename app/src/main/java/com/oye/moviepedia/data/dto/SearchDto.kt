@@ -6,6 +6,7 @@ data class SearchDto(
     val id: Int,
     val name: String?,
     val profile_path: String?,
+    val known_for_department: String?,
     val title: String?,
     val poster_path: String?,
     val release_date: LocalDate?,

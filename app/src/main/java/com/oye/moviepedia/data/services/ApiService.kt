@@ -1,6 +1,7 @@
 package com.oye.moviepedia.data.services
 
 import com.oye.moviepedia.data.dto.CreditsResultDto
+import com.oye.moviepedia.data.dto.GenreResultDto
 import com.oye.moviepedia.data.dto.ListMovieResultDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
 import retrofit2.Call
@@ -30,5 +31,11 @@ interface ApiService {
 
     @GET("search/multi?language=fr-FR&page=1")
     fun searchMovies(@Query("query") query: String): Call<ListSearchResultDto>
+
+    @GET("genre/movie/list?language=fr-FR")
+    fun getMovieGenres(): Call<GenreResultDto>
+
+    @GET("genre/tv/list?language=fr-FR")
+    fun getTvGenres(): Call<GenreResultDto>
 
 }

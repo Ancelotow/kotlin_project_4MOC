@@ -15,11 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
-    private val service: ApiService
-
-    init {
-        service = RetrofitSingletonService.getInstance().service
-    }
+    private val service: ApiService = RetrofitSingletonService.getInstance().service
 
     override fun fetchMovies(
         primaryDateRelease: LocalDate?,
