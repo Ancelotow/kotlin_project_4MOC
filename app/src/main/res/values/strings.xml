@@ -17,6 +17,16 @@
     <!-- Item movie -->
     <string name="item_movie_director">de %s</string>
 
+    <!-- DetailsFragment -->
+    <string name="details_separator">•</string>
+    <string name="movie_trailer">Bande annonce</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="headliners">Têtes d\'affiche</string>
+
+
+
+    <string name="random_text">Lorem ipsum nota del ideluti, Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti </string>
+
     <!-- Date format -->
     <string name="date_format">dd/MM/yyyy</string>
 </resources>
