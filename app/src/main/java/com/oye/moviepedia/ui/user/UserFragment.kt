@@ -31,10 +31,11 @@ import com.oye.moviepedia.ui.home.HomeViewModel
 import com.oye.moviepedia.ui.home.ListMovieItem
 import com.oye.moviepedia.ui.home.ListMovieListAdapter
 import com.oye.moviepedia.ui.home.MovieItem
+import com.oye.moviepedia.ui.home.MovieListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UserFragment : Fragment() {
+class UserFragment : Fragment(), MovieListAdapter.MovieListener {
 
     private val viewModel: UserViewModel by viewModels()
     private var _binding: FragmentUserBinding? = null
@@ -84,7 +85,7 @@ class UserFragment : Fragment() {
                     val movies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
                         .toMutableList()
                     movieList[0] = ListMovieItem(getString(R.string.liked_new_movies), movies)
-                    binding.recyclerLikedMovies.adapter = ListMovieListAdapter(movieList, activity)
+                    binding.recyclerLikedMovies.adapter = ListMovieListAdapter(movieList, activity, this)
                 }
 
                 is LikedMovieDataError -> {
@@ -113,6 +114,11 @@ class UserFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onMovieCLick(movieItem: MovieItem) {
+        //val action =
+        //findNavController().navigate(action, extras)
     }
 
 }

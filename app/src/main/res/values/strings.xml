@@ -2,6 +2,7 @@
     <string name="app_name">Moviepedia</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
+    <string name="title_details">Details</string>
     <string name="title_search">Search</string>
     <string name="title_you">You</string>
 

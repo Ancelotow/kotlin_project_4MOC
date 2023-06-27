@@ -1,6 +1,7 @@
 package com.oye.moviepedia.ui.home
 
 import android.app.Activity
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oye.moviepedia.R
 import com.squareup.picasso.Picasso
+import kotlinx.parcelize.Parcelize
 
 class MovieViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
@@ -26,14 +28,20 @@ class MovieViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
 class MovieListAdapter(
     val movies: MutableList<MovieItem>,
-    val activity: Activity?
+    val activity: Activity?,
+    private val listener: MovieListener
 ) : RecyclerView.Adapter<MovieViewHolder>() {
+
+    interface MovieListener {
+        fun onMovieCLick(movieItem: MovieItem)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.item_movie, parent, false)
         return MovieViewHolder(view).listen { pos, type ->
             // TODO: Aller vers le détail d'un film
+            listener.onMovieCLick(movies[pos])
             print("Go to movie detail")
         }
     }
@@ -55,8 +63,9 @@ class MovieListAdapter(
 
 }
 
+@Parcelize
 data class MovieItem(
     val name: String,
     val urlPoster: String,
     val description: String
-)
+): Parcelable
