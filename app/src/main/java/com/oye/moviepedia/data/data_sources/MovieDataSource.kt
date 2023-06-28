@@ -24,6 +24,8 @@ interface MovieDataSource {
 
     fun fetchPopularMovies(): List<MovieDto>
 
+    fun getMovieDetails(id: Int): MovieDto?
+
 }
 
 @Module

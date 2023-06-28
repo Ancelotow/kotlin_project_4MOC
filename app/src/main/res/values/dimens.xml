@@ -11,8 +11,11 @@
     <dimen name="details_horizontal_margin">16dp</dimen>
     <dimen name="details_picture_top_margin">5dp</dimen>
     <dimen name="details_section_margin">24dp</dimen>
+    <dimen name="details_picture_width">331dp</dimen>
     <dimen name="details_picture_height">481dp</dimen>
+    <dimen name="details_picture_min_height">451dp</dimen>
     <dimen name="details_picture_corner_radius">5dp</dimen>
+    <dimen name="details_rate_indicator_size">63dp</dimen>
     <dimen name="details_movie_type_duration_separator_padding">11dp</dimen>
     <dimen name="details_rate_button_start_margin">20dp</dimen>
     <dimen name="details_rate_button_inner_padding">12dp</dimen>

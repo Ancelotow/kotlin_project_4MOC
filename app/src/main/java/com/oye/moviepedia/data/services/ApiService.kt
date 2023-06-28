@@ -2,6 +2,7 @@ package com.oye.moviepedia.data.services
 
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.ListMovieResultDto
+import com.oye.moviepedia.data.dto.MovieDto
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -26,5 +27,8 @@ interface ApiService {
 
     @GET("movie/popular?language=fr-FR&page=1")
     fun getPopularMovies(): Call<ListMovieResultDto>
+
+    @GET("movie/{id}?language=fr-FR")
+    fun getMovie(@Path("id") id: Int): Call<MovieDto>
 
 }

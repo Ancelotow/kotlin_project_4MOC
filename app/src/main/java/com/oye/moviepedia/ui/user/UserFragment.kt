@@ -82,7 +82,7 @@ class UserFragment : Fragment(), MovieListAdapter.MovieListener {
         viewModel.likedMoviesState.observe(viewLifecycleOwner) {
             when (it) {
                 is LikedMovieSuccess -> {
-                    val movies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
+                    val movies = it.movies.map { e -> MovieItem(e.id,e.title, e.posterUrl, e.director) }
                         .toMutableList()
                     movieList[0] = ListMovieItem(getString(R.string.liked_new_movies), movies)
                     binding.recyclerLikedMovies.adapter = ListMovieListAdapter(movieList, activity, this)
@@ -116,7 +116,7 @@ class UserFragment : Fragment(), MovieListAdapter.MovieListener {
         _binding = null
     }
 
-    override fun onMovieCLick(movieItem: MovieItem) {
+    override fun onMovieCLick(movieId: Int) {
         //val action =
         //findNavController().navigate(action, extras)
     }

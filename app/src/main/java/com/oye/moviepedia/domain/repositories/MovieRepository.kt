@@ -4,9 +4,7 @@ import com.oye.moviepedia.data.repositories.RemoteMovieRepository
 import com.oye.moviepedia.domain.entities.Movie
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -19,6 +17,8 @@ interface MovieRepository {
     fun getNowPlayingMovies(): List<Movie>
 
     fun getPopularMovies(): List<Movie>
+
+    fun getMovieDetails(id: Int): Movie?
 
 }
 

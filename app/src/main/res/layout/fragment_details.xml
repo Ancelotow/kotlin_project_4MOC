@@ -74,14 +74,16 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/details_picture_width"
                 android:layout_height="@dimen/details_picture_height"
-                app:cardCornerRadius="@dimen/details_picture_corner_radius">
+                app:cardCornerRadius="@dimen/details_picture_corner_radius"
+                android:layout_gravity="center">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/movie_picture"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"/>
 
             </androidx.cardview.widget.CardView>
 
@@ -109,6 +111,7 @@
                     tools:text="Action, Animation"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/point_separator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/body_regular"
@@ -132,13 +135,32 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/details_section_margin">
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
+                <ProgressBar
                     android:id="@+id/rate_progress_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@android:style/Widget.ProgressBar.Inverse"
+                    android:layout_width="@dimen/details_rate_indicator_size"
+                    android:layout_height="@dimen/details_rate_indicator_size"
+                    android:max="100"
+                    android:min="0"
+                    android:indeterminateOnly="false"
+                    android:progressDrawable="@drawable/rate_progress_bar"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/rate_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    tools:text="75%"
+                    app:layout_constraintTop_toTopOf="@id/rate_progress_indicator"
+                    app:layout_constraintStart_toStartOf="@id/rate_progress_indicator"
+                    app:layout_constraintEnd_toEndOf="@id/rate_progress_indicator"
+                    app:layout_constraintBottom_toBottomOf="@id/rate_progress_indicator" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"

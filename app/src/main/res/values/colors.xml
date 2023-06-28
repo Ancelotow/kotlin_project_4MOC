@@ -11,6 +11,7 @@
     <color name="primary">#0D243F</color>
     <color name="primary_variant">#243A53</color>
     <color name="secondary">#39495C</color>
+    <color name="dark_green">#769A7D</color>
     <color name="accent">#9CCCA5</color>
     <color name="light_gray">#ACACAC</color>
     <color name="gray">#989898</color>

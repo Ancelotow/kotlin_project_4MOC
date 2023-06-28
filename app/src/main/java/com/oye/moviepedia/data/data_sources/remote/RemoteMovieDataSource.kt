@@ -66,4 +66,13 @@ class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
         }
     }
 
+    override fun getMovieDetails(id: Int): MovieDto? {
+        val response = service.getMovie(id).execute()
+        if(response.isSuccessful) {
+            return response.body()
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
 }

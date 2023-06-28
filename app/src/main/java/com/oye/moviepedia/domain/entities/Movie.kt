@@ -1,5 +1,6 @@
 package com.oye.moviepedia.domain.entities
 
+import com.oye.moviepedia.data.dto.Genre
 import com.oye.moviepedia.data.dto.MovieDto
 import java.time.LocalDate
 
@@ -13,6 +14,8 @@ data class Movie(
     val noteCount: Int,
     val releaseDate: LocalDate,
     val isAdult: Boolean,
+    val genres: List<Genre>?,
+    val runtime: Int?,
     val director: String
 ) {
     companion object {
@@ -26,7 +29,9 @@ data class Movie(
                 noteCount = movie.vote_count,
                 isAdult = movie.adult,
                 releaseDate = movie.release_date,
-                posterUrl = "https://www.themoviedb.org/t/p/w220_and_h330_face/${movie.poster_path}",
+                posterUrl = "https://www.themoviedb.org/t/p/original/${movie.poster_path}",
+                genres = movie.genres,
+                runtime = movie.runtime,
                 director = director
             )
 

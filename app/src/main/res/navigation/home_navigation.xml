@@ -21,8 +21,8 @@
         android:label="@string/title_details"
         tools:layout="@layout/fragment_details">
         <argument
-            android:name="movie"
-            app:argType="com.oye.moviepedia.ui.home.MovieItem"
+            android:name="movieId"
+            app:argType="integer"
             app:nullable="false" />
     </fragment>
 </navigation>

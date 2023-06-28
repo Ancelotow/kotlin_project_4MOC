@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
@@ -30,7 +28,6 @@ import com.oye.moviepedia.domain.uses_cases.UpcomingMovieError
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieSuccess
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), MovieListAdapter.MovieListener {
@@ -79,7 +76,7 @@ class HomeFragment : Fragment(), MovieListAdapter.MovieListener {
             when (it) {
                 is NewMovieSuccess -> {
                     val newMovies =
-                        it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
+                        it.movies.map { e -> MovieItem(e.id,e.title, e.posterUrl, e.director) }
                             .toMutableList()
                     movieList[0] = ListMovieItem(getString(R.string.home_new_movies), newMovies)
                     binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity, this)
@@ -103,7 +100,7 @@ class HomeFragment : Fragment(), MovieListAdapter.MovieListener {
         viewModel.nowPlayingMovies.observe(viewLifecycleOwner) {
             when (it) {
                 is NowPlayingMovieSuccess -> {
-                    val movies = it.movies.map { e -> MovieItem(e.title, e.posterUrl, e.director) }
+                    val movies = it.movies.map { e -> MovieItem(e.id,e.title, e.posterUrl, e.director) }
                         .toMutableList()
                     movieList[1] = ListMovieItem(getString(R.string.home_movies_showing), movies)
                     binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity, this)
@@ -130,6 +127,7 @@ class HomeFragment : Fragment(), MovieListAdapter.MovieListener {
                     val formatter = DateTimeFormatter.ofPattern(getString(R.string.date_format))
                     val movies = it.movies.map { e ->
                         MovieItem(
+                            e.id,
                             e.title,
                             e.posterUrl,
                             e.releaseDate.format(formatter)
@@ -159,6 +157,7 @@ class HomeFragment : Fragment(), MovieListAdapter.MovieListener {
                 is PopularMovieSuccess -> {
                     val movies = it.movies.map { e ->
                         MovieItem(
+                            e.id,
                             e.title,
                             e.posterUrl,
                             e.director
@@ -187,8 +186,8 @@ class HomeFragment : Fragment(), MovieListAdapter.MovieListener {
         _binding = null
     }
 
-    override fun onMovieCLick(movieItem: MovieItem) {
-        val action = HomeFragmentDirections.detailsFragmentAction(movieItem)
+    override fun onMovieCLick(movieId: Int) {
+        val action = HomeFragmentDirections.detailsFragmentAction(movieId)
         findNavController().navigate(action)
     }
 }

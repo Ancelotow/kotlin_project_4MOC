@@ -33,15 +33,14 @@ class MovieListAdapter(
 ) : RecyclerView.Adapter<MovieViewHolder>() {
 
     interface MovieListener {
-        fun onMovieCLick(movieItem: MovieItem)
+        fun onMovieCLick(movieId: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.item_movie, parent, false)
         return MovieViewHolder(view).listen { pos, type ->
-            // TODO: Aller vers le détail d'un film
-            listener.onMovieCLick(movies[pos])
+            listener.onMovieCLick(movies[pos].id)
             print("Go to movie detail")
         }
     }
@@ -65,6 +64,7 @@ class MovieListAdapter(
 
 @Parcelize
 data class MovieItem(
+    val id: Int,
     val name: String,
     val urlPoster: String,
     val description: String
