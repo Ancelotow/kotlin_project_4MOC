@@ -3,6 +3,7 @@ package com.oye.moviepedia.data.data_sources
 import com.oye.moviepedia.data.data_sources.remote.RemoteMovieDataSource
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.MovieDto
+import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.domain.entities.Movie
 import dagger.Binds
 import dagger.Module
@@ -25,6 +26,8 @@ interface MovieDataSource {
     fun fetchPopularMovies(): List<MovieDto>
 
     fun getMovieDetails(id: Int): MovieDto?
+
+    fun getMovieTrailers(id: Int): MovieTrailerDto?
 
 }
 

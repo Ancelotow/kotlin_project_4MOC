@@ -1,5 +1,6 @@
 package com.oye.moviepedia.data.repositories
 
+import android.util.Log
 import com.oye.moviepedia.data.data_sources.MovieDataSource
 import com.oye.moviepedia.domain.entities.Movie
 import com.oye.moviepedia.domain.entities.MovieDetails
@@ -81,12 +82,21 @@ class RemoteMovieRepository @Inject constructor(
     override fun getMovieDetails(id: Int): MovieDetails? {
         dataSource.getMovieDetails(id)?.let { movieDto ->
             val credits = dataSource.fetchCreditsMovies(movieDto.id)
+            val trailerDto = dataSource.getMovieTrailers(id)
             val director: String = try {
                 credits.crew.first { e -> e.job == "Director" }.name
             } catch (e: NoSuchElementException) {
                 "Unknow"
             }
-            return MovieDetails.fromMovieDto(movieDto, credits.cast, director)
+            var trailer = trailerDto?.results?.firstOrNull { t ->
+                t.site == "YouTube" && t.type == "Trailer" && t.official
+            }
+            if (trailer == null) {
+                trailer = trailerDto?.results?.firstOrNull { t ->
+                    t.site == "YouTube" && t.type == "Trailer"
+                }
+            }
+            return MovieDetails.fromMovieDto(movieDto, credits.cast, director, trailer?.key)
         }
         return null
     }

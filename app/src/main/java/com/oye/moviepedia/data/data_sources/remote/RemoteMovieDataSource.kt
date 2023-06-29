@@ -3,6 +3,7 @@ package com.oye.moviepedia.data.data_sources.remote
 import com.oye.moviepedia.data.data_sources.MovieDataSource
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.MovieDto
+import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
 import com.oye.moviepedia.data.services.RetrofitSingletonService
@@ -68,6 +69,15 @@ class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
 
     override fun getMovieDetails(id: Int): MovieDto? {
         val response = service.getMovie(id).execute()
+        if(response.isSuccessful) {
+            return response.body()
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun getMovieTrailers(id: Int): MovieTrailerDto? {
+        val response = service.getMovieTrailers(id).execute()
         if(response.isSuccessful) {
             return response.body()
         } else {

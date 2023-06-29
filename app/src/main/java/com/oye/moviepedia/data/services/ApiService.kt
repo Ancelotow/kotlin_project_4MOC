@@ -3,6 +3,7 @@ package com.oye.moviepedia.data.services
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.ListMovieResultDto
 import com.oye.moviepedia.data.dto.MovieDto
+import com.oye.moviepedia.data.dto.MovieTrailerDto
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -30,5 +31,8 @@ interface ApiService {
 
     @GET("movie/{id}?language=fr-FR")
     fun getMovie(@Path("id") id: Int): Call<MovieDto>
+
+    @GET("movie/{id}/videos?language=fr-FR")
+    fun getMovieTrailers(@Path("id") id: Int): Call<MovieTrailerDto>
 
 }

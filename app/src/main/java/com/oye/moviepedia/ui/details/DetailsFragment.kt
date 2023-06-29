@@ -7,14 +7,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.Genre
 import com.oye.moviepedia.databinding.FragmentDetailsBinding
-import com.oye.moviepedia.domain.entities.Movie
 import com.oye.moviepedia.domain.entities.MovieDetails
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
@@ -117,7 +117,16 @@ class DetailsFragment: BaseFragment() {
         binding.rateButton.setOnClickListener {  }
         binding.addToPlaylistButton.setOnClickListener {  }
         binding.movieTrailerButton.setOnClickListener {
-            //https://www.youtube.com/watch?v={key}
+            movie.trailerKey?.let { key ->
+                val action = DetailsFragmentDirections.trailerFragmentAction(key)
+                findNavController().navigate(action)
+            } ?: run {
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getString(R.string.no_trailer),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

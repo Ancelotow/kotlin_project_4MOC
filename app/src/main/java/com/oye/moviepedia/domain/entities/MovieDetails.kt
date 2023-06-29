@@ -18,10 +18,11 @@ data class MovieDetails(
     val genres: List<Genre>?,
     val runtime: Int?,
     val cast: List<Cast>,
+    val trailerKey: String?,
     val director: String
 ) {
     companion object {
-        fun fromMovieDto(movie: MovieDto, cast: List<CastDto>, director: String): MovieDetails {
+        fun fromMovieDto(movie: MovieDto, cast: List<CastDto>, director: String, trailerKey: String?): MovieDetails {
             return MovieDetails(
                 id = movie.id,
                 title = movie.title,
@@ -42,6 +43,7 @@ data class MovieDetails(
                         "https://www.themoviedb.org/t/p/original/${it.profile_path}"
                     )
                 },
+                trailerKey = trailerKey,
                 director = director
             )
 
