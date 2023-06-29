@@ -15,17 +15,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
         android:layout_height="@dimen/details_header_height"
-        android:src="@drawable/ic_back"
-        android:contentDescription=" "
-        android:paddingStart="@dimen/details_back_button_padding"
-        android:paddingEnd="@dimen/details_back_button_padding"
-        android:backgroundTint="@color/transparent"
+        app:navigationIcon="@drawable/ic_back"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

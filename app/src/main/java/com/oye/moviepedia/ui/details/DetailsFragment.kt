@@ -1,17 +1,26 @@
 package com.oye.moviepedia.ui.details
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.Genre
 import com.oye.moviepedia.databinding.FragmentDetailsBinding
@@ -46,13 +55,22 @@ class DetailsFragment: BaseFragment() {
 
         Log.d("MovieId","${args.movieId}")
 
-
+        setupUI()
         setObservers()
         setUIListeners()
         detailsViewModel.getMovie(args.movieId)
     }
 
     private fun setupUI() {
+        setupSupportActionBar(binding.toolbar)
+        binding.toolbar.title = ""
+        binding.toolbar.setNavigationOnClickListener {
+            onSupportNavigateUp()
+        }
+        setupMenu()
+    }
+
+    private fun setMovieData() {
         binding.movieTitle.text = movie.title
         binding.movieDescription.text = movie.description
         Picasso.get().load(movie.posterUrl).into(binding.moviePicture)
@@ -89,7 +107,7 @@ class DetailsFragment: BaseFragment() {
                 is MovieDetailsSuccess -> {
                     hideLoader()
                     this.movie = it.movie
-                    setupUI()
+                    setMovieData()
                 }
 
                 is MovieDetailsDataError -> {
@@ -110,12 +128,8 @@ class DetailsFragment: BaseFragment() {
     }
 
     private fun setUIListeners() {
-        binding.backButton.setOnClickListener {
-        }
-
-        binding.likeButton.setOnClickListener {  }
         binding.rateButton.setOnClickListener {  }
-        binding.addToPlaylistButton.setOnClickListener {  }
+
         binding.movieTrailerButton.setOnClickListener {
             movie.trailerKey?.let { key ->
                 val action = DetailsFragmentDirections.trailerFragmentAction(key)
@@ -128,6 +142,38 @@ class DetailsFragment: BaseFragment() {
                 ).show()
             }
         }
+    }
+
+    private fun setupMenu() {
+        val menuResId : Int = R.menu.movie_details_menu
+
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            @SuppressLint("RestrictedApi")
+            override fun onPrepareMenu(menu: Menu) {
+                // Handle for example visibility of menu items
+                if (menu is MenuBuilder) {
+                    menu.setOptionalIconsVisible(true)
+                }
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(menuResId, menu)
+            }
+
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                when(item.itemId)
+                {
+                    R.id.action_playlist-> {
+
+                    }
+                    R.id.action_like->{
+
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
     }
 
     private fun getFormattedMovieGenres(genres: List<Genre>): String {

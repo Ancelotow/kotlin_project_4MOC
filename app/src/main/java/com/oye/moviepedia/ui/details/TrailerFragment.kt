@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.oye.moviepedia.databinding.FragmentTrailerBinding
+import com.oye.moviepedia.ui.BaseFragment
 
-class TrailerFragment: Fragment() {
+class TrailerFragment: BaseFragment() {
     private lateinit var binding: FragmentTrailerBinding
     private val args: TrailerFragmentArgs by navArgs()
 
@@ -29,7 +29,6 @@ class TrailerFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
-        setUIListeners()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -45,11 +44,11 @@ class TrailerFragment: Fragment() {
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.settings.mediaPlaybackRequiresUserGesture = false
         binding.webView.loadUrl(url)
-    }
 
-    private fun setUIListeners() {
-        binding.backButton.setOnClickListener {
-
+        setupSupportActionBar(binding.toolbar)
+        binding.toolbar.title = ""
+        binding.toolbar.setNavigationOnClickListener {
+            onSupportNavigateUp()
         }
     }
 

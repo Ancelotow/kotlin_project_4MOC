@@ -24,6 +24,8 @@
     <string name="synopsis">Synopsis</string>
     <string name="headliners">Têtes d\'affiche</string>
     <string name="no_trailer">Aucune bande annonce n\'est disponible pour ce film</string>
+    <string name="add_to_playlist">Ajouter à une playlist</string>
+    <string name="like">Aimé</string>
 
 
     <string name="random_text">Lorem ipsum nota del ideluti, Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti </string>
