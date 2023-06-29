@@ -1,5 +1,7 @@
 package com.oye.moviepedia.ui.details
 
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,9 +10,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
+import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.Genre
 import com.oye.moviepedia.databinding.FragmentDetailsBinding
 import com.oye.moviepedia.domain.entities.Movie
+import com.oye.moviepedia.domain.entities.MovieDetails
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsLoading
@@ -21,7 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DetailsFragment: Fragment() {
     private lateinit var binding: FragmentDetailsBinding
-    private lateinit var movie: Movie
+    private lateinit var movie: MovieDetails
+    private lateinit var actorAdapter: ActorsAdapter
     private val detailsViewModel: DetailsViewModel by viewModels()
     private val args : DetailsFragmentArgs by navArgs()
 
@@ -38,10 +44,11 @@ class DetailsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Log.d("MovieId","${args.movieId}")
-        detailsViewModel.getMovie(args.movieId)
+
 
         setObservers()
         setUIListeners()
+        detailsViewModel.getMovie(args.movieId)
     }
 
     private fun setupUI() {
@@ -65,6 +72,13 @@ class DetailsFragment: Fragment() {
         } ?: run {
             binding.pointSeparator.visibility = View.GONE
         }
+
+
+        actorAdapter = ActorsAdapter()
+        binding.actorsRecyclerView.adapter = actorAdapter
+        binding.actorsRecyclerView.setHasFixedSize(true)
+        binding.actorsRecyclerView.addItemDecoration(ActorMarginItemDecoration(requireContext(), actorAdapter))
+        actorAdapter.setItems(movie.cast)
 
     }
 
@@ -113,5 +127,17 @@ class DetailsFragment: Fragment() {
             formattedGenres += if (index == 0) genre.name else ", ${genre.name}"
         }
         return formattedGenres
+    }
+
+    class ActorMarginItemDecoration(val context: Context, private val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            val itemPosition = parent.getChildAdapterPosition(view)
+            if(itemPosition == 0){
+                outRect.left = context.resources.getDimensionPixelSize(R.dimen.details_horizontal_margin)
+            }else if(itemPosition == (adapter.itemCount - 1)){
+                outRect.right = context.resources.getDimensionPixelSize(R.dimen.details_horizontal_margin)
+            }
+
+        }
     }
 }

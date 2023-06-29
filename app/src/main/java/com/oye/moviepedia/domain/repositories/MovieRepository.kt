@@ -2,6 +2,7 @@ package com.oye.moviepedia.domain.repositories
 
 import com.oye.moviepedia.data.repositories.RemoteMovieRepository
 import com.oye.moviepedia.domain.entities.Movie
+import com.oye.moviepedia.domain.entities.MovieDetails
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,7 +19,7 @@ interface MovieRepository {
 
     fun getPopularMovies(): List<Movie>
 
-    fun getMovieDetails(id: Int): Movie?
+    fun getMovieDetails(id: Int): MovieDetails?
 
 }
 

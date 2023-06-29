@@ -2,6 +2,7 @@ package com.oye.moviepedia.data.repositories
 
 import com.oye.moviepedia.data.data_sources.MovieDataSource
 import com.oye.moviepedia.domain.entities.Movie
+import com.oye.moviepedia.domain.entities.MovieDetails
 import com.oye.moviepedia.domain.repositories.MovieRepository
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -77,7 +78,7 @@ class RemoteMovieRepository @Inject constructor(
         return movies;
     }
 
-    override fun getMovieDetails(id: Int): Movie? {
+    override fun getMovieDetails(id: Int): MovieDetails? {
         dataSource.getMovieDetails(id)?.let { movieDto ->
             val credits = dataSource.fetchCreditsMovies(movieDto.id)
             val director: String = try {
@@ -85,7 +86,7 @@ class RemoteMovieRepository @Inject constructor(
             } catch (e: NoSuchElementException) {
                 "Unknow"
             }
-            return Movie.fromMovieDto(movieDto, director)
+            return MovieDetails.fromMovieDto(movieDto, credits.cast, director)
         }
         return null
     }

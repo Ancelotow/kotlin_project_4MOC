@@ -67,8 +67,6 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/details_horizontal_margin"
-            android:paddingEnd="@dimen/details_horizontal_margin"
             android:paddingTop="@dimen/details_picture_top_margin"
             android:paddingBottom="@dimen/details_bottom_margin"
             android:orientation="vertical">
@@ -91,6 +89,8 @@
                 android:id="@+id/movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/details_horizontal_margin"
+                android:paddingEnd="@dimen/details_horizontal_margin"
                 android:textSize="@dimen/h2"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -100,6 +100,8 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/details_horizontal_margin"
+                android:paddingEnd="@dimen/details_horizontal_margin"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -133,6 +135,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/details_horizontal_margin"
+                android:paddingEnd="@dimen/details_horizontal_margin"
+
                 android:layout_marginTop="@dimen/details_section_margin">
 
                 <ProgressBar
@@ -209,6 +214,8 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/details_horizontal_margin"
+                android:paddingEnd="@dimen/details_horizontal_margin"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/details_section_margin">
 
@@ -244,10 +251,21 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/details_horizontal_margin"
+                    android:paddingEnd="@dimen/details_horizontal_margin"
                     android:textSize="@dimen/body_regular"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:text="@string/headliners"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/actors_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/details_casting_top_margin"
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_actor"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
