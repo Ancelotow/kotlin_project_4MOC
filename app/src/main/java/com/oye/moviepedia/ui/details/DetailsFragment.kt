@@ -20,11 +20,12 @@ import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsLoading
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsSuccess
+import com.oye.moviepedia.ui.BaseFragment
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DetailsFragment: Fragment() {
+class DetailsFragment: BaseFragment() {
     private lateinit var binding: FragmentDetailsBinding
     private lateinit var movie: MovieDetails
     private lateinit var actorAdapter: ActorsAdapter
@@ -86,20 +87,23 @@ class DetailsFragment: Fragment() {
         detailsViewModel.movieDetails.observe(viewLifecycleOwner) {
             when (it) {
                 is MovieDetailsSuccess -> {
+                    hideLoader()
                     this.movie = it.movie
                     setupUI()
                 }
 
                 is MovieDetailsDataError -> {
+                    hideLoader()
                     Log.e("DATA ERROR", it.ex.message)
                 }
 
                 is MovieDetailsError -> {
+                    hideLoader()
                     Log.e("ERROR", it.ex.message!!)
                 }
 
                 is MovieDetailsLoading -> {
-                    //TODO : should show loader
+                    showLoader()
                 }
             }
         }
