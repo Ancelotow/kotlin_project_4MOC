@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--Adding our first item-->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+
+    <item android:top="2dp" android:bottom="2dp" android:end="2dp" android:start="2dp">
+        <shape
+            android:shape="oval"
+            android:useLevel="false">
+            <solid android:color="@color/primary_variant" />
+        </shape>
+    </item>
+
     <item>
         <!--Here ring shape is created. The important attribute
          used here is, android:useLevel="false". Attribute
