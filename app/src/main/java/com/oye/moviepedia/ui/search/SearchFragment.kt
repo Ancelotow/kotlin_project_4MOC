@@ -2,11 +2,13 @@ package com.oye.moviepedia.ui.search
 
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
@@ -62,6 +65,7 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import coil.compose.rememberImagePainter
 import com.oye.moviepedia.R
 import com.oye.moviepedia.domain.entities.MovieSearchResult
@@ -72,11 +76,12 @@ import com.oye.moviepedia.domain.uses_cases.SearchDataError
 import com.oye.moviepedia.domain.uses_cases.SearchError
 import com.oye.moviepedia.domain.uses_cases.SearchLoading
 import com.oye.moviepedia.domain.uses_cases.SearchSuccess
+import com.oye.moviepedia.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class SearchFragment : BaseFragment() {
 
     private val searchViewModel: SearchViewModel by viewModels()
     private val searchResults = mutableStateListOf<SearchResult>()
@@ -275,7 +280,9 @@ class SearchFragment : Fragment() {
         Row(
             modifier = Modifier.padding(
                 vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
-            )
+            ).clickable {
+                // TODO @Etienne: Ajouter la navigation vers le détail du film
+            }
         ) {
             if (!movieResult.posterPath.isNullOrBlank()) {
                 Image(
