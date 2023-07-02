@@ -3,6 +3,8 @@ package com.oye.moviepedia.data.services
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.GenreResultDto
 import com.oye.moviepedia.data.dto.ListMovieResultDto
+import com.oye.moviepedia.data.dto.MovieDto
+import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
 import retrofit2.Call
 import retrofit2.http.GET
@@ -37,5 +39,11 @@ interface ApiService {
 
     @GET("genre/tv/list?language=fr-FR")
     fun getTvGenres(): Call<GenreResultDto>
+
+    @GET("movie/{id}?language=fr-FR")
+    fun getMovie(@Path("id") id: Int): Call<MovieDto>
+
+    @GET("movie/{id}/videos?language=fr-FR")
+    fun getMovieTrailers(@Path("id") id: Int): Call<MovieTrailerDto>
 
 }

@@ -1,6 +1,12 @@
 package com.oye.moviepedia.domain.repositories
 
 import com.oye.moviepedia.domain.entities.Movie
+import com.oye.moviepedia.domain.entities.MovieDetails
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 interface MovieRepository {
 
@@ -11,5 +17,7 @@ interface MovieRepository {
     fun getNowPlayingMovies(): List<Movie>
 
     fun getPopularMovies(): List<Movie>
+
+    fun getMovieDetails(id: Int): MovieDetails?
 
 }

@@ -12,8 +12,15 @@ data class MovieDto(
     val popularity: Float,
     val poster_path: String,
     val title: String,
+    val genres: List<Genre>?,
+    val runtime: Int?,
     val video: Boolean,
     val vote_average:Float,
     val vote_count: Int,
     val release_date: LocalDate
+)
+
+data class Genre(
+    val id: Int?,
+    val name: String?
 )

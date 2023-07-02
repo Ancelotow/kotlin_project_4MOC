@@ -3,6 +3,7 @@ package com.oye.moviepedia.data.data_sources
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.SearchDto
+import com.oye.moviepedia.data.dto.MovieTrailerDto
 import java.time.LocalDate
 
 interface MovieDataSource {
@@ -16,5 +17,10 @@ interface MovieDataSource {
     fun fetchPopularMovies(): List<MovieDto>
 
     fun fetchSearchResult(query: String): List<SearchDto>
+    fun getMovieDetails(id: Int): MovieDto?
+
+    fun getMovieTrailers(id: Int): MovieTrailerDto?
+
+}
 
 }

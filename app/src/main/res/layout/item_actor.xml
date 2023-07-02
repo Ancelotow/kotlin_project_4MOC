@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/item_actor_width"
+    android:layout_height="@dimen/item_actor_height"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="@dimen/details_picture_corner_radius"
+    app:cardUseCompatPadding="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/actor_picture"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/item_actor_image_height"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:padding="@dimen/item_actor_padding"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/actor_picture"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/actor_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/body_regular"
+                android:textColor="@color/app_black"
+                android:textStyle="bold"
+                tools:text="Charlie Day"
+                android:maxLines="1"
+                android:ellipsize="marquee"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/actor_role"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/body_small"
+                android:textColor="@color/app_black"
+                android:textStyle="normal"
+                tools:text="Luigi (Voice) Luigi (Voice)"
+                android:maxLines="1"
+                android:ellipsize="marquee"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
