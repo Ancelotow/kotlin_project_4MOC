@@ -14,6 +14,12 @@
 
     <!-- Search -->
     <string name="search_hint">Rechercher un film, une série, …</string>
+    <string name="search_no_result">Aucun résultats correspond à votre recherche</string>
+    <string name="search_unknown_result">Inconnu</string>
+    <string name="search_person_content_description">person profil</string>
+    <string name="search_tv_content_description">tv poster</string>
+    <string name="search_movie_content_description">movie poster</string>
+    <string name="search_icon_content_description">search icon</string>
 
     <!-- User-->
     <string name="liked_new_movies">Films favoris</string>

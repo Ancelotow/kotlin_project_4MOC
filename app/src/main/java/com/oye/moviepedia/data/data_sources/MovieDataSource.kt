@@ -22,5 +22,3 @@ interface MovieDataSource {
     fun getMovieTrailers(id: Int): MovieTrailerDto?
 
 }
-
-}

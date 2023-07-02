@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,13 +39,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -54,6 +56,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -74,6 +78,7 @@ class SearchFragment : Fragment() {
 
     private val searchViewModel: SearchViewModel by viewModels()
     private val searchResults = mutableStateListOf<SearchResult>()
+    private var isLoaded by mutableStateOf(true)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -92,35 +97,48 @@ class SearchFragment : Fragment() {
         searchViewModel.searchState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is SearchLoading -> {
-                    Log.d("SearchFragment", "Loading")
+                   isLoaded = false
                 }
 
                 is SearchSuccess -> {
                     searchResults.clear()
                     searchResults.addAll(it.results)
+                    isLoaded = true
                 }
 
                 is SearchDataError -> {
                     Log.e("Data Error", it.ex.toString())
+                    isLoaded = true
                 }
 
                 is SearchError -> {
                     it.ex.printStackTrace()
                     Log.e("Error", it.ex.toString())
+                    isLoaded = true
                 }
 
                 else -> {
                     Log.d("SearchFragment", "Else")
+                    isLoaded = true
                 }
             }
         })
     }
 
     @Composable
+    private fun Loading(){
+        AndroidView(
+            factory = { context ->
+                LayoutInflater.from(context).inflate(R.layout.loader, null)
+            },
+        )
+    }
+
+    @Composable
     private fun Body() {
         Column {
             Box(
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.search_padding).value.dp)
             ) {
                 Title()
             }
@@ -128,21 +146,50 @@ class SearchFragment : Fragment() {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp)
+                    .padding(top = dimensionResource(id = R.dimen.search_padding).value.dp)
             ) {
                 SearchTextField()
             }
-            Box(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-            ) {
-                LazyColumn {
-                    items(searchResults) { result ->
-                        ResultItem(result)
+            if(isLoaded.not()){
+                Box(
+                    contentAlignment = Alignment.Center, // Centrer le composant
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ) {
+                    Loading()
+                }
+            }
+            else if(searchResults.isEmpty())  {
+                Box(
+                    contentAlignment = Alignment.Center, // Centrer le composant
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.search_no_result),
+                        style = TextStyle(
+                            fontSize = dimensionResource(id = R.dimen.body_regular).value.sp,
+                            textAlign = TextAlign.Center,
+                            color = colorResource(id = R.color.accent)
+                        ),
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier.padding(
+                        start = dimensionResource(id = R.dimen.search_padding).value.dp,
+                        end = dimensionResource(id = R.dimen.search_padding).value.dp)
+                ) {
+                    LazyColumn {
+                        items(searchResults) { result ->
+                            ResultItem(result)
+                        }
                     }
                 }
             }
         }
-
     }
 
     @OptIn(ExperimentalTextApi::class)
@@ -151,12 +198,12 @@ class SearchFragment : Fragment() {
         Text(
             text = stringResource(id = R.string.app_name),
             style = TextStyle(
-                fontSize = 24.sp,
+                fontSize = dimensionResource(id = R.dimen.h1).value.sp,
                 fontWeight = FontWeight.Bold,
                 brush = Brush.linearGradient(
-                    colors = listOf(Color(0xFF9CCCA5), Color(0xFF51B1DF)),
+                    colors = listOf(colorResource(id = R.color.accent), colorResource(id = R.color.blue)),
                     start = Offset(0f, 0f),
-                    end = Offset(343f, 0f), // TODO: Auto width
+                    end = Offset(343f, 0f),
                     tileMode = TileMode.Clamp
                 )
             ),
@@ -173,14 +220,16 @@ class SearchFragment : Fragment() {
                 textFieldValue = newValue
                 searchViewModel.getSearchResult(newValue.text)
             },
-            shape = RoundedCornerShape(5.dp),
+            shape = RoundedCornerShape(
+                dimensionResource(id = R.dimen.search_round_corner).value.dp
+            ),
             label = {
                 Text(stringResource(id = R.string.search_hint))
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp)
-                .padding(horizontal = 10.dp),
+                .height(dimensionResource(id = R.dimen.search_field_height).value.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.search_padding).value.dp),
             textStyle = TextStyle(
                 textAlign = TextAlign.Start,
             ),
@@ -188,17 +237,17 @@ class SearchFragment : Fragment() {
             leadingIcon = {
                 Icon(
                     Icons.Filled.Search,
-                    contentDescription = "Search icon",
-                    tint = Color(0xFFD4D4D4),
+                    contentDescription = stringResource(id = R.string.search_icon_content_description),
+                    tint = colorResource(id = R.color.search_field_text),
                 )
             },
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0x66989898),
-                textColor = Color(0xFFD4D4D4),
-                placeholderColor = Color(0xFFD4D4D4),
-                focusedIndicatorColor = Color.Transparent,
-                focusedLabelColor = Color(0xFF51B1DF),
-                unfocusedLabelColor = Color(0xFFD4D4D4),
+                containerColor = colorResource(id = R.color.search_field_container),
+                textColor = colorResource(id = R.color.search_field_text),
+                placeholderColor = colorResource(id = R.color.search_field_text),
+                focusedIndicatorColor = colorResource(id = R.color.transparent),
+                focusedLabelColor =  colorResource(id = R.color.search_field_label_focused),
+                unfocusedLabelColor = colorResource(id = R.color.search_field_label_unfocused),
             )
         )
     }
@@ -216,39 +265,43 @@ class SearchFragment : Fragment() {
     @Composable
     private fun MovieItem(movieResult: MovieSearchResult) {
         val painter: Painter = rememberImagePainter(movieResult.posterPath)
-        Row(modifier = Modifier.padding(vertical = 8.dp)) {
+        Row(modifier = Modifier.padding(
+            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+        )) {
             if(!movieResult.posterPath.isNullOrBlank()) {
                 Image(
                     painter = painter,
-                    contentDescription = "movie poster",
+                    contentDescription = stringResource(id = R.string.search_movie_content_description),
                     modifier = Modifier
-                        .width(68.dp)
-                        .height(99.dp)
-                        .clip(RoundedCornerShape(5.dp))
+                        .width(dimensionResource(id = R.dimen.search_movie_poster_width).value.dp)
+                        .height(dimensionResource(id = R.dimen.search_movie_poster_height).value.dp)
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.search_round_corner).value.dp))
                 )
             } else {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(68.dp)
-                        .height(99.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(Color(0xFFD4D4D4))
+                        .width(dimensionResource(id = R.dimen.search_movie_poster_width).value.dp)
+                        .height(dimensionResource(id = R.dimen.search_movie_poster_height).value.dp)
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.search_round_corner).value.dp))
+                        .background(colorResource(id = R.color.search_background_card))
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_movie),
-                        contentDescription = "movie poster",
-                        modifier = Modifier.size(30.dp)
+                        contentDescription = stringResource(id = R.string.search_movie_content_description),
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.search_image_size).value.dp)
                     )
                 }
             }
             Text(
-                modifier = Modifier.padding(all = 5.dp),
+                modifier = Modifier.padding(
+                    all = dimensionResource(id = R.dimen.search_small_padding).value.dp
+                ),
                 text = movieResult.title,
                 style = TextStyle(
-                    fontSize = 15.sp,
+                    fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = colorResource(id = R.color.white)
                 )
             )
         }
@@ -257,39 +310,43 @@ class SearchFragment : Fragment() {
     @Composable
     private fun TvItem(tvResult: TvSearchResult) {
         val painter: Painter = rememberImagePainter(tvResult.posterPath)
-        Row(modifier = Modifier.padding(vertical = 8.dp)) {
+        Row(modifier = Modifier.padding(
+            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+        )) {
             if(!tvResult.posterPath.isNullOrBlank()) {
                 Image(
                     painter = painter,
-                    contentDescription = "tv poster",
+                    contentDescription = getString(R.string.search_tv_content_description),
                     modifier = Modifier
-                        .width(68.dp)
-                        .height(99.dp)
-                        .clip(RoundedCornerShape(5.dp))
+                        .width(dimensionResource(id = R.dimen.search_movie_poster_width).value.dp)
+                        .height(dimensionResource(id = R.dimen.search_movie_poster_height).value.dp)
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.search_round_corner).value.dp))
                 )
             } else {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(68.dp)
-                        .height(99.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(Color(0xFFD4D4D4))
+                        .width(dimensionResource(id = R.dimen.search_movie_poster_width).value.dp)
+                        .height(dimensionResource(id = R.dimen.search_movie_poster_height).value.dp)
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.search_round_corner).value.dp))
+                        .background(colorResource(id = R.color.search_background_card))
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_tv),
-                        contentDescription = "tv poster",
-                        modifier = Modifier.size(30.dp)
+                        contentDescription = getString(R.string.search_tv_content_description),
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.search_image_size).value.dp)
                     )
                 }
             }
             Text(
-                modifier = Modifier.padding(all = 5.dp),
+                modifier = Modifier.padding(
+                    all = dimensionResource(id = R.dimen.search_small_padding).value.dp
+                ),
                 text = tvResult.name,
                 style = TextStyle(
-                    fontSize = 15.sp,
+                    fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = colorResource(id = R.color.white)
                 )
             )
         }
@@ -298,18 +355,20 @@ class SearchFragment : Fragment() {
     @Composable
     private fun PersonItem(personResult: PersonSearchResult) {
         val painter: Painter = rememberImagePainter(personResult.profilePath)
-        Row(modifier = Modifier.padding(vertical = 8.dp)) {
+        Row(modifier = Modifier.padding(
+            dimensionResource(id = R.dimen.search_medium_padding).value.dp
+        )) {
             if(personResult.profilePath != null) {
                 Box(
                     modifier = Modifier
-                        .size(68.dp)
+                        .size(dimensionResource(id = R.dimen.search_person_size).value.dp)
                         .clip(CircleShape)
                         .background(Color.Gray)
                         .aspectRatio(1f)
                 ) {
                     Image(
                         painter = painter,
-                        contentDescription = "profile",
+                        contentDescription = getString(R.string.search_person_content_description),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
@@ -319,16 +378,16 @@ class SearchFragment : Fragment() {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(68.dp)
+                        .size(dimensionResource(id = R.dimen.search_person_size).value.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFD4D4D4))
+                        .background(colorResource(id = R.color.search_background_card))
                         .aspectRatio(1f)
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_director_chair),
-                        contentDescription = "profile",
+                        contentDescription = getString(R.string.search_person_content_description),
                         modifier = Modifier
-                            .size(30.dp)
+                            .size(dimensionResource(id = R.dimen.search_image_size).value.dp)
                             .clip(CircleShape)
                     )
                 }
@@ -337,20 +396,24 @@ class SearchFragment : Fragment() {
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    modifier = Modifier.padding(all = 5.dp),
+                    modifier = Modifier.padding(
+                        all = dimensionResource(id = R.dimen.search_small_padding).value.dp
+                    ),
                     text = personResult.name,
                     style = TextStyle(
-                        fontSize = 15.sp,
+                        fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = colorResource(id = R.color.white)
                     )
                 )
                 Text(
-                    modifier = Modifier.padding(all = 5.dp),
+                    modifier = Modifier.padding(
+                        all = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+                    ),
                     text = personResult.mainJob,
                     style = TextStyle(
-                        fontSize = 15.sp,
-                        color = Color(0xFF989898)
+                        fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
+                        color = colorResource(id = R.color.gray)
                     )
                 )
             }
@@ -359,10 +422,14 @@ class SearchFragment : Fragment() {
 
     @Composable
     private fun UnknownItem() {
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Column(modifier = Modifier.padding(
+            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+        )) {
             Text(
-                text = "Unknown",
-                style = TextStyle(fontSize = 16.sp)
+                text = getString(R.string.search_unknown_result),
+                style = TextStyle(
+                    fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp
+                )
             )
         }
     }

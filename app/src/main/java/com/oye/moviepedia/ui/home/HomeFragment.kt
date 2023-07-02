@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,11 +25,12 @@ import com.oye.moviepedia.domain.uses_cases.PopularMovieSuccess
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieDataError
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieError
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieSuccess
+import com.oye.moviepedia.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), MovieListAdapter.MovieListener {
+class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
 
     private val viewModel: HomeViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
