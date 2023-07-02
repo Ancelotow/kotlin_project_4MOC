@@ -1,13 +1,27 @@
 package com.oye.moviepedia.ui.search
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.oye.moviepedia.domain.uses_cases.SearchState
+import com.oye.moviepedia.domain.uses_cases.SearchUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val searchUseCase: SearchUseCase,
+) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is search Fragment"
+    private val _searchState = MutableLiveData<SearchState>()
+    val searchState = _searchState
+
+    fun getSearchResult(query: String) {
+        viewModelScope.launch {
+            searchUseCase.fetchSearchResult(query).collect {
+                _searchState.value = it
+            }
+        }
     }
-    val text: LiveData<String> = _text
 }

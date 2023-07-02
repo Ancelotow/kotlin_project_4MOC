@@ -44,15 +44,18 @@ class RetrofitSingletonService private constructor() {
 
 }
 
-class LocalDateDeserializer : JsonDeserializer<LocalDate> {
+class LocalDateDeserializer : JsonDeserializer<LocalDate?> {
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): LocalDate {
+    ): LocalDate? {
         val dateString = json?.asString
+        if(dateString.isNullOrEmpty()) {
+            return null
+        }
         return LocalDate.parse(dateString, formatter)
     }
 }

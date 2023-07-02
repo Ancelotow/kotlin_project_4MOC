@@ -4,6 +4,7 @@ import android.util.Log
 import com.oye.moviepedia.data.data_sources.MovieDataSource
 import com.oye.moviepedia.domain.entities.Movie
 import com.oye.moviepedia.domain.entities.MovieDetails
+import com.oye.moviepedia.domain.entities.SearchResult
 import com.oye.moviepedia.domain.repositories.MovieRepository
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -99,6 +100,15 @@ class RemoteMovieRepository @Inject constructor(
             return MovieDetails.fromMovieDto(movieDto, credits.cast, director, trailer?.key)
         }
         return null
+    }
+
+    override fun getSearchResult(query: String): List<SearchResult> {
+        val tvGenre = dataSource.fetchTvGenres().map { it.toGenre() }
+        val movieGenre = dataSource.fetchMovieGenres().map { it.toGenre() }
+        val resultDto = dataSource.fetchSearchResult(
+            query = query,
+        )
+        return resultDto.map { it.toSearchResult(tvGenre, movieGenre) }
     }
 
 }

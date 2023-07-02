@@ -85,6 +85,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.46.1")
     kapt("com.google.dagger:hilt-android-compiler:2.45")
     implementation("com.airbnb.android:lottie:6.0.0")
+    implementation("io.coil-kt:coil-compose:1.4.0")
 }
 
 kapt {

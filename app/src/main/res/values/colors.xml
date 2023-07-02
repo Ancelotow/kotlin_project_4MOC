@@ -18,4 +18,12 @@
     <color name="gray">#989898</color>
     <color name="blue">#51B1DF</color>
     <color name="transparent">#00FFFFFF</color>
+
+
+    <!-- SearchFragment -->
+    <color name="search_background_card">#D4D4D4</color>
+    <color name="search_field_container">#66989898</color>
+    <color name="search_field_text">#D4D4D4</color>
+    <color name="search_field_label_focused">#51B1DF</color>
+    <color name="search_field_label_unfocused">#D4D4D4</color>
 </resources>

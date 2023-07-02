@@ -2,25 +2,22 @@ package com.oye.moviepedia.data.data_sources.remote
 
 import com.oye.moviepedia.data.data_sources.MovieDataSource
 import com.oye.moviepedia.data.dto.CreditsResultDto
+import com.oye.moviepedia.data.dto.GenreDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
+import com.oye.moviepedia.data.dto.ListSearchResultDto
+import com.oye.moviepedia.data.dto.SearchDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
 import com.oye.moviepedia.data.services.RetrofitSingletonService
-import com.oye.moviepedia.domain.entities.Movie
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
-    private val service: ApiService
-
-    init {
-        service = RetrofitSingletonService.getInstance().service
-    }
+    private val service: ApiService = RetrofitSingletonService.getInstance().service
 
     override fun fetchMovies(
         primaryDateRelease: LocalDate?,
@@ -80,6 +77,33 @@ class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
         val response = service.getMovieTrailers(id).execute()
         if(response.isSuccessful) {
             return response.body()
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun fetchSearchResult(query: String): List<SearchDto> {
+        val response = service.searchMovies(query).execute()
+        if(response.isSuccessful) {
+            return response.body()!!.results
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun fetchMovieGenres(): List<GenreDto> {
+        val response = service.getMovieGenres().execute()
+        if(response.isSuccessful) {
+            return response.body()!!.genres
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun fetchTvGenres(): List<GenreDto> {
+        val response = service.getTvGenres().execute()
+        if(response.isSuccessful) {
+            return response.body()!!.genres
         } else {
             throw RemoteException(response.code(), response.errorBody().toString())
         }

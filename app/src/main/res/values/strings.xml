@@ -12,6 +12,18 @@
     <string name="home_movies_upcoming">À venir</string>
     <string name="home_movies_popular">Populaire</string>
 
+    <!-- Search -->
+    <string name="search_hint">Rechercher un film, une série, …</string>
+    <string name="search_no_result">Aucun résultats correspond à votre recherche</string>
+    <string name="search_indicator">Veuillez saisir une recherche…</string>
+    <string name="search_unknown_result">Inconnu</string>
+    <string name="search_person_content_description">person profil</string>
+    <string name="search_tv_content_description">tv poster</string>
+    <string name="search_movie_content_description">movie poster</string>
+    <string name="search_icon_content_description">search icon</string>
+    <string name="search_tv_first_air">Première diffusion : %s</string>
+    <string name="search_movie_release_date">Sortie le : %s</string>
+
     <!-- User-->
     <string name="liked_new_movies">Films favoris</string>
 

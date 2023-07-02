@@ -1,13 +1,8 @@
 package com.oye.moviepedia.domain.repositories
 
-import com.oye.moviepedia.data.repositories.RemoteMovieRepository
 import com.oye.moviepedia.domain.entities.Movie
 import com.oye.moviepedia.domain.entities.MovieDetails
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import com.oye.moviepedia.domain.entities.SearchResult
 
 interface MovieRepository {
 
@@ -21,13 +16,6 @@ interface MovieRepository {
 
     fun getMovieDetails(id: Int): MovieDetails?
 
-}
+    fun getSearchResult(query: String): List<SearchResult>
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class MovieRepositoryModule {
-
-    @Binds
-    @Singleton
-    abstract fun provideMovieRepository(repository: RemoteMovieRepository): MovieRepository
 }
