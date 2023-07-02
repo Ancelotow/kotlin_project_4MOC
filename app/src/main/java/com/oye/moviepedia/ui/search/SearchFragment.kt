@@ -356,7 +356,7 @@ class SearchFragment : Fragment() {
     private fun PersonItem(personResult: PersonSearchResult) {
         val painter: Painter = rememberImagePainter(personResult.profilePath)
         Row(modifier = Modifier.padding(
-            dimensionResource(id = R.dimen.search_medium_padding).value.dp
+            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
         )) {
             if(personResult.profilePath != null) {
                 Box(
@@ -392,30 +392,28 @@ class SearchFragment : Fragment() {
                     )
                 }
             }
-            Column(
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    modifier = Modifier.padding(
-                        all = dimensionResource(id = R.dimen.search_small_padding).value.dp
-                    ),
-                    text = personResult.name,
-                    style = TextStyle(
-                        fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.white)
+            Box(modifier = Modifier.padding(
+                start = dimensionResource(id = R.dimen.search_small_padding).value.dp
+            )) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = personResult.name,
+                        style = TextStyle(
+                            fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.white)
+                        )
                     )
-                )
-                Text(
-                    modifier = Modifier.padding(
-                        all = dimensionResource(id = R.dimen.search_medium_padding).value.dp
-                    ),
-                    text = personResult.mainJob,
-                    style = TextStyle(
-                        fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
-                        color = colorResource(id = R.color.gray)
+                    Text(
+                        text = personResult.mainJob,
+                        style = TextStyle(
+                            fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
+                            color = colorResource(id = R.color.gray)
+                        )
                     )
-                )
+                }
             }
         }
     }
