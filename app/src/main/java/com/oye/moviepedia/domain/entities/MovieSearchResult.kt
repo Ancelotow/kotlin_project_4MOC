@@ -7,4 +7,5 @@ data class MovieSearchResult(
     val title: String,
     val posterPath: String?,
     val releaseDate: LocalDate?,
+    val genres: List<Genre>
 ) : SearchResult(id)

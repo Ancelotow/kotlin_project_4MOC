@@ -1,7 +1,6 @@
 package com.oye.moviepedia.domain.entities
 
 import com.oye.moviepedia.data.dto.CastDto
-import com.oye.moviepedia.data.dto.Genre
 import com.oye.moviepedia.data.dto.MovieDto
 import java.time.LocalDate
 
@@ -33,7 +32,7 @@ data class MovieDetails(
                 isAdult = movie.adult,
                 releaseDate = movie.release_date,
                 posterUrl = "https://www.themoviedb.org/t/p/original/${movie.poster_path}",
-                genres = movie.genres,
+                genres = movie.genres?.map { it.toGenre() },
                 runtime = movie.runtime,
                 cast = cast.map {
                     Cast(

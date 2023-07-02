@@ -7,4 +7,5 @@ data class TvSearchResult(
     val name: String,
     val posterPath: String?,
     val firstAirDate: LocalDate?,
+    val genres: List<Genre>,
 ) : SearchResult(id)

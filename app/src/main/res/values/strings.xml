@@ -20,6 +20,8 @@
     <string name="search_tv_content_description">tv poster</string>
     <string name="search_movie_content_description">movie poster</string>
     <string name="search_icon_content_description">search icon</string>
+    <string name="search_tv_first_air">Première diffusion : %s</string>
+    <string name="search_movie_release_date">Sortie le : %s</string>
 
     <!-- User-->
     <string name="liked_new_movies">Films favoris</string>

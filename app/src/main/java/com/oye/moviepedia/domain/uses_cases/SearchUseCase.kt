@@ -2,14 +2,14 @@ package com.oye.moviepedia.domain.uses_cases
 
 import com.oye.moviepedia.data.exceptions.DataException
 import com.oye.moviepedia.domain.entities.SearchResult
-import com.oye.moviepedia.domain.repositories.SearchRepository
+import com.oye.moviepedia.domain.repositories.MovieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class SearchUseCase @Inject constructor(private val repository: SearchRepository) {
+class SearchUseCase @Inject constructor(private val repository: MovieRepository) {
 
     suspend fun fetchSearchResult(query: String): Flow<SearchState> {
         return flow {

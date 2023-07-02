@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,6 +73,7 @@ import com.oye.moviepedia.domain.uses_cases.SearchError
 import com.oye.moviepedia.domain.uses_cases.SearchLoading
 import com.oye.moviepedia.domain.uses_cases.SearchSuccess
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -79,12 +81,14 @@ class SearchFragment : Fragment() {
     private val searchViewModel: SearchViewModel by viewModels()
     private val searchResults = mutableStateListOf<SearchResult>()
     private var isLoaded by mutableStateOf(true)
+    private lateinit var dateFormatter: DateTimeFormatter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        dateFormatter = DateTimeFormatter.ofPattern(getString(R.string.date_format))
         return ComposeView(requireContext()).apply {
             setContent {
                 Body()
@@ -97,7 +101,7 @@ class SearchFragment : Fragment() {
         searchViewModel.searchState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is SearchLoading -> {
-                   isLoaded = false
+                    isLoaded = false
                 }
 
                 is SearchSuccess -> {
@@ -126,7 +130,7 @@ class SearchFragment : Fragment() {
     }
 
     @Composable
-    private fun Loading(){
+    private fun Loading() {
         AndroidView(
             factory = { context ->
                 LayoutInflater.from(context).inflate(R.layout.loader, null)
@@ -150,7 +154,7 @@ class SearchFragment : Fragment() {
             ) {
                 SearchTextField()
             }
-            if(isLoaded.not()){
+            if (isLoaded.not()) {
                 Box(
                     contentAlignment = Alignment.Center, // Centrer le composant
                     modifier = Modifier
@@ -159,8 +163,7 @@ class SearchFragment : Fragment() {
                 ) {
                     Loading()
                 }
-            }
-            else if(searchResults.isEmpty())  {
+            } else if (searchResults.isEmpty()) {
                 Box(
                     contentAlignment = Alignment.Center, // Centrer le composant
                     modifier = Modifier
@@ -180,7 +183,8 @@ class SearchFragment : Fragment() {
                 Box(
                     modifier = Modifier.padding(
                         start = dimensionResource(id = R.dimen.search_padding).value.dp,
-                        end = dimensionResource(id = R.dimen.search_padding).value.dp)
+                        end = dimensionResource(id = R.dimen.search_padding).value.dp
+                    )
                 ) {
                     LazyColumn {
                         items(searchResults) { result ->
@@ -201,7 +205,10 @@ class SearchFragment : Fragment() {
                 fontSize = dimensionResource(id = R.dimen.h1).value.sp,
                 fontWeight = FontWeight.Bold,
                 brush = Brush.linearGradient(
-                    colors = listOf(colorResource(id = R.color.accent), colorResource(id = R.color.blue)),
+                    colors = listOf(
+                        colorResource(id = R.color.accent),
+                        colorResource(id = R.color.blue)
+                    ),
                     start = Offset(0f, 0f),
                     end = Offset(343f, 0f),
                     tileMode = TileMode.Clamp
@@ -246,7 +253,7 @@ class SearchFragment : Fragment() {
                 textColor = colorResource(id = R.color.search_field_text),
                 placeholderColor = colorResource(id = R.color.search_field_text),
                 focusedIndicatorColor = colorResource(id = R.color.transparent),
-                focusedLabelColor =  colorResource(id = R.color.search_field_label_focused),
+                focusedLabelColor = colorResource(id = R.color.search_field_label_focused),
                 unfocusedLabelColor = colorResource(id = R.color.search_field_label_unfocused),
             )
         )
@@ -265,10 +272,12 @@ class SearchFragment : Fragment() {
     @Composable
     private fun MovieItem(movieResult: MovieSearchResult) {
         val painter: Painter = rememberImagePainter(movieResult.posterPath)
-        Row(modifier = Modifier.padding(
-            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
-        )) {
-            if(!movieResult.posterPath.isNullOrBlank()) {
+        Row(
+            modifier = Modifier.padding(
+                vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+            )
+        ) {
+            if (!movieResult.posterPath.isNullOrBlank()) {
                 Image(
                     painter = painter,
                     contentDescription = stringResource(id = R.string.search_movie_content_description),
@@ -293,27 +302,57 @@ class SearchFragment : Fragment() {
                     )
                 }
             }
-            Text(
-                modifier = Modifier.padding(
-                    all = dimensionResource(id = R.dimen.search_small_padding).value.dp
-                ),
-                text = movieResult.title,
-                style = TextStyle(
-                    fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.white)
+            Box(
+                modifier = Modifier.height(dimensionResource(id = R.dimen.search_movie_poster_height).value.dp).padding(
+                    vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp,
+                    horizontal = dimensionResource(id = R.dimen.search_small_padding).value.dp
                 )
-            )
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                ) {
+                    Text(
+                        text = movieResult.title,
+                        style = TextStyle(
+                            fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.white)
+                        )
+                    )
+                    Text(
+                        text = movieResult.genres.joinToString(separator = ", ") { it.name },
+                        style = TextStyle(
+                            fontSize = dimensionResource(id = R.dimen.body_small).value.sp,
+                            color = colorResource(id = R.color.gray)
+                        )
+                    )
+                    Spacer(modifier = Modifier.weight(0.5f))
+                    if (movieResult.releaseDate != null) {
+                        Text(
+                            text = getString(
+                                R.string.search_movie_release_date,
+                                movieResult.releaseDate.format(dateFormatter)
+                            ),
+                            style = TextStyle(
+                                fontSize = dimensionResource(id = R.dimen.body_small).value.sp,
+                                color = colorResource(id = R.color.gray)
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 
     @Composable
     private fun TvItem(tvResult: TvSearchResult) {
         val painter: Painter = rememberImagePainter(tvResult.posterPath)
-        Row(modifier = Modifier.padding(
-            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
-        )) {
-            if(!tvResult.posterPath.isNullOrBlank()) {
+        Row(
+            modifier = Modifier.padding(
+                vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+            )
+        ) {
+            if (!tvResult.posterPath.isNullOrBlank()) {
                 Image(
                     painter = painter,
                     contentDescription = getString(R.string.search_tv_content_description),
@@ -338,27 +377,57 @@ class SearchFragment : Fragment() {
                     )
                 }
             }
-            Text(
-                modifier = Modifier.padding(
-                    all = dimensionResource(id = R.dimen.search_small_padding).value.dp
-                ),
-                text = tvResult.name,
-                style = TextStyle(
-                    fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.white)
+            Box(
+                modifier = Modifier.height(dimensionResource(id = R.dimen.search_movie_poster_height).value.dp).padding(
+                    vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp,
+                    horizontal = dimensionResource(id = R.dimen.search_small_padding).value.dp
                 )
-            )
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                ) {
+                    Text(
+                        text = tvResult.name,
+                        style = TextStyle(
+                            fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.white)
+                        )
+                    )
+                    Text(
+                        text = tvResult.genres.joinToString(separator = ", ") { it.name },
+                        style = TextStyle(
+                            fontSize = dimensionResource(id = R.dimen.body_small).value.sp,
+                            color = colorResource(id = R.color.gray)
+                        )
+                    )
+                    Spacer(modifier = Modifier.weight(0.5f))
+                    if (tvResult.firstAirDate != null) {
+                        Text(
+                            text = getString(
+                                R.string.search_tv_first_air,
+                                tvResult.firstAirDate.format(dateFormatter)
+                            ),
+                            style = TextStyle(
+                                fontSize = dimensionResource(id = R.dimen.body_small).value.sp,
+                                color = colorResource(id = R.color.gray)
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 
     @Composable
     private fun PersonItem(personResult: PersonSearchResult) {
         val painter: Painter = rememberImagePainter(personResult.profilePath)
-        Row(modifier = Modifier.padding(
-            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
-        )) {
-            if(personResult.profilePath != null) {
+        Row(
+            modifier = Modifier.padding(
+                vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+            )
+        ) {
+            if (personResult.profilePath != null) {
                 Box(
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.search_person_size).value.dp)
@@ -392,9 +461,11 @@ class SearchFragment : Fragment() {
                     )
                 }
             }
-            Box(modifier = Modifier.padding(
-                start = dimensionResource(id = R.dimen.search_small_padding).value.dp
-            )) {
+            Box(
+                modifier = Modifier.padding(
+                    start = dimensionResource(id = R.dimen.search_small_padding).value.dp
+                )
+            ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                 ) {
@@ -409,7 +480,7 @@ class SearchFragment : Fragment() {
                     Text(
                         text = personResult.mainJob,
                         style = TextStyle(
-                            fontSize = dimensionResource(id = R.dimen.search_text_size).value.sp,
+                            fontSize = dimensionResource(id = R.dimen.body_small).value.sp,
                             color = colorResource(id = R.color.gray)
                         )
                     )
@@ -420,9 +491,11 @@ class SearchFragment : Fragment() {
 
     @Composable
     private fun UnknownItem() {
-        Column(modifier = Modifier.padding(
-            vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
-        )) {
+        Column(
+            modifier = Modifier.padding(
+                vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
+            )
+        ) {
             Text(
                 text = getString(R.string.search_unknown_result),
                 style = TextStyle(

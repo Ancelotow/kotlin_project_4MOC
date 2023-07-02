@@ -2,6 +2,7 @@ package com.oye.moviepedia.data.data_sources.remote
 
 import com.oye.moviepedia.data.data_sources.MovieDataSource
 import com.oye.moviepedia.data.dto.CreditsResultDto
+import com.oye.moviepedia.data.dto.GenreDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
@@ -85,6 +86,24 @@ class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
         val response = service.searchMovies(query).execute()
         if(response.isSuccessful) {
             return response.body()!!.results
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun fetchMovieGenres(): List<GenreDto> {
+        val response = service.getMovieGenres().execute()
+        if(response.isSuccessful) {
+            return response.body()!!.genres
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun fetchTvGenres(): List<GenreDto> {
+        val response = service.getTvGenres().execute()
+        if(response.isSuccessful) {
+            return response.body()!!.genres
         } else {
             throw RemoteException(response.code(), response.errorBody().toString())
         }

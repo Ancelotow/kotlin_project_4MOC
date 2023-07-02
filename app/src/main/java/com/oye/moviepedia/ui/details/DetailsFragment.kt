@@ -22,8 +22,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.oye.moviepedia.R
-import com.oye.moviepedia.data.dto.Genre
 import com.oye.moviepedia.databinding.FragmentDetailsBinding
+import com.oye.moviepedia.domain.entities.Genre
 import com.oye.moviepedia.domain.entities.MovieDetails
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
