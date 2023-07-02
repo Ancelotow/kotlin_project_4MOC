@@ -7,10 +7,7 @@
 
     <include app:graph="@navigation/home_navigation"/>
 
-    <fragment
-        android:id="@+id/navigation_search"
-        android:name="com.oye.moviepedia.ui.search.SearchFragment"
-        android:label="@string/title_search" />
+    <include app:graph="@navigation/search_navigation"/>
 
     <fragment
         android:id="@+id/navigation_user"

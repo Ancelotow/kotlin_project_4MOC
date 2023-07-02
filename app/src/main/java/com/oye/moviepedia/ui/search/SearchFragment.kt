@@ -282,7 +282,8 @@ class SearchFragment : BaseFragment() {
             modifier = Modifier.padding(
                 vertical = dimensionResource(id = R.dimen.search_medium_padding).value.dp
             ).clickable {
-                // TODO @Etienne: Ajouter la navigation vers le détail du film
+                val action = SearchFragmentDirections.detailsFragmentAction(movieResult.id)
+                findNavController().navigate(action)
             }
         ) {
             if (!movieResult.posterPath.isNullOrBlank()) {
