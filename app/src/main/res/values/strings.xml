@@ -15,6 +15,7 @@
     <!-- Search -->
     <string name="search_hint">Rechercher un film, une série, …</string>
     <string name="search_no_result">Aucun résultats correspond à votre recherche</string>
+    <string name="search_indicator">Veuillez saisir une recherche…</string>
     <string name="search_unknown_result">Inconnu</string>
     <string name="search_person_content_description">person profil</string>
     <string name="search_tv_content_description">tv poster</string>

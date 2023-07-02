@@ -87,6 +87,7 @@ class SearchFragment : BaseFragment() {
     private val searchResults = mutableStateListOf<SearchResult>()
     private var isLoaded by mutableStateOf(true)
     private lateinit var dateFormatter: DateTimeFormatter
+    var textFieldValue by mutableStateOf(TextFieldValue(""))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -176,7 +177,8 @@ class SearchFragment : BaseFragment() {
                         .fillMaxHeight()
                 ) {
                     Text(
-                        text = stringResource(id = R.string.search_no_result),
+                        text = if(textFieldValue.text.isBlank()) stringResource(id = R.string.search_indicator)
+                                else stringResource(id = R.string.search_no_result),
                         style = TextStyle(
                             fontSize = dimensionResource(id = R.dimen.body_regular).value.sp,
                             textAlign = TextAlign.Center,
@@ -225,7 +227,6 @@ class SearchFragment : BaseFragment() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun SearchTextField() {
-        var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
         TextField(
             value = textFieldValue,
             onValueChange = { newValue ->
