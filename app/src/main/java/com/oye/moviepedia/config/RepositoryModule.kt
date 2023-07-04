@@ -1,6 +1,8 @@
 package com.oye.moviepedia.config
 
+import com.oye.moviepedia.data.repositories.RemoteAuthRepository
 import com.oye.moviepedia.data.repositories.RemoteMovieRepository
+import com.oye.moviepedia.domain.repositories.AuthRepository
 import com.oye.moviepedia.domain.repositories.MovieRepository
 import dagger.Binds
 import dagger.Module
@@ -15,4 +17,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun provideMovieRepository(repository: RemoteMovieRepository): MovieRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideAuthRepository(repository: RemoteAuthRepository): AuthRepository
 }

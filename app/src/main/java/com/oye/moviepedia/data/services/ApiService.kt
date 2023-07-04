@@ -1,17 +1,21 @@
 package com.oye.moviepedia.data.services
 
+import com.oye.moviepedia.data.dto.AccountDetailDto
 import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.GenreResultDto
 import com.oye.moviepedia.data.dto.ListMovieResultDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
+import com.oye.moviepedia.data.dto.SessionDto
+import com.oye.moviepedia.data.dto.TokenDto
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.time.LocalDate
-import java.util.Date
+import retrofit2.http.POST
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Field
 
 interface ApiService {
 
@@ -45,5 +49,21 @@ interface ApiService {
 
     @GET("movie/{id}/videos?language=fr-FR")
     fun getMovieTrailers(@Path("id") id: Int): Call<MovieTrailerDto>
+
+    @GET("authentication/token/new")
+    fun getRequestToken(): Call<TokenDto>
+
+    @POST("authentication/session/new")
+    @FormUrlEncoded
+    fun createSession(
+        @Field("request_token") requestToken: String,
+    ): Call<SessionDto>
+
+    @POST("account/{account_id}")
+    @FormUrlEncoded
+    fun getAccountDetails(
+        @Field("session_id") sessionId: String,
+        @Path("account_id") id: Int,
+    ): Call<AccountDetailDto>
 
 }
