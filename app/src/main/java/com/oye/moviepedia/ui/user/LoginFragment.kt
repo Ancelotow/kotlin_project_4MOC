@@ -1,6 +1,5 @@
 package com.oye.moviepedia.ui.user
 
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -17,7 +16,7 @@ import androidx.lifecycle.Observer
 import com.oye.moviepedia.databinding.FragmentLoginBinding
 import com.oye.moviepedia.domain.uses_cases.AuthDataError
 import com.oye.moviepedia.domain.uses_cases.AuthError
-import com.oye.moviepedia.domain.uses_cases.AuthSuccess
+import com.oye.moviepedia.domain.uses_cases.AuthTokenSuccess
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,9 +27,9 @@ class LoginFragment: Fragment() {
     private val binding get() = _binding!!
     private var userFragment: UserFragment? = null
     private var approvedRequestToken: String? = null
+    private var sessionId: String? = null
     private var isAuthenticated = false
-
-
+    private var isSessionId = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,42 +48,44 @@ class LoginFragment: Fragment() {
             Shader.TileMode.CLAMP
         )
 
-        val login = binding.usernameEditText
-        val password = binding.passwordEditText
         val loginButton = binding.loginButton
 
         loginButton.setOnClickListener {
-            loginButton.setOnClickListener {
-                val username = login.text.toString()
-                val password = password.text.toString()
-
-                viewModel.authState.observe(viewLifecycleOwner, Observer { authState ->
-                    when (authState) {
-                        is AuthSuccess -> {
-                            val token = authState.token
-                            if (token != null) {
-                                authenticateWithToken(token)
-                                approvedRequestToken = token
-                                isAuthenticated = true
-                                Log.d("log", "dans model")
-
-                            }  else {
-                                Log.d("Token erreur", "erreur 1")
+            viewModel.authState.observe(viewLifecycleOwner, Observer { authState ->
+                when (authState) {
+                    is AuthTokenSuccess -> {
+                        val token = authState.token
+                        if (!isAuthenticated) {
+                            authenticateWithToken(token)
+                            approvedRequestToken = token
+                            isAuthenticated = true
+                            Log.d("log", "debut approvedRequestToken : $approvedRequestToken")
+                        }  else {
+                            if(!isSessionId){
+                                viewModel.createSession(approvedRequestToken ?: "")
+                                viewModel.sessionData.observe(viewLifecycleOwner, Observer { session ->
+                                    if (!session.isNullOrEmpty()) {
+                                        Log.d("log", "SESSION ID: $session")
+                                        sessionId = session
+                                        isSessionId = true
+                                    }
+                                    Log.d("log", "SESSION ID: $sessionId")
+                                })
+                                isSessionId = true
                             }
                         }
-                        is AuthDataError -> {
-                            Log.e("DATA ERROR", authState.ex.message)
-                        }
-                        is AuthError -> {
-                            Log.e("ERROR", authState.ex.message!!)
-                        }
-                        else -> {
-                            // Handle other cases if needed
-                        }
                     }
-                })
-
-            }
+                    is AuthDataError -> {
+                        Log.e("DATA ERROR", authState.ex.message)
+                    }
+                    is AuthError -> {
+                        Log.e("ERROR", authState.ex.message!!)
+                    }
+                    else -> {
+                        // Handle other cases if needed
+                    }
+                }
+            })
         }
 
 
@@ -93,19 +94,9 @@ class LoginFragment: Fragment() {
 
     private fun authenticateWithToken(requestToken: String) {
         val authenticationUrl = "https://www.themoviedb.org/authenticate/$requestToken"
-
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authenticationUrl))
         startActivity(intent)
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d("log", "avant is authenticated")
-        if (resultCode == RESULT_OK && isAuthenticated) {
-            Log.d("log", "dans is authenticated")
-            approvedRequestToken?.let { viewModel.createSession(it) }
-        }
-    }
-
 
 
 }
