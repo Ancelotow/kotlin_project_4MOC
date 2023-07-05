@@ -1,11 +1,11 @@
 object SessionManager {
-    private var accountId: Int? = null
+    private var accountId: String? = null
 
     fun isLoggedIn(): Boolean {
         return accountId != null
     }
 
-    fun login(accountId: Int) {
+    fun login(accountId: String) {
         this.accountId = accountId
     }
 
@@ -13,7 +13,7 @@ object SessionManager {
         this.accountId = null
     }
 
-    fun getAccountId(): Int? {
+    fun getAccountId(): String? {
         return accountId
     }
 }

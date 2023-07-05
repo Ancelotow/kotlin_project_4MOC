@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentLoginBinding
 import com.oye.moviepedia.domain.uses_cases.AuthDataError
 import com.oye.moviepedia.domain.uses_cases.AuthError
@@ -27,9 +28,9 @@ class LoginFragment: Fragment() {
     private val binding get() = _binding!!
     private var userFragment: UserFragment? = null
     private var approvedRequestToken: String? = null
-    private var sessionId: String? = null
+    private var accountId: String? = null
     private var isAuthenticated = false
-    private var isSessionId = false
+    private var isAccountId = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,19 +60,19 @@ class LoginFragment: Fragment() {
                             authenticateWithToken(token)
                             approvedRequestToken = token
                             isAuthenticated = true
-                            Log.d("log", "debut approvedRequestToken : $approvedRequestToken")
+                            Log.d("log", "Approved Request Token : $approvedRequestToken")
                         }  else {
-                            if(!isSessionId){
-                                viewModel.createSession(approvedRequestToken ?: "")
-                                viewModel.sessionData.observe(viewLifecycleOwner, Observer { session ->
-                                    if (!session.isNullOrEmpty()) {
-                                        Log.d("log", "SESSION ID: $session")
-                                        sessionId = session
-                                        isSessionId = true
+                            if(!isAccountId){
+                                viewModel.getAccountId(approvedRequestToken ?: "")
+                                viewModel.authData.observe(viewLifecycleOwner, Observer { auth ->
+                                    if (!auth.isNullOrEmpty()) {
+                                        accountId = auth
+                                        isAccountId = true
+                                        Log.d("log", "ACCOUNT ID: $accountId")
+                                        SessionManager.login(accountId!!)
+                                        navigateToUserFragment()
                                     }
-                                    Log.d("log", "SESSION ID: $sessionId")
                                 })
-                                isSessionId = true
                             }
                         }
                     }
@@ -93,10 +94,17 @@ class LoginFragment: Fragment() {
     }
 
     private fun authenticateWithToken(requestToken: String) {
-        val authenticationUrl = "https://www.themoviedb.org/authenticate/$requestToken"
+        val authenticationUrl = "https://www.themoviedb.org/auth/access?request_token=$requestToken"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authenticationUrl))
         startActivity(intent)
     }
 
+    private fun navigateToUserFragment() {
+        userFragment?.let { parentFragment ->
+            parentFragment.childFragmentManager.beginTransaction()
+                .replace(R.id.container, UserFragment())
+                .commit()
+        }
+    }
 
 }

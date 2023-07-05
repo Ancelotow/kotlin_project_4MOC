@@ -1,6 +1,7 @@
 package com.oye.moviepedia.data.dto
 
 data class AuthDto(
-    val token: TokenDto,
-    val session: SessionDto
+    val success: Boolean,
+    val account_id: String,
+    val access_token: String,
 )

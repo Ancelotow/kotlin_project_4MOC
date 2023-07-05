@@ -1,11 +1,12 @@
 package com.oye.moviepedia.ui.user
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.oye.moviepedia.domain.uses_cases.AuthSessionSuccess
 import com.oye.moviepedia.domain.uses_cases.AuthState
+import com.oye.moviepedia.domain.uses_cases.AuthSuccess
 import com.oye.moviepedia.domain.uses_cases.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class LoginViewModel @Inject constructor(
     private val _authState = MutableLiveData<AuthState>()
     val authState = _authState
 
-    val sessionData = MutableLiveData<String>()
+    val authData = MutableLiveData<String>()
 
     init {
         getRequestToken()
@@ -33,23 +34,19 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun createSession(request_token: String) {
+    fun getAccountId(requestToken: String){
         viewModelScope.launch {
-            useCaseAuth.createSession(request_token).collect { authState ->
+            useCaseAuth.getAccountId(requestToken).collect { authState ->
                 _authState.value = authState
-                if (authState is AuthSessionSuccess) {
-                    val sessionDto = authState.session
-                    if (sessionDto != null) {
-                        sessionData.value = sessionDto.session_id
-                        Log.d("log", "dans view model : ${sessionData.value}")
+                if (authState is AuthSuccess) {
+                    val authDto = authState.auth
+                    if (authDto != null) {
+                        authData.value = authDto.account_id
+                        Log.d("log", "account ID dans view model : ${authData.value}")
                     } else {
                     }
                 }
             }
         }
     }
-
-    /*fun getAccountDetails(sessionId: String, accountId: Int): MutableLiveData<AccountDetailDto> {
-        return authRepository.getAccountDetails(sessionId, accountId)
-    }*/
 }

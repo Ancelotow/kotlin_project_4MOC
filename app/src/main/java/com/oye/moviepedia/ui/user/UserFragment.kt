@@ -31,8 +31,8 @@ class UserFragment : Fragment() {
             .commit()
     }
 
-    private fun showProfileView(accountId: Int?) {
-        val profileFragment = ProfileFragment.newInstance(accountId.toString())
+    private fun showProfileView(accountId: String?) {
+        val profileFragment = ProfileFragment.newInstance(accountId)
         childFragmentManager.beginTransaction()
             .replace(R.id.container, profileFragment)
             .commit()

@@ -2,7 +2,7 @@ package com.oye.moviepedia.data.data_sources.remote
 
 import android.util.Log
 import com.oye.moviepedia.data.data_sources.AuthDataSource
-import com.oye.moviepedia.data.dto.SessionDto
+import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.data.dto.TokenDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
@@ -20,17 +20,19 @@ class RemoteAuthDataSource @Inject constructor() : AuthDataSource {
             Log.d("log", "token : ${response.body()}")
             return response.body()!!
         } else {
+            Log.d("log", "token dans ELSE : $response")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }
 
-    override fun createSession(requestToken: String): SessionDto {
-        val response = service.createSession(requestToken).execute()
+    override fun getAccountId(requestToken: String): AuthDto {
+        val response = service.getAccountId(requestToken).execute()
+        Log.d("log", "RESPONSE GET ACCOUNT ID $response")
         if(response.isSuccessful) {
-            Log.d("log", "id session dans IF: ${response.body()}")
+            Log.d("log", "ACCOUNT ID dans IF: ${response.body()}")
             return response.body()!!
         } else {
-            Log.d("log", "id session dans ELSE : ${response.body()}")
+            Log.d("log", "id account dans ELSE : ${response.body()}")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }
