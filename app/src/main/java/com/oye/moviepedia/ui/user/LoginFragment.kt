@@ -65,11 +65,11 @@ class LoginFragment: Fragment() {
                             if(!isAccountId){
                                 viewModel.getAccountId(approvedRequestToken ?: "")
                                 viewModel.authData.observe(viewLifecycleOwner, Observer { auth ->
-                                    if (!auth.isNullOrEmpty()) {
-                                        accountId = auth
+                                    if (auth.success) {
+                                        accountId = auth.account_id
                                         isAccountId = true
                                         Log.d("log", "ACCOUNT ID: $accountId")
-                                        SessionManager.login(accountId!!)
+                                        SessionManager.login(auth)
                                         navigateToUserFragment()
                                     }
                                 })

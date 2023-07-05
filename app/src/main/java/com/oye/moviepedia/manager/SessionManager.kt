@@ -1,19 +1,26 @@
+import android.util.Log
+import com.oye.moviepedia.data.dto.AuthDto
+
 object SessionManager {
-    private var accountId: String? = null
+    private var auth: AuthDto = AuthDto(false)
 
     fun isLoggedIn(): Boolean {
-        return accountId != null
+        return this.auth.account_id != null
     }
 
-    fun login(accountId: String) {
-        this.accountId = accountId
+    fun login(authData: AuthDto) {
+        this.auth.account_id = authData.account_id
+        this.auth.access_token = authData.access_token
+        this.auth.success = authData.success
     }
 
     fun logout() {
-        this.accountId = null
+        this.auth.account_id  = null
+        this.auth.access_token = null
+        this.auth.success = false
     }
 
-    fun getAccountId(): String? {
-        return accountId
+    fun getAuth(): AuthDto {
+        return auth
     }
 }

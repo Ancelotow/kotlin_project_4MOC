@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
+import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.databinding.FragmentProfileBinding
 import com.oye.moviepedia.domain.uses_cases.LikedMovieDataError
 import com.oye.moviepedia.domain.uses_cases.LikedMovieError
@@ -28,6 +29,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
 
     private val viewModel: UserViewModel by viewModels()
     private var _binding: FragmentProfileBinding? = null
+    private var userFragment: UserFragment? = null
 
     private val binding get() = _binding!!
     private val movieList = ArrayList<ListMovieItem>(4).apply {
@@ -36,14 +38,17 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         }
     }
     private var accountId: String? = null
+    private var accesToken: String? = null
 
     companion object {
         private const val ARG_ACCOUNT_ID = "account_id"
+        private const val ARG_ACCESS_TOKEN = "access_token"
 
-        fun newInstance(accountId: String?): ProfileFragment {
+        fun newInstance(authData: AuthDto): ProfileFragment {
             val fragment = ProfileFragment()
             val args = Bundle()
-            args.putString(ARG_ACCOUNT_ID, accountId)
+            args.putString(ARG_ACCOUNT_ID, authData.account_id)
+            args.putString(ARG_ACCESS_TOKEN, authData.access_token)
             fragment.arguments = args
             return fragment
         }
@@ -53,6 +58,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
             accountId = it.getString(ARG_ACCOUNT_ID)
+            accesToken = it.getString(ARG_ACCESS_TOKEN)
         }
     }
 
@@ -79,9 +85,17 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
 
         movieList.ensureCapacity(4)
         initLikedMovies()
+
         val buttonAddPlaylist = binding.addButtonPlaylist
         buttonAddPlaylist.setOnClickListener {
             onAddButtonClick()
+        }
+
+        val logoutButton = binding.logoutButton
+        logoutButton.setOnClickListener {
+            //accesToken?.let { it1 -> viewModel.logout(it1) }
+            SessionManager.logout()
+            navigateToUserFragment()
         }
 
         return view
@@ -128,6 +142,14 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
     override fun onMovieCLick(movieId: Int) {
         //val action =
         //findNavController().navigate(action, extras)
+    }
+
+    private fun navigateToUserFragment() {
+        userFragment?.let { parentFragment ->
+            parentFragment.childFragmentManager.beginTransaction()
+                .replace(R.id.container, UserFragment())
+                .commitNow() // Utilisez commitNow() au lieu de commit()
+        }
     }
 
 }

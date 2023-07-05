@@ -7,8 +7,10 @@ import com.oye.moviepedia.data.dto.ListMovieResultDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
+import com.oye.moviepedia.data.dto.LogoutDto
 import com.oye.moviepedia.data.dto.TokenDto
 import retrofit2.Call
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -57,5 +59,11 @@ interface ApiService {
     fun getAccountId(
         @Field("request_token") requestToken: String,
     ): Call<AuthDto>
+
+    @DELETE("4/auth/access_token")
+    @FormUrlEncoded
+    fun logout(
+        @Field("access_token") access_token: String,
+    ): Call<LogoutDto>
 
 }

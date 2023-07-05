@@ -24,9 +24,13 @@
     <string name="search_tv_first_air">Première diffusion : %s</string>
     <string name="search_movie_release_date">Sortie le : %s</string>
 
-    <!-- User-->
+    <!-- ProfileFragment-->
     <string name="liked_new_movies">Films favoris</string>
     <string name="playlist_text_view">Playlist</string>
+    <string name="logout_button_text">Me deconnecter</string>
+
+
+    <!-- LoginFragment-->
     <string name="text_not_connected">Connectez-vous pour accéder à tous vos favoris et gérer vos playlists !</string>
     <string name="login_button_text">Me connecter</string>
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.domain.uses_cases.AuthState
 import com.oye.moviepedia.domain.uses_cases.AuthSuccess
 import com.oye.moviepedia.domain.uses_cases.AuthUseCase
@@ -20,7 +21,7 @@ class LoginViewModel @Inject constructor(
     private val _authState = MutableLiveData<AuthState>()
     val authState = _authState
 
-    val authData = MutableLiveData<String>()
+    val authData = MutableLiveData<AuthDto>()
 
     init {
         getRequestToken()
@@ -41,7 +42,7 @@ class LoginViewModel @Inject constructor(
                 if (authState is AuthSuccess) {
                     val authDto = authState.auth
                     if (authDto != null) {
-                        authData.value = authDto.account_id
+                        authData.value = authDto
                         Log.d("log", "account ID dans view model : ${authData.value}")
                     } else {
                     }
