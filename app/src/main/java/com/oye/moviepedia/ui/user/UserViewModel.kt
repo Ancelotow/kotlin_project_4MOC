@@ -12,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val useCaseLikedMovie: LikedMovieUseCase,
-) : ViewModel() {
+    ) : ViewModel() {
 
     private val _likedMoviesState = MutableLiveData<LikedMovieState>()
     val likedMoviesState = _likedMoviesState

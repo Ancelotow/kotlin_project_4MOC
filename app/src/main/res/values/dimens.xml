@@ -44,6 +44,10 @@
     <dimen name="search_person_size">68dp</dimen>
     <dimen name="search_image_size">30dp</dimen>
 
+    <!-- LoginFragment -->
+    <dimen name="title_app_text_size">24sp</dimen>
+    <dimen name="not_connected_text_size">24sp</dimen>
+
     <!-- Fonts size -->
     <dimen name="h1">24sp</dimen>
     <dimen name="h2">20sp</dimen>

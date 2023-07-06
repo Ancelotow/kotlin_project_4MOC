@@ -21,10 +21,10 @@ class RetrofitSingletonService private constructor() {
             .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
             .create()
         service = Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
+            .baseUrl("https://api.themoviedb.org/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(OkHttpClient.Builder().addInterceptor { chain ->
-                val request = chain.request().newBuilder().addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzZjQ2ZTkxNmIzMzU3NWI5YzkwYTIxOGIyZmM2ODBkMyIsInN1YiI6IjYxZmIxNWM0Y2I4MDI4MDA5MjFmMzkyZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.chNYMRN1RzO6hc-w_5mUE2vu8D_tsIWx8o8hRVf8_A8").build()
+                val request = chain.request().newBuilder().addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2YTY0ZTkyZGZkOGZiYzFiNGIyMTUxZDZmNjE0N2RmNiIsInN1YiI6IjY0YTE1MmIyOGMwYTQ4MDBhZTI0OGY4NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VBAr8Y4MNuG7ygqfqF6k_TCeFSliB2n-h74IUvc3Rj8").build()
                 chain.proceed(request)
             }.build())
             .build()
