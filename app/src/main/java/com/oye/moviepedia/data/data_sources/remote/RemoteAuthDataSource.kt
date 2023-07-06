@@ -17,22 +17,17 @@ class RemoteAuthDataSource @Inject constructor() : AuthDataSource {
     override fun getRequestToken(): TokenDto {
         val response = service.getRequestToken().execute()
         if(response.isSuccessful) {
-            Log.d("log", "token : ${response.body()}")
             return response.body()!!
         } else {
-            Log.d("log", "token dans ELSE : $response")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }
 
     override fun getAccountId(requestToken: String): AuthDto {
         val response = service.getAccountId(requestToken).execute()
-        Log.d("log", "RESPONSE GET ACCOUNT ID $response")
         if(response.isSuccessful) {
-            Log.d("log", "ACCOUNT ID dans IF: ${response.body()}")
             return response.body()!!
         } else {
-            Log.d("log", "id account dans ELSE : ${response.body()}")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }

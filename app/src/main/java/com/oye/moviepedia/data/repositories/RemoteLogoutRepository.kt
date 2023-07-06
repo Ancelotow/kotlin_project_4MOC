@@ -10,7 +10,6 @@ class RemoteLogoutRepository @Inject constructor(
 ) : LogoutRepository {
 
     override fun logout(access_token: String): Boolean {
-        Log.d("log", "dans remote repository : $access_token")
         val response = dataSource.logout(access_token)
         return response;
     }

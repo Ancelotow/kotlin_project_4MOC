@@ -17,7 +17,6 @@ class LogoutUseCase @Inject constructor(private val repository: LogoutRepository
         return flow {
             emit(LogoutLoading)
             try {
-                Log.d("log", "dans useCase : $access_token")
                 emit(LogoutSuccess(repository.logout(access_token)))
             } catch (e: DataException) {
                 emit(LogoutDataError(e))

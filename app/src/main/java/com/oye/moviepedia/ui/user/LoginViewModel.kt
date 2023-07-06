@@ -43,7 +43,6 @@ class LoginViewModel @Inject constructor(
                     val authDto = authState.auth
                     if (authDto != null) {
                         authData.value = authDto
-                        Log.d("log", "account ID dans view model : ${authData.value}")
                     } else {
                     }
                 }

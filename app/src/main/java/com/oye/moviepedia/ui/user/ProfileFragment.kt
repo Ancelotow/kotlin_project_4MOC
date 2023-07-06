@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -29,7 +30,6 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
 
     private val viewModel: UserViewModel by viewModels()
     private var _binding: FragmentProfileBinding? = null
-    private var userFragment: UserFragment? = null
 
     private val binding get() = _binding!!
     private val movieList = ArrayList<ListMovieItem>(4).apply {
@@ -38,7 +38,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         }
     }
     private var accountId: String? = null
-    private var accesToken: String? = null
+    private var accessToken: String? = null
 
     companion object {
         private const val ARG_ACCOUNT_ID = "account_id"
@@ -58,7 +58,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
             accountId = it.getString(ARG_ACCOUNT_ID)
-            accesToken = it.getString(ARG_ACCESS_TOKEN)
+            accessToken = it.getString(ARG_ACCESS_TOKEN)
         }
     }
 
@@ -93,9 +93,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
 
         val logoutButton = binding.logoutButton
         logoutButton.setOnClickListener {
-            //accesToken?.let { it1 -> viewModel.logout(it1) }
-            SessionManager.logout()
-            navigateToUserFragment()
+            showLogoutConfirmationDialog()
         }
 
         return view
@@ -144,12 +142,33 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         //findNavController().navigate(action, extras)
     }
 
-    private fun navigateToUserFragment() {
-        userFragment?.let { parentFragment ->
-            parentFragment.childFragmentManager.beginTransaction()
-                .replace(R.id.container, UserFragment())
-                .commitNow() // Utilisez commitNow() au lieu de commit()
-        }
+    private fun navigateToLoginFragment() {
+        val parentFragmentManager = parentFragmentManager
+        val loginFragment = LoginFragment()
+
+        parentFragmentManager.beginTransaction()
+            .remove(this)
+            .commitAllowingStateLoss()
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, loginFragment)
+            .commit()
     }
+
+    private fun showLogoutConfirmationDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Déconnexion")
+        alertDialogBuilder.setMessage("Êtes-vous sûr de vouloir vous déconnecter ?")
+        alertDialogBuilder.setPositiveButton("Déconnexion") { dialog, which ->
+            //accessToken?.let { it1 -> viewModel.logout(it1) }
+            SessionManager.logout()
+            navigateToLoginFragment()
+        }
+        alertDialogBuilder.setNegativeButton("Annuler", null)
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+
 
 }

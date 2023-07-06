@@ -1,5 +1,6 @@
 package com.oye.moviepedia.ui.user
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -10,9 +11,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.oye.moviepedia.MainActivity
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentLoginBinding
 import com.oye.moviepedia.domain.uses_cases.AuthDataError
@@ -30,7 +33,6 @@ class LoginFragment: Fragment() {
     private var approvedRequestToken: String? = null
     private var accountId: String? = null
     private var isAuthenticated = false
-    private var isAccountId = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,28 +64,26 @@ class LoginFragment: Fragment() {
                             isAuthenticated = true
                             Log.d("log", "Approved Request Token : $approvedRequestToken")
                         }  else {
-                            if(!isAccountId){
-                                viewModel.getAccountId(approvedRequestToken ?: "")
-                                viewModel.authData.observe(viewLifecycleOwner, Observer { auth ->
-                                    if (auth.success) {
-                                        accountId = auth.account_id
-                                        isAccountId = true
-                                        Log.d("log", "ACCOUNT ID: $accountId")
-                                        SessionManager.login(auth)
-                                        navigateToUserFragment()
-                                    }
-                                })
-                            }
+                            viewModel.getAccountId(approvedRequestToken ?: "")
+                            viewModel.authData.observe(viewLifecycleOwner, Observer { auth ->
+                                if (auth.success) {
+                                    accountId = auth.account_id
+                                    Log.d("log", "ACCOUNT ID: $accountId")
+                                    SessionManager.login(auth)
+                                    navigateToUserFragment()
+                                }
+                            })
                         }
                     }
                     is AuthDataError -> {
                         Log.e("DATA ERROR", authState.ex.message)
                     }
                     is AuthError -> {
+                        isAuthenticated = false
+                        showLogoutConfirmationDialog()
                         Log.e("ERROR", authState.ex.message!!)
                     }
                     else -> {
-                        // Handle other cases if needed
                     }
                 }
             })
@@ -106,5 +106,22 @@ class LoginFragment: Fragment() {
                 .commit()
         }
     }
+
+    private fun showLogoutConfirmationDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Connexion")
+        alertDialogBuilder.setMessage("Veuillez autoriser une authentification tierce pour accéder à votre espace")
+        alertDialogBuilder.setNegativeButton("Fermer") { dialog, _ ->
+            dialog.dismiss()
+            val activity = requireActivity()
+            if (activity is MainActivity && !activity.isFinishing()) {
+                activity.recreate()
+            }
+        }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+
 
 }
