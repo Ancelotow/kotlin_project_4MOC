@@ -61,6 +61,11 @@ class DetailsFragment: BaseFragment() {
         detailsViewModel.getMovie(args.movieId)
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.toolbar.title = ""
+    }
+
     private fun setupUI() {
         setupSupportActionBar(binding.toolbar)
         binding.toolbar.title = ""
