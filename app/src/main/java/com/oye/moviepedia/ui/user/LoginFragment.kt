@@ -69,6 +69,7 @@ class LoginFragment: Fragment() {
                                 if (auth.success) {
                                     accountId = auth.account_id
                                     Log.d("log", "ACCOUNT ID: $accountId")
+                                    Log.d("log", "ACCES TOKEN: ${auth.access_token}")
                                     SessionManager.login(auth)
                                     navigateToUserFragment()
                                 }

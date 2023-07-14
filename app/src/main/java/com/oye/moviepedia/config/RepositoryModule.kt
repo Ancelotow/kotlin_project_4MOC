@@ -3,9 +3,11 @@ package com.oye.moviepedia.config
 import com.oye.moviepedia.data.repositories.RemoteAuthRepository
 import com.oye.moviepedia.data.repositories.RemoteLogoutRepository
 import com.oye.moviepedia.data.repositories.RemoteMovieRepository
+import com.oye.moviepedia.data.repositories.RemotePlaylistRepository
 import com.oye.moviepedia.domain.repositories.AuthRepository
 import com.oye.moviepedia.domain.repositories.LogoutRepository
 import com.oye.moviepedia.domain.repositories.MovieRepository
+import com.oye.moviepedia.domain.repositories.PlaylistRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,4 +29,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun provideLogoutRepository(repository: RemoteLogoutRepository): LogoutRepository
+
+    @Binds
+    @Singleton
+    abstract fun providePlaylistRepository(repository: RemotePlaylistRepository): PlaylistRepository
 }

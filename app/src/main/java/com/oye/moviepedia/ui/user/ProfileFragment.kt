@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.databinding.FragmentProfileBinding
+import com.oye.moviepedia.domain.entities.Playlist
 import com.oye.moviepedia.domain.uses_cases.LikedMovieDataError
 import com.oye.moviepedia.domain.uses_cases.LikedMovieError
 import com.oye.moviepedia.domain.uses_cases.LikedMovieSuccess
@@ -37,8 +40,18 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
             add(ListMovieItem("", mutableListOf()))
         }
     }
+
+    private val playlistList = ArrayList<ListPlaylistItem>(4).apply {
+        repeat(4) {
+            add(ListPlaylistItem(mutableListOf()))
+        }
+    }
+
     private var accountId: String? = null
     private var accessToken: String? = null
+
+    private lateinit var validateButton: Button
+    private lateinit var editText: EditText
 
     companion object {
         private const val ARG_ACCOUNT_ID = "account_id"
@@ -70,6 +83,9 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        validateButton = binding.validateButton
+        editText = binding.editTextPlaylist
+
         val title = binding.appTitle
         val paint = title.paint
         val width = paint.measureText(title.text.toString())
@@ -83,17 +99,32 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
 
+        val recyclerViewPlaylist = binding.recyclerPlaylist
+        val playlistLinearLayoutManager = LinearLayoutManager(container?.context)
+        recyclerViewPlaylist.layoutManager = playlistLinearLayoutManager
+
         movieList.ensureCapacity(4)
+        playlistList.ensureCapacity(4)
         initLikedMovies()
+        initPlaylist()
 
         val buttonAddPlaylist = binding.addButtonPlaylist
         buttonAddPlaylist.setOnClickListener {
+            Log.d("log", "on click avant fonction")
             onAddButtonClick()
         }
 
         val logoutButton = binding.logoutButton
         logoutButton.setOnClickListener {
             showLogoutConfirmationDialog()
+        }
+
+        validateButton.setOnClickListener {
+            val playlistName = editText.text.toString()
+            Log.d("log", "access token : $accessToken")
+            accessToken?.let { it1 -> viewModel.createPlaylist(it1, playlistName) }
+            editText.isVisible = false
+            validateButton.isVisible = false
         }
 
         return view
@@ -123,14 +154,30 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         }
     }
 
+    private fun initPlaylist(){
+        val exemple_playlists = listOf(
+            Playlist("Playlist 1", 3),
+            Playlist("Playlist 2", 2),
+            Playlist("Playlist 3", 2),
+            Playlist("Playlist 4", 2),
+        )
+        val playlists = exemple_playlists.map { e -> PlaylistItem(e.name, e.nbMovies.toString()) }
+            .toMutableList()
+        playlistList.add(ListPlaylistItem(playlists))
+        binding.recyclerPlaylist.adapter = ListPlaylistListAdapter(playlistList, activity)
+    }
+
     private fun onAddButtonClick() {
-        val editText = binding.editTextPlaylist
+        Log.d("log", "on click dans fonction")
         if (!editText.isVisible) {
             editText.isVisible = true
+            validateButton.isVisible = true
         } else {
             editText.isVisible = false
+            validateButton.isVisible = false
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -160,7 +207,6 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         alertDialogBuilder.setTitle("Déconnexion")
         alertDialogBuilder.setMessage("Êtes-vous sûr de vouloir vous déconnecter ?")
         alertDialogBuilder.setPositiveButton("Déconnexion") { dialog, which ->
-            //accessToken?.let { it1 -> viewModel.logout(it1) }
             SessionManager.logout()
             navigateToLoginFragment()
         }

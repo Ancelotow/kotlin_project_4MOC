@@ -48,6 +48,11 @@
     <dimen name="title_app_text_size">24sp</dimen>
     <dimen name="not_connected_text_size">24sp</dimen>
 
+    <!-- Item playlist -->
+    <dimen name="playlist_name">25sp</dimen>
+    <dimen name="playlist_nb_movie">15sp</dimen>
+    <dimen name="playlist_text">20sp</dimen>
+
     <!-- Fonts size -->
     <dimen name="h1">24sp</dimen>
     <dimen name="h2">20sp</dimen>

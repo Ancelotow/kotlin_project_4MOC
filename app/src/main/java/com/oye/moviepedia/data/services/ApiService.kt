@@ -8,6 +8,7 @@ import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
 import com.oye.moviepedia.data.dto.LogoutDto
+import com.oye.moviepedia.data.dto.PlaylistDto
 import com.oye.moviepedia.data.dto.TokenDto
 import retrofit2.Call
 import retrofit2.http.DELETE
@@ -17,6 +18,7 @@ import retrofit2.http.Query
 import retrofit2.http.POST
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Field
+import retrofit2.http.Header
 
 interface ApiService {
 
@@ -65,5 +67,12 @@ interface ApiService {
     fun logout(
         @Field("access_token") access_token: String,
     ): Call<LogoutDto>
+    @POST("4/list")
+    @FormUrlEncoded
+    fun createList(
+        @Header("Authorization") authorization: String,
+        @Field("name") listName: String,
+        @Field("iso_639_1") iso: String,
+    ): Call<PlaylistDto>
 
 }
