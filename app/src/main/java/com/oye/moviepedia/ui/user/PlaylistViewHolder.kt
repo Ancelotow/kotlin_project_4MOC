@@ -22,14 +22,20 @@ class PlaylistViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
 class PlaylistListAdapter(
     val playlists: MutableList<PlaylistItem>,
-    val activity: Activity?
+    val activity: Activity?,
+    private val listener: PlaylistListener
+
 ) : RecyclerView.Adapter<PlaylistViewHolder>() {
+
+    interface PlaylistListener {
+        fun onPlaylistCLick(playlistId: Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.item_playlist, parent, false)
         return PlaylistViewHolder(view).listen { pos, type ->
-            // TODO: Aller vers le détail d'un film
+            listener.onPlaylistCLick(playlists[pos].id)
             print("Go to playlist detail")
         }
     }
@@ -52,6 +58,7 @@ class PlaylistListAdapter(
 }
 
 data class PlaylistItem(
+    val id: Int,
     val name: String,
     val number_movies: String
 )

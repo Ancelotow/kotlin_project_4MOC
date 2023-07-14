@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.databinding.FragmentProfileBinding
-import com.oye.moviepedia.domain.entities.Playlist
+import com.oye.moviepedia.domain.uses_cases.GetListsDataError
+import com.oye.moviepedia.domain.uses_cases.GetListsError
+import com.oye.moviepedia.domain.uses_cases.GetListsSuccess
 import com.oye.moviepedia.domain.uses_cases.LikedMovieDataError
 import com.oye.moviepedia.domain.uses_cases.LikedMovieError
 import com.oye.moviepedia.domain.uses_cases.LikedMovieSuccess
@@ -29,7 +31,7 @@ import com.oye.moviepedia.ui.home.MovieListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
+class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistListAdapter.PlaylistListener {
 
     private val viewModel: UserViewModel by viewModels()
     private var _binding: FragmentProfileBinding? = null
@@ -73,6 +75,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
             accountId = it.getString(ARG_ACCOUNT_ID)
             accessToken = it.getString(ARG_ACCESS_TOKEN)
         }
+        viewModel.init(accessToken, accountId)
     }
 
     override fun onCreateView(
@@ -110,7 +113,6 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
 
         val buttonAddPlaylist = binding.addButtonPlaylist
         buttonAddPlaylist.setOnClickListener {
-            Log.d("log", "on click avant fonction")
             onAddButtonClick()
         }
 
@@ -121,7 +123,6 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
 
         validateButton.setOnClickListener {
             val playlistName = editText.text.toString()
-            Log.d("log", "access token : $accessToken")
             accessToken?.let { it1 -> viewModel.createPlaylist(it1, playlistName) }
             editText.isVisible = false
             validateButton.isVisible = false
@@ -155,16 +156,27 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
     }
 
     private fun initPlaylist(){
-        val exemple_playlists = listOf(
-            Playlist("Playlist 1", 3),
-            Playlist("Playlist 2", 2),
-            Playlist("Playlist 3", 2),
-            Playlist("Playlist 4", 2),
-        )
-        val playlists = exemple_playlists.map { e -> PlaylistItem(e.name, e.nbMovies.toString()) }
-            .toMutableList()
-        playlistList.add(ListPlaylistItem(playlists))
-        binding.recyclerPlaylist.adapter = ListPlaylistListAdapter(playlistList, activity)
+        viewModel.getListsState.observe(viewLifecycleOwner) {
+            when (it) {
+                is GetListsSuccess -> {
+                    val playlists = it.lists.map { e -> PlaylistItem(e.id, e.name, e.number_of_items.toString() + "films") }
+                        .toMutableList()
+                    playlistList[0] = ListPlaylistItem(playlists)
+                    binding.recyclerPlaylist.adapter = ListPlaylistListAdapter(playlistList, activity, this)
+                }
+
+                is GetListsDataError -> {
+                    Log.e("DATA ERROR", it.ex.message)
+                }
+
+                is GetListsError -> {
+                    Log.e("ERROR", it.ex.message!!)
+                }
+
+                else -> {
+                }
+            }
+        }
     }
 
     private fun onAddButtonClick() {
@@ -215,6 +227,13 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener {
         alertDialog.show()
     }
 
+    override fun onPlaylistCLick(playlistId: Int) {
+        Log.d("log", "playlist id : $playlistId")
+        val detailPlaylistFragment = DetailPlaylistFragment.newInstance(playlistId, accessToken!!)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.container, detailPlaylistFragment)
+            .commit()
+    }
 
 
 }

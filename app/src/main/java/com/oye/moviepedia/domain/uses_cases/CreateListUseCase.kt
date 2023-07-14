@@ -27,6 +27,6 @@ class CreateListUseCase @Inject constructor(private val repository: PlaylistRepo
 
 sealed class CreateListState
 object CreateListLoading: CreateListState()
-data class CreateListSuccess(val status: Boolean): CreateListState()
+data class CreateListSuccess(val listId: Int): CreateListState()
 data class CreateListDataError(val ex: DataException): CreateListState()
 data class CreateListError(val ex: Exception): CreateListState()

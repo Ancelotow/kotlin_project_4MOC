@@ -2,8 +2,10 @@ package com.oye.moviepedia.data.services
 
 import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.data.dto.CreditsResultDto
+import com.oye.moviepedia.data.dto.DetailPlaylistDto
 import com.oye.moviepedia.data.dto.GenreResultDto
 import com.oye.moviepedia.data.dto.ListMovieResultDto
+import com.oye.moviepedia.data.dto.ListPlaylistDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
@@ -74,5 +76,18 @@ interface ApiService {
         @Field("name") listName: String,
         @Field("iso_639_1") iso: String,
     ): Call<PlaylistDto>
+
+    @GET("4/account/{account_object_id}/lists")
+    fun getLists(
+        @Header("Authorization") authorization: String,
+        @Path("account_object_id") accountId: String
+    ): Call<ListPlaylistDto>
+
+    @GET("4/list/{list_id}")
+    fun getPlaylistDetail(
+        @Header("Authorization") authorization: String,
+        @Path("list_id") id: Int
+    ): Call<DetailPlaylistDto>
+
 
 }
