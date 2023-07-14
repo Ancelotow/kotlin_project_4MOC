@@ -14,23 +14,5 @@ data class Movie(
     val releaseDate: LocalDate,
     val isAdult: Boolean,
     val director: String
-) {
-    companion object {
-        fun fromMovieDto(movie: MovieDto, director: String): Movie {
-            return Movie(
-                id = movie.id,
-                title = movie.title,
-                originalTitle = movie.original_title,
-                description = movie.overview,
-                noteAverage = movie.vote_average,
-                noteCount = movie.vote_count,
-                isAdult = movie.adult,
-                releaseDate = movie.release_date,
-                posterUrl = "https://www.themoviedb.org/t/p/original/${movie.poster_path}",
-                director = director
-            )
-
-        }
-    }
-}
+)
 
