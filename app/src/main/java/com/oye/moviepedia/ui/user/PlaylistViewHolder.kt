@@ -1,19 +1,23 @@
 package com.oye.moviepedia.ui.user
 
 import android.app.Activity
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oye.moviepedia.R
+import com.squareup.picasso.Picasso
 
 class PlaylistViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-
+    private val poster = v.findViewById<ImageView>(R.id.posterPlaylist)
     private val title = v.findViewById<TextView>(R.id.text_playlist_name)
     private val number_movies = v.findViewById<TextView>(R.id.text_number_of_movies)
 
     fun setItem(item: PlaylistItem) {
+        poster.setImageDrawable(item.urlPoster)
         title.text = item.name
         number_movies.text = item.number_movies
     }
@@ -59,6 +63,7 @@ class PlaylistListAdapter(
 
 data class PlaylistItem(
     val id: Int,
+    val urlPoster: Drawable,
     val name: String,
     val number_movies: String
 )

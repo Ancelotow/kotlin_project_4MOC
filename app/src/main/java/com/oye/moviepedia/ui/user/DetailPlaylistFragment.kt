@@ -5,37 +5,30 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.snapshots.Snapshot.Companion.observe
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentDetailPlaylistBinding
 import com.oye.moviepedia.domain.uses_cases.ListDetailDataError
 import com.oye.moviepedia.domain.uses_cases.ListDetailError
 import com.oye.moviepedia.domain.uses_cases.ListDetailSuccess
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsSuccess
-import com.oye.moviepedia.ui.home.ListMovieItem
-import com.oye.moviepedia.ui.home.ListMovieListAdapter
-import com.oye.moviepedia.ui.home.MovieListAdapter
-import com.oye.moviepedia.ui.home.MovieItem
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.lifecycle.Observer
-import com.oye.moviepedia.domain.uses_cases.MovieDetailsState
+import androidx.recyclerview.widget.GridLayoutManager
+import com.oye.moviepedia.data.dto.AuthDto
+import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
+import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 
 
 @AndroidEntryPoint
-class DetailPlaylistFragment : Fragment(), MovieListAdapter.MovieListener{
+class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListener{
 
     private val viewModel: DetailPlaylistViewModel by viewModels()
     private var _binding: FragmentDetailPlaylistBinding? = null
 
     private val binding get() = _binding!!
-    private val movieList = ArrayList<ListMovieItem>(4).apply {
-        repeat(4) {
-            add(ListMovieItem("", mutableListOf()))
-        }
-    }
+    private val movieList = ArrayList<ListMovieItem>()
+
 
     private var playlistId: Int = 0
     private var accessToken: String? = null
@@ -74,18 +67,24 @@ class DetailPlaylistFragment : Fragment(), MovieListAdapter.MovieListener{
 
 
         val recyclerView = binding.moviesRecyclerView
-        val linearLayoutManager = LinearLayoutManager(container?.context)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        recyclerView.layoutManager = linearLayoutManager
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+        recyclerView.layoutManager = gridLayoutManager
 
-        movieList.ensureCapacity(4)
         initMovies()
 
 
+
+        val backButton = binding.backButton
+        backButton.setOnClickListener {
+            val authData = SessionManager.getAuth()
+            showProfileView(authData)
+        }
+
         val deleteButton = binding.deleteButton
         deleteButton.setOnClickListener {
-            //showDeleteConfirmationDialog()
+            // Action lorsque l'icône de suppression est cliquée
         }
+
 
         return view
     }
@@ -94,13 +93,14 @@ class DetailPlaylistFragment : Fragment(), MovieListAdapter.MovieListener{
         viewModel.playlistState.observe(viewLifecycleOwner) {
             when (it) {
                 is ListDetailSuccess -> {
-                    val movies = mutableListOf<MovieItem>()
-                    for (movie in it.playlistDetail.object_ids.keys) {
-                        val movieId = movie.substringAfter(":")
-                        Log.d("log", "detail : $movieId")
-                        viewModel.getMovie(movieId.toInt())
+                    val movieIds = it.playlistDetail.object_ids.keys.toList()
+                    var movieDetailsReceived = 0
+                    for (movieId in movieIds) {
+                        val id = movieId.substringAfter(":").toInt()
+                        viewModel.getMovie(id)
 
-                        viewModel.movieDetails.observe(viewLifecycleOwner, Observer { movieDetails: MovieDetailsState ->
+                        val movies = mutableListOf<MovieItem>()  // Réinitialiser la liste à chaque itération
+                        viewModel.movieDetails.observe(viewLifecycleOwner) { movieDetails ->
                             when (movieDetails) {
                                 is MovieDetailsSuccess -> {
                                     val movieItem = MovieItem(
@@ -110,23 +110,32 @@ class DetailPlaylistFragment : Fragment(), MovieListAdapter.MovieListener{
                                         movieDetails.movie.director
                                     )
                                     movies.add(movieItem)
-                                }
-                                else -> {}
-                            }
-                        })
-                    }
-                    movieList[0] = ListMovieItem(getString(R.string.liked_new_movies), movies)
-                    binding.moviesRecyclerView.adapter = ListMovieListAdapter(movieList, activity, this)
-                }
+                                    movieDetailsReceived++
 
+                                    if (movieDetailsReceived == movieIds.size) {
+                                        movieList.add(ListMovieItem(it.playlistDetail.name, movies))
+                                        binding.moviesRecyclerView.adapter = ListMovieInPlaylistListAdapter(movieList, activity, this)
+                                    }
+                                }
+                                is MovieDetailsDataError -> {
+                                    Log.e("DATA ERROR", movieDetails.ex.message!!)
+                                }
+                                is MovieDetailsError -> {
+                                    Log.e("ERROR", movieDetails.ex.message!!)
+                                }
+                                else -> {
+                                    Log.d("log", "detail dans else : ${movieDetails}")
+                                }
+                            }
+                        }
+                    }
+                }
                 is ListDetailDataError -> {
                     Log.e("DATA ERROR", it.ex.message)
                 }
-
                 is ListDetailError -> {
                     Log.e("ERROR", it.ex.message!!)
                 }
-
                 else -> {
                 }
             }
@@ -140,8 +149,16 @@ class DetailPlaylistFragment : Fragment(), MovieListAdapter.MovieListener{
     }
 
     override fun onMovieCLick(movieId: Int) {
+        Log.d("log", "movie id : $movieId")
         //val action =
         //findNavController().navigate(action, extras)
+    }
+
+    private fun showProfileView(authData: AuthDto) {
+        val profileFragment = ProfileFragment.newInstance(authData)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, profileFragment)
+            .commit()
     }
 
 

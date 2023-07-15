@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -159,7 +160,8 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
         viewModel.getListsState.observe(viewLifecycleOwner) {
             when (it) {
                 is GetListsSuccess -> {
-                    val playlists = it.lists.map { e -> PlaylistItem(e.id, e.name, e.number_of_items.toString() + "films") }
+                    val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid)
+                    val playlists = it.lists.map { e -> PlaylistItem(e.id, drawable!!, e.name, e.number_of_items.toString() + " films") }
                         .toMutableList()
                     playlistList[0] = ListPlaylistItem(playlists)
                     binding.recyclerPlaylist.adapter = ListPlaylistListAdapter(playlistList, activity, this)
@@ -230,10 +232,11 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
     override fun onPlaylistCLick(playlistId: Int) {
         Log.d("log", "playlist id : $playlistId")
         val detailPlaylistFragment = DetailPlaylistFragment.newInstance(playlistId, accessToken!!)
-        childFragmentManager.beginTransaction()
+        parentFragmentManager.beginTransaction()
             .replace(R.id.container, detailPlaylistFragment)
             .commit()
     }
+
 
 
 }
