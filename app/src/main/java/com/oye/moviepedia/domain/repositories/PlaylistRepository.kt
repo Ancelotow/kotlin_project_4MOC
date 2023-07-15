@@ -8,5 +8,6 @@ interface PlaylistRepository {
     fun createList(token: String, name: String): Int
     fun getLists(token: String, accountId: String): List<Playlist>
     fun getListDetail(token: String, listId: Int): DetailPlaylistDto
+    fun deletePlaylist(token: String, listId: Int): Boolean
 
     }

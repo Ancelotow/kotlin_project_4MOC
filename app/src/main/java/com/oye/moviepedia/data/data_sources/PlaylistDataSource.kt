@@ -7,8 +7,7 @@ interface PlaylistDataSource {
 
     fun createList(token: String, name: String): Int
     fun getLists(token: String, accountId: String): List<PlaylistDto>
-
     fun getListDetail(token: String, listId: Int): DetailPlaylistDto
-
+    fun deletePlaylist(token: String, listId: Int): Boolean
 
     }

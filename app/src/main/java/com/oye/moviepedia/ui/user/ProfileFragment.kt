@@ -161,7 +161,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
             when (it) {
                 is GetListsSuccess -> {
                     val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid)
-                    val playlists = it.lists.map { e -> PlaylistItem(e.id, drawable!!, e.name, e.number_of_items.toString() + " films") }
+                    val playlists = it.lists.map { e -> PlaylistItem(e.id, drawable!!, e.name, e.number_of_items.toString() + " film(s)") }
                         .toMutableList()
                     playlistList[0] = ListPlaylistItem(playlists)
                     binding.recyclerPlaylist.adapter = ListPlaylistListAdapter(playlistList, activity, this)

@@ -33,4 +33,9 @@ class RemotePlaylistRepository @Inject constructor(
         return detail;
     }
 
+    override fun deletePlaylist(token: String, listId: Int): Boolean {
+        val success = dataSource.deletePlaylist(token, listId)
+        return success;
+    }
+
 }

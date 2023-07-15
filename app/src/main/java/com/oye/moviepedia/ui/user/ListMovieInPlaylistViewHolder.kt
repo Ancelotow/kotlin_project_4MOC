@@ -17,11 +17,9 @@ class ListMovieInPlaylistViewHolder(
     private val spanCount: Int
 ) : RecyclerView.ViewHolder(v) {
 
-    private val title = v.findViewById<TextView>(R.id.text_list_title)
     private val movies = v.findViewById<RecyclerView>(R.id.recycler_movies)
 
     fun setItem(item: ListMovieItem) {
-        title.text = item.title
         val gridLayoutManager = GridLayoutManager(itemView.context, spanCount)
         movies.layoutManager = gridLayoutManager
         movies.adapter = MovieInPlaylistListAdapter(item.movies, null, movieListener)
@@ -58,7 +56,6 @@ class ListMovieInPlaylistListAdapter(
 }
 
 data class ListMovieItem(
-    val title: String,
     val movies: MutableList<MovieItem>,
     val spanCount: Int = 3
 )

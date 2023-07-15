@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.oye.moviepedia.domain.interactors.DetailsInteractor
 import com.oye.moviepedia.domain.uses_cases.CreateListState
 import com.oye.moviepedia.domain.uses_cases.CreateListUseCase
+import com.oye.moviepedia.domain.uses_cases.DeletePlaylistState
+import com.oye.moviepedia.domain.uses_cases.DeletePlaylistUseCase
 import com.oye.moviepedia.domain.uses_cases.GetListsState
 import com.oye.moviepedia.domain.uses_cases.GetListsUseCase
 import com.oye.moviepedia.domain.uses_cases.LikedMovieState
@@ -22,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailPlaylistViewModel @Inject constructor(
     private val useCaseGetDetailList: PlaylistDetailUseCase,
+    private val useCaseDeletePlaylist: DeletePlaylistUseCase,
     private val detailsInteractor: DetailsInteractor
 
 ) : ViewModel() {
@@ -31,6 +34,9 @@ class DetailPlaylistViewModel @Inject constructor(
 
     private val _detailPlaylistState = MutableLiveData<ListDetailState>()
     val playlistState = _detailPlaylistState
+
+    private val _deletePlaylistState = MutableLiveData<DeletePlaylistState>()
+    val deletePlaylistState = _deletePlaylistState
 
     private val _movieDetails = MutableLiveData<MovieDetailsState>()
     val movieDetails: LiveData<MovieDetailsState> = _movieDetails
@@ -53,6 +59,14 @@ class DetailPlaylistViewModel @Inject constructor(
         viewModelScope.launch {
             detailsInteractor.movieDetailsUseCase.getMovie(id).collect {
                 _movieDetails.value = it
+            }
+        }
+    }
+
+    fun deletePlaylist(token: String, listId: Int) {
+        viewModelScope.launch {
+            useCaseDeletePlaylist.deletePlaylist(token, listId).collect {
+                _deletePlaylistState.value = it
             }
         }
     }

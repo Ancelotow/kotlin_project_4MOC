@@ -17,10 +17,8 @@ class RemotePlaylistDataSource @Inject constructor() : PlaylistDataSource {
     override fun createList(token: String, name: String): Int {
         val response = service.createList("Bearer $token", name, "fr").execute()
         if(response.isSuccessful) {
-            Log.d("log", "dans successful remote data source")
             return response.body()?.id ?: 0
         } else {
-            Log.d("log", "dans error remote data source $response")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }
@@ -28,10 +26,8 @@ class RemotePlaylistDataSource @Inject constructor() : PlaylistDataSource {
     override fun getLists(token: String, accountId: String): List<PlaylistDto> {
         val response = service.getLists("Bearer $token", accountId).execute()
         if(response.isSuccessful) {
-            Log.d("log", "dans successful remote data source : ${response.body()!!.results}")
             return response.body()!!.results
         } else {
-            Log.d("log", "dans error remote data source $response")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }
@@ -40,13 +36,20 @@ class RemotePlaylistDataSource @Inject constructor() : PlaylistDataSource {
     override fun getListDetail(token: String, listId: Int): DetailPlaylistDto {
         val response = service.getPlaylistDetail("Bearer $token", listId).execute()
         if(response.isSuccessful) {
-            Log.d("log", "dans successful remote data source : ${response.body()!!}")
             return response.body()!!
+        } else {
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun deletePlaylist(token: String, listId: Int): Boolean {
+        val response = service.deletePlaylist("Bearer $token", listId).execute()
+        if(response.isSuccessful) {
+            Log.d("log", "dans successful remote data source : ${response.body()!!}")
+            return response.body()!!.success
         } else {
             Log.d("log", "dans error remote data source $response")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }
-
-
 }

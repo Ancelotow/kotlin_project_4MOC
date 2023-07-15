@@ -1,5 +1,6 @@
 package com.oye.moviepedia.ui.user
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +34,8 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
     private var playlistId: Int = 0
     private var accessToken: String? = null
 
+    val authData = SessionManager.getAuth()
+
     companion object {
         private const val ARG_PLAYLIST_ID = 0
         private const val ARG_ACCESS_TOKEN = "access_token"
@@ -65,26 +68,21 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
         _binding = FragmentDetailPlaylistBinding.inflate(inflater, container, false)
         val view = binding.root
 
-
         val recyclerView = binding.moviesRecyclerView
         val gridLayoutManager = GridLayoutManager(requireContext(), 3)
         recyclerView.layoutManager = gridLayoutManager
 
-        initMovies()
-
-
-
         val backButton = binding.backButton
         backButton.setOnClickListener {
-            val authData = SessionManager.getAuth()
             showProfileView(authData)
         }
 
         val deleteButton = binding.deleteButton
         deleteButton.setOnClickListener {
-            // Action lorsque l'icône de suppression est cliquée
+            showDeleteConfirmationDialog()
         }
 
+        initMovies()
 
         return view
     }
@@ -93,6 +91,10 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
         viewModel.playlistState.observe(viewLifecycleOwner) {
             when (it) {
                 is ListDetailSuccess -> {
+                    var playlistName = binding.playlistName
+                    playlistName.text = it.playlistDetail.name
+                    var nbMovies = binding.numberOfMovies
+                    nbMovies.text = it.playlistDetail.object_ids.size.toString() + " film(s)"
                     val movieIds = it.playlistDetail.object_ids.keys.toList()
                     var movieDetailsReceived = 0
                     for (movieId in movieIds) {
@@ -113,7 +115,7 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
                                     movieDetailsReceived++
 
                                     if (movieDetailsReceived == movieIds.size) {
-                                        movieList.add(ListMovieItem(it.playlistDetail.name, movies))
+                                        movieList.add(ListMovieItem(movies))
                                         binding.moviesRecyclerView.adapter = ListMovieInPlaylistListAdapter(movieList, activity, this)
                                     }
                                 }
@@ -161,18 +163,17 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
             .commit()
     }
 
-
-    /*private fun showLogoutConfirmationDialog() {
+    private fun showDeleteConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(requireContext())
-        alertDialogBuilder.setTitle("Déconnexion")
-        alertDialogBuilder.setMessage("Êtes-vous sûr de vouloir vous déconnecter ?")
-        alertDialogBuilder.setPositiveButton("Déconnexion") { dialog, which ->
-            SessionManager.logout()
-            navigateToLoginFragment()
+        alertDialogBuilder.setTitle("Supprimer la playlist")
+        alertDialogBuilder.setMessage("Êtes-vous sûr de vouloir supprimer la playlist ?")
+        alertDialogBuilder.setPositiveButton("Oui") { dialog, which ->
+            viewModel.deletePlaylist(accessToken!!, playlistId)
+            showProfileView(authData)
         }
         alertDialogBuilder.setNegativeButton("Annuler", null)
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
-    }*/
+    }
 
 }

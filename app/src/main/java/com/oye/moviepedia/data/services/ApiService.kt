@@ -89,5 +89,10 @@ interface ApiService {
         @Path("list_id") id: Int
     ): Call<DetailPlaylistDto>
 
+    @DELETE("4/list/{list_id}")
+    fun deletePlaylist(
+        @Header("Authorization") authorization: String,
+        @Path("list_id") id: Int
+    ): Call<PlaylistDto>
 
 }
