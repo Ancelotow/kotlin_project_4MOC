@@ -1,20 +1,29 @@
 package com.oye.moviepedia.ui.user
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.AuthDto
@@ -22,37 +31,29 @@ import com.oye.moviepedia.databinding.FragmentProfileBinding
 import com.oye.moviepedia.domain.uses_cases.GetListsDataError
 import com.oye.moviepedia.domain.uses_cases.GetListsError
 import com.oye.moviepedia.domain.uses_cases.GetListsSuccess
-import com.oye.moviepedia.domain.uses_cases.LikedMovieDataError
-import com.oye.moviepedia.domain.uses_cases.LikedMovieError
-import com.oye.moviepedia.domain.uses_cases.LikedMovieSuccess
+import com.oye.moviepedia.ui.BaseFragment
 import com.oye.moviepedia.ui.home.ListMovieItem
-import com.oye.moviepedia.ui.home.ListMovieListAdapter
-import com.oye.moviepedia.ui.home.MovieItem
 import com.oye.moviepedia.ui.home.MovieListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistListAdapter.PlaylistListener {
+class ProfileFragment : BaseFragment(), PlaylistListAdapter.PlaylistListener {
 
     private val viewModel: UserViewModel by viewModels()
     private var _binding: FragmentProfileBinding? = null
-
     private val binding get() = _binding!!
     private val movieList = ArrayList<ListMovieItem>(4).apply {
         repeat(4) {
             add(ListMovieItem("", mutableListOf()))
         }
     }
-
     private val playlistList = ArrayList<ListPlaylistItem>(4).apply {
         repeat(4) {
             add(ListPlaylistItem(mutableListOf()))
         }
     }
-
     private var accountId: String? = null
     private var accessToken: String? = null
-
     private lateinit var validateButton: Button
     private lateinit var editText: EditText
 
@@ -87,8 +88,7 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        validateButton = binding.validateButton
-        editText = binding.editTextPlaylist
+        setupUI()
 
         val title = binding.appTitle
         val paint = title.paint
@@ -98,62 +98,15 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
             Shader.TileMode.CLAMP
         )
 
-        val recyclerView = binding.recyclerLikedMovies
-        val linearLayoutManager = LinearLayoutManager(container?.context)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        recyclerView.layoutManager = linearLayoutManager
-
         val recyclerViewPlaylist = binding.recyclerPlaylist
         val playlistLinearLayoutManager = LinearLayoutManager(container?.context)
         recyclerViewPlaylist.layoutManager = playlistLinearLayoutManager
 
         movieList.ensureCapacity(4)
         playlistList.ensureCapacity(4)
-        initLikedMovies()
         initPlaylist()
 
-        val buttonAddPlaylist = binding.addButtonPlaylist
-        buttonAddPlaylist.setOnClickListener {
-            onAddButtonClick()
-        }
-
-        val logoutButton = binding.logoutButton
-        logoutButton.setOnClickListener {
-            showLogoutConfirmationDialog()
-        }
-
-        validateButton.setOnClickListener {
-            val playlistName = editText.text.toString()
-            accessToken?.let { it1 -> viewModel.createPlaylist(it1, playlistName) }
-            editText.isVisible = false
-            validateButton.isVisible = false
-        }
-
         return view
-    }
-
-    private fun initLikedMovies() {
-        viewModel.likedMoviesState.observe(viewLifecycleOwner) {
-            when (it) {
-                is LikedMovieSuccess -> {
-                    val movies = it.movies.map { e -> MovieItem(e.id,e.title, e.posterUrl, e.director) }
-                        .toMutableList()
-                    movieList[0] = ListMovieItem(getString(R.string.liked_new_movies), movies)
-                    binding.recyclerLikedMovies.adapter = ListMovieListAdapter(movieList, activity, this)
-                }
-
-                is LikedMovieDataError -> {
-                    Log.e("DATA ERROR", it.ex.message)
-                }
-
-                is LikedMovieError -> {
-                    Log.e("ERROR", it.ex.message!!)
-                }
-
-                else -> {
-                }
-            }
-        }
     }
 
     private fun initPlaylist(){
@@ -181,26 +134,9 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
         }
     }
 
-    private fun onAddButtonClick() {
-        Log.d("log", "on click dans fonction")
-        if (!editText.isVisible) {
-            editText.isVisible = true
-            validateButton.isVisible = true
-        } else {
-            editText.isVisible = false
-            validateButton.isVisible = false
-        }
-    }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onMovieCLick(movieId: Int) {
-        //val action =
-        //findNavController().navigate(action, extras)
     }
 
     private fun navigateToLoginFragment() {
@@ -229,6 +165,30 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
         alertDialog.show()
     }
 
+    private fun showCreatePlaylistDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Nouvelle playlist")
+
+        val inputEditText = EditText(requireContext())
+        inputEditText.hint = "Nom de la playlist"
+        alertDialogBuilder.setView(inputEditText)
+
+        alertDialogBuilder.setPositiveButton("Créer") { dialog, which ->
+            val playlistName = inputEditText.text.toString()
+            if (playlistName.isNotEmpty()) {
+                accessToken?.let { it1 -> viewModel.createPlaylist(it1, playlistName) }
+                Toast.makeText(requireContext(), "Playlist créée", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Veuillez saisir un nom de playlist", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        alertDialogBuilder.setNegativeButton("Annuler", null)
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+
     override fun onPlaylistCLick(playlistId: Int) {
         Log.d("log", "playlist id : $playlistId")
         val detailPlaylistFragment = DetailPlaylistFragment.newInstance(playlistId, accessToken!!)
@@ -237,6 +197,43 @@ class ProfileFragment : Fragment(), MovieListAdapter.MovieListener, PlaylistList
             .commit()
     }
 
+    private fun setupUI() {
+        setupSupportActionBar(binding.toolbar)
+        binding.toolbar.title = ""
+        binding.toolbar.setNavigationOnClickListener {
+            onSupportNavigateUp()
+        }
+        setupMenu()
+    }
 
+    private fun setupMenu() {
+        val menuResId : Int = R.menu.profile_menu
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+
+            @SuppressLint("RestrictedApi")
+            override fun onPrepareMenu(menu: Menu) {
+                // Handle for example visibility of menu items
+                if (menu is MenuBuilder) {
+                    menu.setOptionalIconsVisible(true)
+                }
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(menuResId, menu)
+            }
+
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                when (item.itemId) {
+                    R.id.action_logout -> {
+                        showLogoutConfirmationDialog()
+                    }
+                    R.id.action_createPlaylist -> {
+                        showCreatePlaylistDialog()
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
 
 }

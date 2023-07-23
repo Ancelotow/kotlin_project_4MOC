@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oye.moviepedia.domain.entities.NewItem
 import com.oye.moviepedia.domain.interactors.DetailsInteractor
+import com.oye.moviepedia.domain.uses_cases.AddMovieState
+import com.oye.moviepedia.domain.uses_cases.AddMovieToPlaylistUseCase
 import com.oye.moviepedia.domain.uses_cases.CreateListState
 import com.oye.moviepedia.domain.uses_cases.CreateListUseCase
 import com.oye.moviepedia.domain.uses_cases.DeletePlaylistState
@@ -17,6 +20,8 @@ import com.oye.moviepedia.domain.uses_cases.LikedMovieUseCase
 import com.oye.moviepedia.domain.uses_cases.ListDetailState
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsState
 import com.oye.moviepedia.domain.uses_cases.PlaylistDetailUseCase
+import com.oye.moviepedia.domain.uses_cases.RemoveMovieInPlaylistUseCase
+import com.oye.moviepedia.domain.uses_cases.RemoveMovieState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,6 +30,7 @@ import javax.inject.Inject
 class DetailPlaylistViewModel @Inject constructor(
     private val useCaseGetDetailList: PlaylistDetailUseCase,
     private val useCaseDeletePlaylist: DeletePlaylistUseCase,
+    private val useCaseRemoveMovieInPlaylist: RemoveMovieInPlaylistUseCase,
     private val detailsInteractor: DetailsInteractor
 
 ) : ViewModel() {
@@ -40,6 +46,9 @@ class DetailPlaylistViewModel @Inject constructor(
 
     private val _movieDetails = MutableLiveData<MovieDetailsState>()
     val movieDetails: LiveData<MovieDetailsState> = _movieDetails
+
+    private val _removeMovie = MutableLiveData<RemoveMovieState>()
+    val removeMovie: LiveData<RemoveMovieState> = _removeMovie
 
     fun init (accessToken: String?, listId: Int?){
         this.accessToken = accessToken
@@ -67,6 +76,14 @@ class DetailPlaylistViewModel @Inject constructor(
         viewModelScope.launch {
             useCaseDeletePlaylist.deletePlaylist(token, listId).collect {
                 _deletePlaylistState.value = it
+            }
+        }
+    }
+
+    fun removeMovie(token: String, listId: Int, newItem: List<NewItem>) {
+        viewModelScope.launch {
+            useCaseRemoveMovieInPlaylist.removeMovie(token, listId, newItem).collect {
+                _removeMovie.value = it
             }
         }
     }

@@ -1,12 +1,17 @@
 package com.oye.moviepedia.data.data_sources.remote
 
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.oye.moviepedia.data.data_sources.PlaylistDataSource
 import com.oye.moviepedia.data.dto.DetailPlaylistDto
 import com.oye.moviepedia.data.dto.PlaylistDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
 import com.oye.moviepedia.data.services.RetrofitSingletonService
+import com.oye.moviepedia.domain.entities.NewItem
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -49,6 +54,42 @@ class RemotePlaylistDataSource @Inject constructor() : PlaylistDataSource {
             return response.body()!!.success
         } else {
             Log.d("log", "dans error remote data source $response")
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun addMovie(token: String, listId: Int, newItem: List<NewItem>): Boolean {
+        val response = service.addMovieToPlaylist("Bearer $token", listId, newItem).execute()
+        if(response.isSuccessful) {
+            Log.d("log", "dans successful remote data source : ${response.body()!!}")
+            return response.body()!!.success
+        } else {
+            Log.d("log", "dans error remote data source $response")
+            throw RemoteException(response.code(), response.errorBody().toString())
+        }
+    }
+
+    override fun removeMovie(token: String, listId: Int, newItem: List<NewItem>): Boolean {
+        val json = """
+                    {
+                      "items": [
+                        {
+                          "media_type": "movie",
+                          "media_id": ${newItem.get(0).mediaId}
+                        }
+                      ]
+                    }
+                """.trimIndent()
+        val requestBody = RequestBody.create(MediaType.parse("application/json"), json)
+
+        Log.d("log", "dans remote data source $token, $listId, $requestBody")
+        val response = service.removeMovieInPlaylist("Bearer $token", listId, requestBody).execute()
+        Log.d("log", "response : $response")
+        if(response.isSuccessful) {
+            Log.d("log", "dans successful remote data source : ${response.body()!!}")
+            return response.body()!!.success
+        } else {
+            Log.d("log", "dans error remote data source $token, $listId, $newItem")
             throw RemoteException(response.code(), response.errorBody().toString())
         }
     }

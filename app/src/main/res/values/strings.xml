@@ -26,8 +26,11 @@
 
     <!-- ProfileFragment-->
     <string name="liked_new_movies">Films favoris</string>
-    <string name="playlist_text_view">Playlist</string>
+    <string name="profile_text_view">Mes playlists</string>
+    <string name="playlist_text_view">Créer une playlist</string>
     <string name="logout_button_text">Me deconnecter</string>
+    <string name="remove_playlist_text">Supprimer playlist</string>
+
 
 
     <!-- LoginFragment-->

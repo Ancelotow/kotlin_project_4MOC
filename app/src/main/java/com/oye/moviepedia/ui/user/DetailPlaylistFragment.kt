@@ -1,13 +1,22 @@
 package com.oye.moviepedia.ui.user
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentDetailPlaylistBinding
 import com.oye.moviepedia.domain.uses_cases.ListDetailDataError
@@ -17,29 +26,26 @@ import com.oye.moviepedia.domain.uses_cases.MovieDetailsSuccess
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.recyclerview.widget.GridLayoutManager
 import com.oye.moviepedia.data.dto.AuthDto
+import com.oye.moviepedia.domain.entities.NewItem
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
+import com.oye.moviepedia.ui.BaseFragment
+import com.oye.moviepedia.ui.home.HomeFragmentDirections
 
 
 @AndroidEntryPoint
-class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListener{
+class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieListener, MovieInPlaylistListAdapter.MovieLongListener{
 
     private val viewModel: DetailPlaylistViewModel by viewModels()
     private var _binding: FragmentDetailPlaylistBinding? = null
-
     private val binding get() = _binding!!
     private val movieList = ArrayList<ListMovieItem>()
-
-
     private var playlistId: Int = 0
     private var accessToken: String? = null
-
     val authData = SessionManager.getAuth()
-
     companion object {
         private const val ARG_PLAYLIST_ID = 0
         private const val ARG_ACCESS_TOKEN = "access_token"
-
 
         fun newInstance(playlistId: Int, accessToken: String): DetailPlaylistFragment {
             val fragment = DetailPlaylistFragment()
@@ -67,24 +73,51 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
     ): View {
         _binding = FragmentDetailPlaylistBinding.inflate(inflater, container, false)
         val view = binding.root
+        setupUI()
 
         val recyclerView = binding.moviesRecyclerView
         val gridLayoutManager = GridLayoutManager(requireContext(), 3)
         recyclerView.layoutManager = gridLayoutManager
 
-        val backButton = binding.backButton
-        backButton.setOnClickListener {
-            showProfileView(authData)
-        }
-
-        val deleteButton = binding.deleteButton
-        deleteButton.setOnClickListener {
-            showDeleteConfirmationDialog()
-        }
-
         initMovies()
 
         return view
+    }
+
+    private fun setupUI() {
+        setupSupportActionBar(binding.toolbar)
+        binding.toolbar.title = ""
+        binding.toolbar.setNavigationOnClickListener {
+            showProfileView(authData)
+        }
+        setupMenu()
+    }
+
+    private fun setupMenu() {
+        val menuResId : Int = R.menu.playlist_details_menu
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+
+            @SuppressLint("RestrictedApi")
+            override fun onPrepareMenu(menu: Menu) {
+                // Handle for example visibility of menu items
+                if (menu is MenuBuilder) {
+                    menu.setOptionalIconsVisible(true)
+                }
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(menuResId, menu)
+            }
+
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                when (item.itemId) {
+                    R.id.action_delete -> {
+                        showDeleteConfirmationDialog()
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun initMovies() {
@@ -116,7 +149,7 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
 
                                     if (movieDetailsReceived == movieIds.size) {
                                         movieList.add(ListMovieItem(movies))
-                                        binding.moviesRecyclerView.adapter = ListMovieInPlaylistListAdapter(movieList, activity, this)
+                                        binding.moviesRecyclerView.adapter = ListMovieInPlaylistListAdapter(movieList, activity, this, this)
                                     }
                                 }
                                 is MovieDetailsDataError -> {
@@ -152,8 +185,8 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
 
     override fun onMovieCLick(movieId: Int) {
         Log.d("log", "movie id : $movieId")
-        //val action =
-        //findNavController().navigate(action, extras)
+        val action = DetailPlaylistFragmentDirections.detailsFragmentAction(movieId)
+        findNavController().navigate(action)
     }
 
     private fun showProfileView(authData: AuthDto) {
@@ -170,6 +203,19 @@ class DetailPlaylistFragment : Fragment(), MovieInPlaylistListAdapter.MovieListe
         alertDialogBuilder.setPositiveButton("Oui") { dialog, which ->
             viewModel.deletePlaylist(accessToken!!, playlistId)
             showProfileView(authData)
+        }
+        alertDialogBuilder.setNegativeButton("Annuler", null)
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+    override fun onMovieLongClick(movieId: Int) {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Supprimer le film de la playlist")
+        alertDialogBuilder.setMessage("Êtes-vous sûr de vouloir retirer le film ?")
+        alertDialogBuilder.setPositiveButton("Oui") { dialog, which ->
+            val item = listOf(NewItem("movie", movieId))
+            viewModel.removeMovie(accessToken!!, playlistId, item)
         }
         alertDialogBuilder.setNegativeButton("Annuler", null)
         val alertDialog = alertDialogBuilder.create()

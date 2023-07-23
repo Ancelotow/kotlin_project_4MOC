@@ -4,16 +4,14 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.oye.moviepedia.R
-import com.oye.moviepedia.ui.home.MovieListAdapter
 
 class ListMovieInPlaylistViewHolder(
     v: View,
     private val movieListener: MovieInPlaylistListAdapter.MovieListener,
+    private val movieLongListener: MovieInPlaylistListAdapter.MovieLongListener,
     private val spanCount: Int
 ) : RecyclerView.ViewHolder(v) {
 
@@ -22,7 +20,7 @@ class ListMovieInPlaylistViewHolder(
     fun setItem(item: ListMovieItem) {
         val gridLayoutManager = GridLayoutManager(itemView.context, spanCount)
         movies.layoutManager = gridLayoutManager
-        movies.adapter = MovieInPlaylistListAdapter(item.movies, null, movieListener)
+        movies.adapter = MovieInPlaylistListAdapter(item.movies, null, movieListener, movieLongListener)
     }
 }
 
@@ -31,6 +29,7 @@ class ListMovieInPlaylistListAdapter(
     val items: MutableList<ListMovieItem>,
     val activity: Activity?,
     private val movieListener: MovieInPlaylistListAdapter.MovieListener,
+    private val movieLongListener: MovieInPlaylistListAdapter.MovieLongListener,
 ) : RecyclerView.Adapter<ListMovieInPlaylistViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListMovieInPlaylistViewHolder {
@@ -41,7 +40,7 @@ class ListMovieInPlaylistListAdapter(
         layoutParams.width = parent.measuredWidth
         view.layoutParams = layoutParams
 
-        return ListMovieInPlaylistViewHolder(view, movieListener, item.spanCount)
+        return ListMovieInPlaylistViewHolder(view, movieListener, movieLongListener, item.spanCount)
     }
 
 

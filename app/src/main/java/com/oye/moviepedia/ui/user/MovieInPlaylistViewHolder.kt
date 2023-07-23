@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oye.moviepedia.R
-import com.oye.moviepedia.ui.home.MovieViewHolder
 import com.squareup.picasso.Picasso
 import kotlinx.parcelize.Parcelize
 
@@ -29,18 +28,36 @@ class MovieInPlaylistViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 class MovieInPlaylistListAdapter(
     val movies: MutableList<MovieItem>,
     val activity: Activity?,
-    private val listener: MovieListener
+    private val listener: MovieListener,
+    private val longListener: MovieLongListener
+
 ) : RecyclerView.Adapter<MovieInPlaylistViewHolder>() {
 
     interface MovieListener {
         fun onMovieCLick(movieId: Int)
     }
 
+    interface MovieLongListener {
+        fun onMovieLongClick(movieId: Int)
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieInPlaylistViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.item_movie, parent, false)
+        val viewHolder = MovieInPlaylistViewHolder(view)
+
+        /*view.setOnLongClickListener {
+            val position = viewHolder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                longListener.onMovieLongClick(movies[position].id)
+            }
+            true
+        }*/
+
         return MovieInPlaylistViewHolder(view).listen { pos, type ->
-            listener.onMovieCLick(movies[pos].id)
+            //listener.onMovieCLick(movies[pos].id)
+            longListener.onMovieLongClick(movies[pos].id)
             print("Go to movie detail")
         }
     }
