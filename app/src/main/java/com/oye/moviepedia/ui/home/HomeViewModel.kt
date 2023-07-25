@@ -35,11 +35,15 @@ class HomeViewModel @Inject constructor(
     private val _popularMovies = MutableLiveData<PopularMovieState>()
     val popularMovies: LiveData<PopularMovieState> = _popularMovies
 
-    init {
-        getNewMovies()
-        getNowPlayingMovies()
-        getUpcomingMovies()
-        getPopularMovies()
+    init { }
+
+    fun onEventChanged(event: HomeEvent){
+        when(event){
+            HomeEvent.OnNewMovies -> getNewMovies()
+            HomeEvent.OnNowPlayingMovies -> getNowPlayingMovies()
+            HomeEvent.OnUpcomingMovies -> getUpcomingMovies()
+            HomeEvent.OnPopularMovies -> getPopularMovies()
+        }
     }
 
     private fun getNewMovies() {

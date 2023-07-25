@@ -63,11 +63,15 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
         recyclerView.layoutManager = linearLayoutManager
 
         movieList.ensureCapacity(4)
+        viewModel.onEventChanged(HomeEvent.OnNewMovies)
+        viewModel.onEventChanged(HomeEvent.OnNowPlayingMovies)
+        viewModel.onEventChanged(HomeEvent.OnUpcomingMovies)
+        viewModel.onEventChanged(HomeEvent.OnPopularMovies)
+
         initNewMovies()
         initNowPlayingMovies()
         initUpcomingMovies()
         initPopularMovies()
-
         return root
     }
 
