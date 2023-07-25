@@ -19,7 +19,7 @@ class MovieViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     private val description = v.findViewById<TextView>(R.id.text_description)
 
     fun setItem(item: MovieItem) {
-        Picasso.get().load(item.urlPoster).into(poster);
+        Picasso.get().load(item.urlPoster).fit().centerCrop().into(poster);
         title.text = item.name
         description.text = item.description
     }
