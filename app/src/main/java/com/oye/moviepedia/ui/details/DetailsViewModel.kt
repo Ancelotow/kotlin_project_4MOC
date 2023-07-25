@@ -21,7 +21,7 @@ class DetailsViewModel @Inject constructor(
     fun getMovie(id: Int) {
         viewModelScope.launch {
             detailsInteractor.movieDetailsUseCase.getMovie(id).collect {
-                _movieDetails.value = MovieDetailsError(Exception())
+                _movieDetails.value = it
             }
         }
     }
