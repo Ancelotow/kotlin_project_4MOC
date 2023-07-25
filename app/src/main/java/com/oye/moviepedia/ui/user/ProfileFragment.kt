@@ -54,8 +54,6 @@ class ProfileFragment : BaseFragment(), PlaylistListAdapter.PlaylistListener {
     }
     private var accountId: String? = null
     private var accessToken: String? = null
-    private lateinit var validateButton: Button
-    private lateinit var editText: EditText
 
     companion object {
         private const val ARG_ACCOUNT_ID = "account_id"
@@ -115,6 +113,8 @@ class ProfileFragment : BaseFragment(), PlaylistListAdapter.PlaylistListener {
                 is GetListsSuccess -> {
                     if (!viewModel.isPlaylistExists("A voir")) {
                         accessToken?.let { it1 -> viewModel.createPlaylist(it1, "A voir") }
+                    } else if(!viewModel.isPlaylistExists("Favoris")){
+                        accessToken?.let { it1 -> viewModel.createPlaylist(it1, "Favoris") }
                     }
                     val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid)
                     val playlists = it.lists.map { e -> PlaylistItem(e.id, drawable!!, e.name, e.number_of_items.toString() + " film(s)") }
@@ -179,8 +179,12 @@ class ProfileFragment : BaseFragment(), PlaylistListAdapter.PlaylistListener {
         alertDialogBuilder.setPositiveButton("Créer") { dialog, which ->
             val playlistName = inputEditText.text.toString()
             if (playlistName.isNotEmpty()) {
-                accessToken?.let { it1 -> viewModel.createPlaylist(it1, playlistName) }
-                Toast.makeText(requireContext(), "Playlist créée", Toast.LENGTH_SHORT).show()
+                if (playlistName.equals("A voir", ignoreCase = true) || playlistName.equals("Favoris", ignoreCase = true)) {
+                    Toast.makeText(requireContext(), "Veuillez saisir un autre nom de playlist", Toast.LENGTH_SHORT).show()
+                } else {
+                    accessToken?.let { it1 -> viewModel.createPlaylist(it1, playlistName) }
+                    Toast.makeText(requireContext(), "Playlist créée", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(requireContext(), "Veuillez saisir un nom de playlist", Toast.LENGTH_SHORT).show()
             }

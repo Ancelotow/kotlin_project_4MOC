@@ -10,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -42,6 +43,8 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
     private var playlistId: Int = 0
     private var accessToken: String? = null
     val authData = SessionManager.getAuth()
+    lateinit var playlistName: TextView
+
     companion object {
         private const val ARG_PLAYLIST_ID = 0
         private const val ARG_ACCESS_TOKEN = "access_token"
@@ -111,7 +114,11 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
             override fun onMenuItemSelected(item: MenuItem): Boolean {
                 when (item.itemId) {
                     R.id.action_delete -> {
-                        showDeleteConfirmationDialog()
+                        if(playlistName.text.equals("A voir") || playlistName.text.equals("Favoris")){
+                            showInformationDialog()
+                        }else{
+                            showDeleteConfirmationDialog()
+                        }
                     }
                 }
                 return true
@@ -123,7 +130,7 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
         viewModel.playlistState.observe(viewLifecycleOwner) {
             when (it) {
                 is ListDetailSuccess -> {
-                    var playlistName = binding.playlistName
+                    playlistName = binding.playlistName
                     playlistName.text = it.playlistDetail.name
                     var nbMovies = binding.numberOfMovies
                     nbMovies.text = it.playlistDetail.object_ids.size.toString() + " film(s)"
@@ -203,6 +210,14 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
             viewModel.deletePlaylist(accessToken!!, playlistId)
             showProfileView(authData)
         }
+        alertDialogBuilder.setNegativeButton("Annuler", null)
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+    private fun showInformationDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Suppression impossible")
         alertDialogBuilder.setNegativeButton("Annuler", null)
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
