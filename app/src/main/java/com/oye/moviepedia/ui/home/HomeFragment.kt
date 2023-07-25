@@ -13,19 +13,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentHomeBinding
-import com.oye.moviepedia.domain.uses_cases.NewMovieDataError
 import com.oye.moviepedia.domain.uses_cases.NewMovieError
 import com.oye.moviepedia.domain.uses_cases.NewMovieLoading
 import com.oye.moviepedia.domain.uses_cases.NewMovieSuccess
-import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieDataError
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieError
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieLoading
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieSuccess
-import com.oye.moviepedia.domain.uses_cases.PopularMovieDataError
 import com.oye.moviepedia.domain.uses_cases.PopularMovieError
 import com.oye.moviepedia.domain.uses_cases.PopularMovieLoading
 import com.oye.moviepedia.domain.uses_cases.PopularMovieSuccess
-import com.oye.moviepedia.domain.uses_cases.UpcomingMovieDataError
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieError
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieLoading
 import com.oye.moviepedia.domain.uses_cases.UpcomingMovieSuccess
@@ -96,10 +92,8 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
                 }
 
                 is NewMovieError -> {
-                    Log.e("ERROR", it.ex.message!!)
-                }
-
-                else -> {
+                    movieList[0] = ListMovieItem(getString(R.string.home_new_movies), mutableListOf(), errorMessage = it.ex.message)
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity, this)
                 }
             }
         }
@@ -121,10 +115,8 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
                 }
 
                 is NowPlayingMovieError -> {
-                    Log.e("ERROR", it.ex.message!!)
-                }
-
-                else -> {
+                    movieList[1] = ListMovieItem(getString(R.string.home_movies_showing), mutableListOf(), errorMessage = it.ex.message)
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity, this)
                 }
             }
         }
@@ -153,10 +145,8 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
                 }
 
                 is UpcomingMovieError -> {
-                    Log.e("ERROR", it.ex.message!!)
-                }
-
-                else -> {
+                    movieList[2] = ListMovieItem(getString(R.string.home_movies_upcoming), mutableListOf(), errorMessage = it.ex.message)
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity, this)
                 }
             }
         }
@@ -184,10 +174,8 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
                 }
 
                 is PopularMovieError -> {
-                    Log.e("ERROR", it.ex.message!!)
-                }
-
-                else -> {
+                    movieList[3] = ListMovieItem(getString(R.string.home_movies_popular), mutableListOf(), errorMessage = it.ex.message)
+                    binding.recyclerNewMovies.adapter = ListMovieListAdapter(movieList, activity, this)
                 }
             }
         }
