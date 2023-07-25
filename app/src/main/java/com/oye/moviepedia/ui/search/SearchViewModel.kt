@@ -18,7 +18,13 @@ class SearchViewModel @Inject constructor(
     private val _searchState = MutableLiveData<SearchState>()
     val searchState = _searchState
 
-    fun getSearchResult(query: String) {
+    fun onEventChanged(event: SearchEvent){
+        when(event){
+            is SearchEvent.OnSearchMovies -> getSearchResult(event.search)
+        }
+    }
+
+    private fun getSearchResult(query: String) {
         viewModelScope.launch {
             interactor.searchUseCase.fetchSearchResult(query).collect {
                 _searchState.value = it
