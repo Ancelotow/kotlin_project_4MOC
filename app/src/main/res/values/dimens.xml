@@ -14,6 +14,11 @@
     <dimen name="details_section_margin">24dp</dimen>
     <dimen name="details_picture_width">331dp</dimen>
     <dimen name="details_picture_height">481dp</dimen>
+
+    <dimen name="details_error_picture_width">100dp</dimen>
+    <dimen name="details_error_picture_height">100dp</dimen>
+    <dimen name="details_error_layout_margin_top">50dp</dimen>
+
     <dimen name="details_picture_min_height">451dp</dimen>
     <dimen name="details_picture_corner_radius">5dp</dimen>
     <dimen name="details_rate_indicator_size">63dp</dimen>

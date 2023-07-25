@@ -11,6 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuHost
@@ -36,8 +37,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DetailsFragment: BaseFragment() {
     private lateinit var binding: FragmentDetailsBinding
-    private lateinit var movie: MovieDetails
     private lateinit var actorAdapter: ActorsAdapter
+    private lateinit var movie: MovieDetails
     private val detailsViewModel: DetailsViewModel by viewModels()
     private val args : DetailsFragmentArgs by navArgs()
 
@@ -72,13 +73,19 @@ class DetailsFragment: BaseFragment() {
         binding.toolbar.setNavigationOnClickListener {
             onSupportNavigateUp()
         }
-        setupMenu()
     }
 
     private fun setMovieData() {
+        setupMenu()
+        binding.detailsErrorLayout.visibility = View.GONE
         binding.movieTitle.text = movie.title
         binding.movieDescription.text = movie.description
-        Picasso.get().load(movie.posterUrl).into(binding.moviePicture)
+
+        if (movie.posterUrl.isEmpty()) {
+            binding.moviePicture.setImageResource(R.drawable.ic_movie)
+        } else {
+            Picasso.get().load(movie.posterUrl).into(binding.moviePicture)
+        }
 
         val goodRatePercentage = (movie.noteAverage * 10).toInt()
         binding.rateValue.text = "${goodRatePercentage}%"
@@ -102,13 +109,19 @@ class DetailsFragment: BaseFragment() {
             binding.pointSeparator.visibility = View.GONE
         }
 
-
         actorAdapter = ActorsAdapter()
         binding.actorsRecyclerView.adapter = actorAdapter
         binding.actorsRecyclerView.setHasFixedSize(true)
         binding.actorsRecyclerView.addItemDecoration(ActorMarginItemDecoration(requireContext(), actorAdapter))
         actorAdapter.setItems(movie.cast)
 
+    }
+
+    private fun setUpErrorUI() {
+        binding.detailsContent.visibility = View.GONE
+        binding.moviePicture.setImageResource(R.drawable.ic_movie)
+        binding.moviePicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        binding.detailsErrorLayout.visibility = View.VISIBLE
     }
 
     private fun setObservers() {
@@ -123,11 +136,13 @@ class DetailsFragment: BaseFragment() {
                 is MovieDetailsDataError -> {
                     hideLoader()
                     Log.e("DATA ERROR", it.ex.message)
+                    setUpErrorUI()
                 }
 
                 is MovieDetailsError -> {
                     hideLoader()
-                    Log.e("ERROR", it.ex.message!!)
+                    Log.e("ERROR", it.ex.message.toString())
+                    setUpErrorUI()
                 }
 
                 is MovieDetailsLoading -> {

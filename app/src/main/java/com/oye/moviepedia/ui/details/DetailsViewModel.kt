@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oye.moviepedia.domain.interactors.DetailsInteractor
+import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class DetailsViewModel @Inject constructor(
     fun getMovie(id: Int) {
         viewModelScope.launch {
             detailsInteractor.movieDetailsUseCase.getMovie(id).collect {
-                _movieDetails.value = it
+                _movieDetails.value = MovieDetailsError(Exception())
             }
         }
     }
