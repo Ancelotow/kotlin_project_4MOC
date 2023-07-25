@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.oye.moviepedia.domain.uses_cases.CreateListState
 import com.oye.moviepedia.domain.uses_cases.CreateListUseCase
 import com.oye.moviepedia.domain.uses_cases.GetListsState
+import com.oye.moviepedia.domain.uses_cases.GetListsSuccess
 import com.oye.moviepedia.domain.uses_cases.GetListsUseCase
 import com.oye.moviepedia.domain.uses_cases.LikedMovieState
 import com.oye.moviepedia.domain.uses_cases.LikedMovieUseCase
@@ -71,4 +72,17 @@ class UserViewModel @Inject constructor(
             Log.d("log", "dans else view model")
         }
     }
+
+    fun isPlaylistExists(playlistName: String): Boolean {
+        val playlists = getListsState.value?.let {
+            if (it is GetListsSuccess) {
+                it.lists
+            } else {
+                emptyList()
+            }
+        } ?: emptyList()
+
+        return playlists.any { playlist -> playlist.name == playlistName }
+    }
+
 }

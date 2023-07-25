@@ -113,6 +113,9 @@ class ProfileFragment : BaseFragment(), PlaylistListAdapter.PlaylistListener {
         viewModel.getListsState.observe(viewLifecycleOwner) {
             when (it) {
                 is GetListsSuccess -> {
+                    if (!viewModel.isPlaylistExists("A voir")) {
+                        accessToken?.let { it1 -> viewModel.createPlaylist(it1, "A voir") }
+                    }
                     val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid)
                     val playlists = it.lists.map { e -> PlaylistItem(e.id, drawable!!, e.name, e.number_of_items.toString() + " film(s)") }
                         .toMutableList()
