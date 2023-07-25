@@ -84,6 +84,11 @@ class DetailsFragment: BaseFragment() {
         binding.rateValue.text = "${goodRatePercentage}%"
         binding.rateProgressIndicator.progress = goodRatePercentage
 
+        if (goodRatePercentage < 50)
+            binding.rateProgressIndicator.isSelected = true
+        else if (goodRatePercentage < 75)
+            binding.rateProgressIndicator.isActivated = true
+
         movie.genres?.let { genres ->
             binding.movieTypes.text = getFormattedMovieGenres(genres)
         } ?: run {
