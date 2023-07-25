@@ -18,7 +18,15 @@ class DetailsViewModel @Inject constructor(
     private val _movieDetails = MutableLiveData<MovieDetailsState>()
     val movieDetails: LiveData<MovieDetailsState> = _movieDetails
 
-    fun getMovie(id: Int) {
+    fun onEventChanged(event: DetailsScreenEvent) {
+        when (event) {
+            is DetailsScreenEvent.OnGetMovie -> {
+                getMovie(event.movieId)
+            }
+        }
+    }
+
+    private fun getMovie(id: Int) {
         viewModelScope.launch {
             detailsInteractor.movieDetailsUseCase.getMovie(id).collect {
                 _movieDetails.value = it

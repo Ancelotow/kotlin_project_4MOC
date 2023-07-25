@@ -21,7 +21,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentDetailsBinding
 import com.oye.moviepedia.domain.entities.Genre
@@ -59,7 +58,7 @@ class DetailsFragment: BaseFragment() {
         setupUI()
         setObservers()
         setUIListeners()
-        detailsViewModel.getMovie(args.movieId)
+        detailsViewModel.onEventChanged(DetailsScreenEvent.OnGetMovie(args.movieId))
     }
 
     override fun onResume() {
