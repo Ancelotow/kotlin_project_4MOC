@@ -213,9 +213,9 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
         alertDialogBuilder.setTitle("Supprimer le film de la playlist")
         alertDialogBuilder.setMessage("Êtes-vous sûr de vouloir retirer le film ?")
         alertDialogBuilder.setPositiveButton("Oui") { dialog, which ->
-            /*val item = listOf(Item("movie", movieId))
+            val item = listOf(Item("movie", movieId))
             val listItems = ListItems(items = item)
-            viewModel.removeMovie(accessToken!!, playlistId, listItems)*/
+            viewModel.removeMovie(accessToken!!, playlistId, listItems)
         }
         alertDialogBuilder.setNegativeButton("Annuler", null)
         val alertDialog = alertDialogBuilder.create()
