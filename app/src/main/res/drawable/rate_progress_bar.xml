@@ -23,7 +23,7 @@
             android:shape="ring"
             android:thicknessRatio="16"
             android:useLevel="false">
-            <solid android:color="@color/dark_green" />
+            <solid android:color="@color/rate_indicator_background_color_selector" />
         </shape>
     </item>
     <!--Adding our second item-->
@@ -39,7 +39,7 @@
                 android:shape="ring"
                 android:thicknessRatio="16"
                 android:useLevel="true">
-                <solid android:color="@color/accent" />
+                <solid android:color="@color/rate_indicator_accent_color_selector" />
                 <!--<gradient
                     android:endColor="@color/teal_700"
                     android:startColor="@color/black"
