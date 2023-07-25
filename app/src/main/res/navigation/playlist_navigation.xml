@@ -3,13 +3,76 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_playlist"
-    app:startDestination="@id/detail_playlist_fragment">
+    app:startDestination="@id/userFragment">
 
+    <action
+        android:id="@+id/action_userFragment_to_profileFragment"
+        app:destination="@id/profileFragment"
+        app:popUpToSaveState="true"
+        app:restoreState="true"/>
+    <argument
+        android:name="auth"
+        app:argType="string"
+        app:nullable="false" />
+    <action
+        android:id="@+id/action_userFragment_to_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpToSaveState="true"
+        app:restoreState="true"/>
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.oye.moviepedia.ui.user.UserFragment"
+        android:label="fragment_user"
+        tools:layout="@layout/fragment_user" >
+    </fragment>
+
+
+    <action
+        android:id="@+id/action_profileFragment_to_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpToSaveState="true"
+        app:restoreState="true"/>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.oye.moviepedia.ui.user.ProfileFragment"
+        android:label="ProfileFragment" >
+    </fragment>
+
+
+    <action
+        android:id="@+id/action_loginFragment_to_userFragment"
+        app:destination="@id/userFragment"
+        app:popUpToSaveState="true"
+        app:restoreState="true"/>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.oye.moviepedia.ui.user.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+    </fragment>
+
+
+    <action
+        android:id="@+id/action_profileFragment_to_detail_playlist_fragment"
+        app:destination="@id/detail_playlist_fragment"
+        app:popUpToSaveState="true"
+        app:restoreState="true"/>
     <fragment
         android:id="@+id/detail_playlist_fragment"
         android:name="com.oye.moviepedia.ui.user.DetailPlaylistFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_detail_playlist" />
+        tools:layout="@layout/fragment_detail_playlist">
+        <argument
+            android:name="playlistID"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="accessToken"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+
+
     <action
         android:id="@+id/details_fragment_action"
         app:destination="@id/details_fragment"
@@ -25,6 +88,8 @@
             app:argType="integer"
             app:nullable="false" />
     </fragment>
+
+
     <action
         android:id="@+id/trailer_fragment_action"
         app:destination="@id/trailer_fragment"

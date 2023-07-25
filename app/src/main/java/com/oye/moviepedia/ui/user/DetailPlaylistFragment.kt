@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
@@ -26,11 +25,11 @@ import com.oye.moviepedia.domain.uses_cases.MovieDetailsSuccess
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.recyclerview.widget.GridLayoutManager
 import com.oye.moviepedia.data.dto.AuthDto
-import com.oye.moviepedia.domain.entities.NewItem
+import com.oye.moviepedia.domain.entities.Item
+import com.oye.moviepedia.domain.entities.ListItems
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 import com.oye.moviepedia.ui.BaseFragment
-import com.oye.moviepedia.ui.home.HomeFragmentDirections
 
 
 @AndroidEntryPoint
@@ -214,8 +213,9 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
         alertDialogBuilder.setTitle("Supprimer le film de la playlist")
         alertDialogBuilder.setMessage("Êtes-vous sûr de vouloir retirer le film ?")
         alertDialogBuilder.setPositiveButton("Oui") { dialog, which ->
-            val item = listOf(NewItem("movie", movieId))
-            viewModel.removeMovie(accessToken!!, playlistId, item)
+            /*val item = listOf(Item("movie", movieId))
+            val listItems = ListItems(items = item)
+            viewModel.removeMovie(accessToken!!, playlistId, listItems)*/
         }
         alertDialogBuilder.setNegativeButton("Annuler", null)
         val alertDialog = alertDialogBuilder.create()

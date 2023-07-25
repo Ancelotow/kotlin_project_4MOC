@@ -5,18 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.oye.moviepedia.domain.entities.NewItem
+import com.oye.moviepedia.domain.entities.Item
+import com.oye.moviepedia.domain.entities.ListItems
 import com.oye.moviepedia.domain.interactors.DetailsInteractor
-import com.oye.moviepedia.domain.uses_cases.AddMovieState
-import com.oye.moviepedia.domain.uses_cases.AddMovieToPlaylistUseCase
-import com.oye.moviepedia.domain.uses_cases.CreateListState
-import com.oye.moviepedia.domain.uses_cases.CreateListUseCase
 import com.oye.moviepedia.domain.uses_cases.DeletePlaylistState
 import com.oye.moviepedia.domain.uses_cases.DeletePlaylistUseCase
-import com.oye.moviepedia.domain.uses_cases.GetListsState
-import com.oye.moviepedia.domain.uses_cases.GetListsUseCase
-import com.oye.moviepedia.domain.uses_cases.LikedMovieState
-import com.oye.moviepedia.domain.uses_cases.LikedMovieUseCase
 import com.oye.moviepedia.domain.uses_cases.ListDetailState
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsState
 import com.oye.moviepedia.domain.uses_cases.PlaylistDetailUseCase
@@ -80,9 +73,10 @@ class DetailPlaylistViewModel @Inject constructor(
         }
     }
 
-    fun removeMovie(token: String, listId: Int, newItem: List<NewItem>) {
+    fun removeMovie(token: String, listId: Int, item: ListItems) {
+        Log.d("log", "dans model")
         viewModelScope.launch {
-            useCaseRemoveMovieInPlaylist.removeMovie(token, listId, newItem).collect {
+            useCaseRemoveMovieInPlaylist.removeMovie(token, listId, item).collect {
                 _removeMovie.value = it
             }
         }

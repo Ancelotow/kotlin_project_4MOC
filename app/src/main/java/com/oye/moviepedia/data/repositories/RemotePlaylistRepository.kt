@@ -3,9 +3,8 @@ package com.oye.moviepedia.data.repositories
 import android.util.Log
 import com.oye.moviepedia.data.data_sources.PlaylistDataSource
 import com.oye.moviepedia.data.dto.DetailPlaylistDto
-import com.oye.moviepedia.data.dto.PlaylistDto
-import com.oye.moviepedia.domain.entities.Movie
-import com.oye.moviepedia.domain.entities.NewItem
+import com.oye.moviepedia.domain.entities.Item
+import com.oye.moviepedia.domain.entities.ListItems
 import com.oye.moviepedia.domain.entities.Playlist
 import com.oye.moviepedia.domain.repositories.PlaylistRepository
 import javax.inject.Inject
@@ -39,13 +38,15 @@ class RemotePlaylistRepository @Inject constructor(
         return success;
     }
 
-    override fun addMovie(token: String, listId: Int, newItem: List<NewItem>): Boolean {
+    override fun addMovie(token: String, listId: Int, newItem: ListItems): Boolean {
         val success = dataSource.addMovie(token, listId, newItem)
         return success;
     }
 
-    override fun removeMovie(token: String, listId: Int, newItem: List<NewItem>): Boolean {
-        val success = dataSource.removeMovie(token, listId, newItem)
+    override fun removeMovie(token: String, listId: Int, item: ListItems): Boolean {
+        Log.d("log", "dans repository")
+
+        val success = dataSource.removeMovie(token, listId, item)
         return success;
     }
 

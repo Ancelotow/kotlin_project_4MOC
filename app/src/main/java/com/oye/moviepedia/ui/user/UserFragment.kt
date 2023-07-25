@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.AuthDto
+import com.oye.moviepedia.ui.details.DetailsFragmentDirections
 
 class UserFragment : Fragment() {
 

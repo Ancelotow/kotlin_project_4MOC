@@ -1,8 +1,8 @@
 package com.oye.moviepedia.domain.uses_cases
 
-import com.oye.moviepedia.data.dto.DetailPlaylistDto
 import com.oye.moviepedia.data.exceptions.DataException
-import com.oye.moviepedia.domain.entities.NewItem
+import com.oye.moviepedia.domain.entities.Item
+import com.oye.moviepedia.domain.entities.ListItems
 import com.oye.moviepedia.domain.repositories.PlaylistRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class AddMovieToPlaylistUseCase @Inject constructor(private val repository: PlaylistRepository) {
 
-    suspend fun addMovie(token: String, listId: Int, newItem: List<NewItem>): Flow<AddMovieState> {
+    suspend fun addMovie(token: String, listId: Int, newItem: ListItems): Flow<AddMovieState> {
         return flow {
             emit(AddMovieLoading)
             try {

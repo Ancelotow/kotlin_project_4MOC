@@ -23,11 +23,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentDetailsBinding
 import com.oye.moviepedia.domain.entities.Genre
 import com.oye.moviepedia.domain.entities.MovieDetails
+import com.oye.moviepedia.domain.entities.Item
+import com.oye.moviepedia.domain.entities.ListItems
 import com.oye.moviepedia.domain.uses_cases.GetListsDataError
 import com.oye.moviepedia.domain.uses_cases.GetListsError
 import com.oye.moviepedia.domain.uses_cases.GetListsSuccess
@@ -37,7 +38,6 @@ import com.oye.moviepedia.domain.uses_cases.MovieDetailsLoading
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsSuccess
 import com.oye.moviepedia.ui.BaseFragment
 import com.oye.moviepedia.ui.user.ListPlaylistItem
-import com.oye.moviepedia.ui.user.ListPlaylistListAdapter
 import com.oye.moviepedia.ui.user.PlaylistItem
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +54,7 @@ class DetailsFragment: BaseFragment() {
             add(ListPlaylistItem(mutableListOf()))
         }
     }
+    val authData = SessionManager.getAuth()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -176,7 +177,6 @@ class DetailsFragment: BaseFragment() {
             override fun onMenuItemSelected(item: MenuItem): Boolean {
                 when (item.itemId) {
                     R.id.action_playlist -> {
-                        val authData = SessionManager.getAuth()
                         detailsViewModel.init(authData.access_token, authData.account_id)
                         detailsViewModel.getLists.observe(viewLifecycleOwner) {
                             when (it) {
@@ -219,6 +219,11 @@ class DetailsFragment: BaseFragment() {
         alertDialogBuilder.setItems(playlistNames) { _, position ->
             val playlistId = playlistList[0].playlists[position].id
             //AJOUTER LE FILM A LA PLAYLIST
+
+            val item = Item("movie", movie.id)
+            val listItems = ListItems(items = listOf(item))
+
+            detailsViewModel.addMovie(authData.access_token!!, playlistId, listItems)
             Log.d("log", "playlist id dans ajout : $playlistId")
         }
         alertDialogBuilder.setNegativeButton("Annuler", null)
