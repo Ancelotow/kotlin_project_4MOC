@@ -231,7 +231,7 @@ class SearchFragment : BaseFragment() {
             value = textFieldValue,
             onValueChange = { newValue ->
                 textFieldValue = newValue
-                searchViewModel.getSearchResult(newValue.text)
+                searchViewModel.onEventChanged(SearchEvent.OnSearchMovies(newValue.text))
             },
             shape = RoundedCornerShape(
                 dimensionResource(id = R.dimen.search_round_corner).value.dp

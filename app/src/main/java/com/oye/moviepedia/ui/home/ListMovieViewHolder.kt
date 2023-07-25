@@ -16,6 +16,8 @@ class ListMovieViewHolder(
 
     private val title = v.findViewById<TextView>(R.id.text_list_title)
     private val movies = v.findViewById<RecyclerView>(R.id.recycler_movies)
+    private val loader = v.findViewById<View>(R.id.loader)
+    private val error = v.findViewById<TextView>(R.id.txtError)
 
     fun setItem(item: ListMovieItem) {
         title.text = item.title
@@ -23,7 +25,18 @@ class ListMovieViewHolder(
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         movies.layoutManager = linearLayoutManager
         movies.adapter = MovieListAdapter(item.movies, null, movieListener)
+        if(item.isLoading) {
+            loader.visibility = View.VISIBLE
+        } else {
+            loader.visibility = View.GONE
+        }
 
+        if(item.errorMessage != null) {
+            error.visibility = View.VISIBLE
+            error.text = item.errorMessage
+        } else {
+            error.visibility = View.GONE
+        }
     }
 
 }
@@ -52,5 +65,7 @@ class ListMovieListAdapter(
 
 data class ListMovieItem(
     val title: String,
-    val movies: MutableList<MovieItem>
+    val movies: MutableList<MovieItem>,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )

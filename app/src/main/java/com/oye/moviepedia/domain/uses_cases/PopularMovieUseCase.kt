@@ -15,9 +15,7 @@ class PopularMovieUseCase @Inject constructor(private val repository: MovieRepos
             emit(PopularMovieLoading)
             try {
                 emit(PopularMovieSuccess(repository.getPopularMovies()))
-            } catch (e: DataException) {
-                emit(PopularMovieDataError(e))
-            }  catch (e: Exception) {
+            } catch (e: Exception) {
                 emit(PopularMovieError(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -27,5 +25,4 @@ class PopularMovieUseCase @Inject constructor(private val repository: MovieRepos
 sealed class PopularMovieState
 object PopularMovieLoading: PopularMovieState()
 data class PopularMovieSuccess(val movies: List<Movie>): PopularMovieState()
-data class PopularMovieDataError(val ex: DataException): PopularMovieState()
 data class PopularMovieError(val ex: Exception): PopularMovieState()

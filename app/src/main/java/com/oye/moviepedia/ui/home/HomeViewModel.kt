@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oye.moviepedia.domain.entities.Movie
+import com.oye.moviepedia.domain.interactors.HomeInteractor
 import com.oye.moviepedia.domain.uses_cases.NewMovieState
 import com.oye.moviepedia.domain.uses_cases.NewMovieUseCase
 import com.oye.moviepedia.domain.uses_cases.NowPlayingMovieState
@@ -19,10 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val useCaseNewMovie: NewMovieUseCase,
-    private val useCaseNowPlayingMovie: NowPlayingMovieUseCase,
-    private val useCaseUpcomingMovie: UpcomingMovieUseCase,
-    private val useCasePopularMovie: PopularMovieUseCase,
+    private val interactor: HomeInteractor,
 ) : ViewModel() {
 
     private val _newMoviesState = MutableLiveData<NewMovieState>()
@@ -37,16 +35,20 @@ class HomeViewModel @Inject constructor(
     private val _popularMovies = MutableLiveData<PopularMovieState>()
     val popularMovies: LiveData<PopularMovieState> = _popularMovies
 
-    init {
-        getNewMovies()
-        getNowPlayingMovies()
-        getUpcomingMovies()
-        getPopularMovies()
+    init { }
+
+    fun onEventChanged(event: HomeEvent){
+        when(event){
+            HomeEvent.OnNewMovies -> getNewMovies()
+            HomeEvent.OnNowPlayingMovies -> getNowPlayingMovies()
+            HomeEvent.OnUpcomingMovies -> getUpcomingMovies()
+            HomeEvent.OnPopularMovies -> getPopularMovies()
+        }
     }
 
     private fun getNewMovies() {
         viewModelScope.launch {
-            useCaseNewMovie.fetchNewMovies().collect {
+            interactor.newMovieUseCase.fetchNewMovies().collect {
                 _newMoviesState.value = it
             }
         }
@@ -54,7 +56,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getNowPlayingMovies() {
         viewModelScope.launch {
-            useCaseNowPlayingMovie.fetchNowPlayingMovies().collect {
+            interactor.nowPlayingMovieUseCase.fetchNowPlayingMovies().collect {
                 _nowPlayingMovies.value = it
             }
         }
@@ -62,7 +64,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getUpcomingMovies() {
         viewModelScope.launch {
-            useCaseUpcomingMovie.fetchUpcomingMovies().collect {
+            interactor.upcomingMovieUseCase.fetchUpcomingMovies().collect {
                 _upcomingMovies.value = it
             }
         }
@@ -70,7 +72,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getPopularMovies() {
         viewModelScope.launch {
-            useCasePopularMovie.fetchPopularMovies().collect {
+            interactor.popularMovieUseCase.fetchPopularMovies().collect {
                 _popularMovies.value = it
             }
         }
