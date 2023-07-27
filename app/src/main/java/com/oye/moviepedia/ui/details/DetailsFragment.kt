@@ -1,6 +1,8 @@
 package com.oye.moviepedia.ui.details
 
+import SessionManager
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -15,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
@@ -29,11 +32,18 @@ import com.oye.moviepedia.domain.entities.MovieDetails
 import com.oye.moviepedia.domain.uses_cases.GetMovieDynamicLinkError
 import com.oye.moviepedia.domain.uses_cases.GetMovieDynamicLinkLoading
 import com.oye.moviepedia.domain.uses_cases.GetMovieDynamicLinkSuccess
+import com.oye.moviepedia.domain.entities.Item
+import com.oye.moviepedia.domain.entities.ListItems
+import com.oye.moviepedia.domain.uses_cases.GetListsDataError
+import com.oye.moviepedia.domain.uses_cases.GetListsError
+import com.oye.moviepedia.domain.uses_cases.GetListsSuccess
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsDataError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsLoading
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsSuccess
 import com.oye.moviepedia.ui.BaseFragment
+import com.oye.moviepedia.ui.user.ListPlaylistItem
+import com.oye.moviepedia.ui.user.PlaylistItem
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,6 +54,12 @@ class DetailsFragment: BaseFragment() {
     private lateinit var movie: MovieDetails
     private val detailsViewModel: DetailsViewModel by viewModels()
     private val args : DetailsFragmentArgs by navArgs()
+    private val playlistList = ArrayList<ListPlaylistItem>(4).apply {
+        repeat(4) {
+            add(ListPlaylistItem(mutableListOf()))
+        }
+    }
+    val authData = SessionManager.getAuth()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -207,7 +223,6 @@ class DetailsFragment: BaseFragment() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             @SuppressLint("RestrictedApi")
             override fun onPrepareMenu(menu: Menu) {
-                // Handle for example visibility of menu items
                 if (menu is MenuBuilder) {
                     menu.setOptionalIconsVisible(true)
                 }
@@ -218,10 +233,31 @@ class DetailsFragment: BaseFragment() {
             }
 
             override fun onMenuItemSelected(item: MenuItem): Boolean {
-                when(item.itemId)
-                {
-                    R.id.action_playlist-> {
+                when (item.itemId) {
+                    R.id.action_playlist -> {
+                        detailsViewModel.init(authData.access_token, authData.account_id)
+                        detailsViewModel.getLists.observe(viewLifecycleOwner) {
+                            when (it) {
+                                is GetListsSuccess -> {
+                                    val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid)
+                                    val playlists = it.lists.map { e -> PlaylistItem(e.id, drawable!!, e.name, e.number_of_items.toString() + " film(s)") }
+                                        .toMutableList()
+                                    playlistList[0] = ListPlaylistItem(playlists)
+                                    showPlaylistDialog()
+                                }
 
+                                is GetListsDataError -> {
+                                    Log.e("DATA ERROR", it.ex.message)
+                                }
+
+                                is GetListsError -> {
+                                    Log.e("ERROR", it.ex.message!!)
+                                }
+
+                                else -> {
+                                }
+                            }
+                        }
                     }
                     R.id.action_like->{
 
@@ -235,6 +271,27 @@ class DetailsFragment: BaseFragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     }
+
+    private fun showPlaylistDialog() {
+        val playlistNames = playlistList[0].playlists.map { it.name }.toTypedArray()
+
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Playlists")
+        alertDialogBuilder.setItems(playlistNames) { _, position ->
+            val playlistId = playlistList[0].playlists[position].id
+            //AJOUTER LE FILM A LA PLAYLIST
+
+            val item = Item("movie", movie.id)
+            val listItems = ListItems(items = listOf(item))
+
+            detailsViewModel.addMovie(authData.access_token!!, playlistId, listItems)
+            Log.d("log", "playlist id dans ajout : $playlistId")
+        }
+        alertDialogBuilder.setNegativeButton("Annuler", null)
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
 
     private fun getFormattedMovieGenres(genres: List<Genre>): String {
         var formattedGenres = ""

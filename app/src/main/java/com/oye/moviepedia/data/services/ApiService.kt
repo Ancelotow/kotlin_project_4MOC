@@ -2,14 +2,21 @@ package com.oye.moviepedia.data.services
 
 import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.data.dto.CreditsResultDto
+import com.oye.moviepedia.data.dto.DetailPlaylistDto
 import com.oye.moviepedia.data.dto.GenreResultDto
 import com.oye.moviepedia.data.dto.ListMovieResultDto
+import com.oye.moviepedia.data.dto.ListPlaylistDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
 import com.oye.moviepedia.data.dto.ListSearchResultDto
 import com.oye.moviepedia.data.dto.LogoutDto
+import com.oye.moviepedia.data.dto.PlaylistDto
 import com.oye.moviepedia.data.dto.TokenDto
+import com.oye.moviepedia.domain.entities.Item
+import com.oye.moviepedia.domain.entities.ListItems
+import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -17,6 +24,8 @@ import retrofit2.http.Query
 import retrofit2.http.POST
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Field
+import retrofit2.http.HTTP
+import retrofit2.http.Header
 
 interface ApiService {
 
@@ -66,4 +75,43 @@ interface ApiService {
         @Field("access_token") access_token: String,
     ): Call<LogoutDto>
 
+    @POST("4/list")
+    @FormUrlEncoded
+    fun createList(
+        @Header("Authorization") authorization: String,
+        @Field("name") listName: String,
+        @Field("iso_639_1") iso: String,
+    ): Call<PlaylistDto>
+
+    @GET("4/account/{account_object_id}/lists")
+    fun getLists(
+        @Header("Authorization") authorization: String,
+        @Path("account_object_id") accountId: String
+    ): Call<ListPlaylistDto>
+
+    @GET("4/list/{list_id}")
+    fun getPlaylistDetail(
+        @Header("Authorization") authorization: String,
+        @Path("list_id") id: Int
+    ): Call<DetailPlaylistDto>
+
+    @DELETE("4/list/{list_id}")
+    fun deletePlaylist(
+        @Header("Authorization") authorization: String,
+        @Path("list_id") id: Int
+    ): Call<PlaylistDto>
+
+    @POST("4/list/{list_id}/items")
+    fun addMovieToPlaylist(
+        @Header("Authorization") authorization: String,
+        @Path("list_id") id: Int,
+        @Body items: ListItems
+    ): Call<PlaylistDto>
+
+    @HTTP(method = "DELETE", path = "4/list/{list_id}/items", hasBody = true)
+    fun removeMovieInPlaylist(
+        @Header("Authorization") authorization: String,
+        @Path("list_id") id: Int,
+        @Body items: ListItems
+    ): Call<PlaylistDto>
 }

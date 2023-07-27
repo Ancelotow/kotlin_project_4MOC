@@ -8,19 +8,24 @@ import com.oye.moviepedia.data.data_sources.AuthDataSource
 import com.oye.moviepedia.data.data_sources.DynamicLinkDataSource
 import com.oye.moviepedia.data.data_sources.LogoutDataSource
 import com.oye.moviepedia.data.data_sources.MovieDataSource
+import com.oye.moviepedia.data.data_sources.PlaylistDataSource
 import com.oye.moviepedia.data.data_sources.firebase.FirebaseDynamicLinkDataSource
 import com.oye.moviepedia.data.data_sources.remote.RemoteAuthDataSource
 import com.oye.moviepedia.data.data_sources.remote.RemoteLogoutDataSource
 import com.oye.moviepedia.data.data_sources.remote.RemoteMovieDataSource
+import com.oye.moviepedia.data.data_sources.remote.RemotePlaylistDataSource
 import com.oye.moviepedia.data.repositories.FirebaseDynamicLinkRepository
 import com.oye.moviepedia.data.repositories.RemoteAuthRepository
 import com.oye.moviepedia.data.repositories.RemoteLogoutRepository
 import com.oye.moviepedia.data.repositories.RemoteMovieRepository
+import com.oye.moviepedia.data.repositories.RemotePlaylistRepository
 import com.oye.moviepedia.data.services.ApiService
 import com.oye.moviepedia.domain.repositories.AuthRepository
 import com.oye.moviepedia.domain.repositories.DynamicLinkRepository
 import com.oye.moviepedia.domain.repositories.LogoutRepository
 import com.oye.moviepedia.domain.repositories.MovieRepository
+import com.oye.moviepedia.domain.repositories.PlaylistRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -90,4 +95,12 @@ object AppModule {
     @Singleton
     fun provideDynamicLinkRepository(dataSource: DynamicLinkDataSource): DynamicLinkRepository =
         FirebaseDynamicLinkRepository(dataSource)
+
+    @Provides
+    @Singleton
+    fun providePlaylistDataSource(apiService: ApiService): PlaylistDataSource = RemotePlaylistDataSource(apiService)
+
+    @Provides
+    @Singleton
+    fun providePlaylistRepository(dataSource: PlaylistDataSource): PlaylistRepository = RemotePlaylistRepository(dataSource)
 }
