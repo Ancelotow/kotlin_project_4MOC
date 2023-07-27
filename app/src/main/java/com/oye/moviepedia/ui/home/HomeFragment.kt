@@ -1,8 +1,10 @@
 package com.oye.moviepedia.ui.home
 
+import android.content.ContentValues
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +13,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentHomeBinding
 import com.oye.moviepedia.domain.uses_cases.NewMovieError
@@ -34,6 +39,7 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
 
     private val viewModel: HomeViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
+    private var dynamicLinkIsExecute = false
     private val binding get() = _binding!!
     private val movieList = ArrayList<ListMovieItem>(4).apply {
         repeat(4) {
@@ -72,6 +78,7 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
         initNowPlayingMovies()
         initUpcomingMovies()
         initPopularMovies()
+        readDynamicLink()
         return root
     }
 
@@ -179,6 +186,31 @@ class HomeFragment : BaseFragment(), MovieListAdapter.MovieListener {
                 }
             }
         }
+    }
+
+    fun readDynamicLink() {
+        if(!dynamicLinkIsExecute) {
+            dynamicLinkIsExecute = true
+            activity?.let {
+                Firebase.dynamicLinks
+                    .getDynamicLink(activity?.intent)
+                    .addOnSuccessListener(it) { pendingDynamicLinkData: PendingDynamicLinkData? ->
+                        var deepLink: Uri? = null
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.link
+                        }
+                        if (deepLink != null) {
+                            val movieId = deepLink.getQueryParameter("movieId")
+                            Log.d("DynamicLink", "movieId: $movieId")
+                            if (movieId != null) {
+                                val action = HomeFragmentDirections.detailsFragmentAction(movieId.toInt())
+                                findNavController().navigate(action)
+                            }
+                        }
+                    }
+            }
+        }
+
     }
 
     override fun onDestroyView() {

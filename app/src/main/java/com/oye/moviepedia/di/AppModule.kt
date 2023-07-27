@@ -5,16 +5,20 @@ import com.oye.moviepedia.common.API_TOKEN
 import com.oye.moviepedia.common.BASE_URL
 import com.oye.moviepedia.common.LocalDateDeserializer
 import com.oye.moviepedia.data.data_sources.AuthDataSource
+import com.oye.moviepedia.data.data_sources.DynamicLinkDataSource
 import com.oye.moviepedia.data.data_sources.LogoutDataSource
 import com.oye.moviepedia.data.data_sources.MovieDataSource
+import com.oye.moviepedia.data.data_sources.firebase.FirebaseDynamicLinkDataSource
 import com.oye.moviepedia.data.data_sources.remote.RemoteAuthDataSource
 import com.oye.moviepedia.data.data_sources.remote.RemoteLogoutDataSource
 import com.oye.moviepedia.data.data_sources.remote.RemoteMovieDataSource
+import com.oye.moviepedia.data.repositories.FirebaseDynamicLinkRepository
 import com.oye.moviepedia.data.repositories.RemoteAuthRepository
 import com.oye.moviepedia.data.repositories.RemoteLogoutRepository
 import com.oye.moviepedia.data.repositories.RemoteMovieRepository
 import com.oye.moviepedia.data.services.ApiService
 import com.oye.moviepedia.domain.repositories.AuthRepository
+import com.oye.moviepedia.domain.repositories.DynamicLinkRepository
 import com.oye.moviepedia.domain.repositories.LogoutRepository
 import com.oye.moviepedia.domain.repositories.MovieRepository
 import dagger.Module
@@ -65,6 +69,10 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideDynamicLinkDataSource(): DynamicLinkDataSource = FirebaseDynamicLinkDataSource()
+
+    @Provides
+    @Singleton
     fun provideMovieRepository(dataSource: MovieDataSource): MovieRepository =
         RemoteMovieRepository(dataSource)
 
@@ -77,4 +85,9 @@ object AppModule {
     @Singleton
     fun provideLogoutRepository(dataSource: LogoutDataSource): LogoutRepository =
         RemoteLogoutRepository(dataSource)
+
+    @Provides
+    @Singleton
+    fun provideDynamicLinkRepository(dataSource: DynamicLinkDataSource): DynamicLinkRepository =
+        FirebaseDynamicLinkRepository(dataSource)
 }

@@ -22,6 +22,30 @@ data class MovieDto(
     val vote_count: Int,
     val release_date: LocalDate
 ) {
+
+    companion object {
+        fun fromMovieDetail(movie: MovieDetails): MovieDto {
+            return MovieDto(
+                id = movie.id,
+                title = movie.title,
+                original_title = movie.originalTitle,
+                overview = movie.description,
+                vote_average = movie.noteAverage,
+                vote_count = movie.noteCount,
+                adult = movie.isAdult,
+                release_date = movie.releaseDate,
+                poster_path = movie.posterUrl,
+                genres = null,
+                runtime = null,
+                backdrop_path = "",
+                original_language = "",
+                popularity = 0f,
+                video = false
+            )
+        }
+    }
+
+
     fun toMovie(director: String): Movie {
         return Movie(
             id = id,

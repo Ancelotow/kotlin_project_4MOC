@@ -41,6 +41,7 @@
     <!-- DetailsFragment -->
     <string name="details_separator">•</string>
     <string name="movie_trailer">Bande annonce</string>
+    <string name="share_desc">Partager</string>
     <string name="synopsis">Synopsis</string>
     <string name="headliners">Têtes d\'affiche</string>
     <string name="no_trailer">Aucune bande annonce n\'est disponible pour ce film</string>
