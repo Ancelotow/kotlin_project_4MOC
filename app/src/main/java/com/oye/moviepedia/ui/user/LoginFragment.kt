@@ -1,6 +1,5 @@
 package com.oye.moviepedia.ui.user
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -18,7 +17,6 @@ import androidx.lifecycle.Observer
 import com.oye.moviepedia.MainActivity
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentLoginBinding
-import com.oye.moviepedia.domain.uses_cases.AuthDataError
 import com.oye.moviepedia.domain.uses_cases.AuthError
 import com.oye.moviepedia.domain.uses_cases.AuthTokenSuccess
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,9 +73,6 @@ class LoginFragment: Fragment() {
                                 }
                             })
                         }
-                    }
-                    is AuthDataError -> {
-                        Log.e("DATA ERROR", authState.ex.message)
                     }
                     is AuthError -> {
                         isAuthenticated = false
