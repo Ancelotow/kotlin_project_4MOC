@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "270676429275",
+    "project_id": "moviepedia-449ca",
+    "storage_bucket": "moviepedia-449ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270676429275:android:222461c396000ef739bffe",
+        "android_client_info": {
+          "package_name": "com.oye.moviepedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270676429275-dnn4hatvvp07jmnb9j0r8hg481oepvh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-mUHo_bCa7MjyJlXvUwh_laVofm_7v-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270676429275-dnn4hatvvp07jmnb9j0r8hg481oepvh5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
