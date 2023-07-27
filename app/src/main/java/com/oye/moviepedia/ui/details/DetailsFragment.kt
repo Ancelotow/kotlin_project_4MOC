@@ -4,6 +4,7 @@ import SessionManager
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -28,6 +29,9 @@ import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentDetailsBinding
 import com.oye.moviepedia.domain.entities.Genre
 import com.oye.moviepedia.domain.entities.MovieDetails
+import com.oye.moviepedia.domain.uses_cases.GetMovieDynamicLinkError
+import com.oye.moviepedia.domain.uses_cases.GetMovieDynamicLinkLoading
+import com.oye.moviepedia.domain.uses_cases.GetMovieDynamicLinkSuccess
 import com.oye.moviepedia.domain.entities.Item
 import com.oye.moviepedia.domain.entities.ListItems
 import com.oye.moviepedia.domain.uses_cases.GetListsDataError
@@ -73,6 +77,7 @@ class DetailsFragment: BaseFragment() {
 
         setupUI()
         setObservers()
+        setDynamicLinkObservers()
         setUIListeners()
         detailsViewModel.onEventChanged(DetailsScreenEvent.OnGetMovie(args.movieId))
     }
@@ -167,6 +172,34 @@ class DetailsFragment: BaseFragment() {
         }
     }
 
+    private fun setDynamicLinkObservers() {
+        detailsViewModel.dynamicLink.observe(viewLifecycleOwner) {
+            when (it) {
+                is GetMovieDynamicLinkLoading -> {
+                    showLoader()
+                }
+
+                is GetMovieDynamicLinkError -> {
+                    hideLoader()
+                    Log.e("ERROR", it.ex.message.toString())
+                }
+
+                is GetMovieDynamicLinkSuccess -> {
+                    hideLoader()
+                    shareUrl(it.shortLink)
+                }
+            }
+        }
+    }
+
+    private fun shareUrl(url: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Film à partager")
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+        startActivity(Intent.createChooser(shareIntent, "Partager via")) // Afficher la boîte de dialogue de partage
+    }
+
     private fun setUIListeners() {
         binding.rateButton.setOnClickListener {  }
 
@@ -226,8 +259,11 @@ class DetailsFragment: BaseFragment() {
                             }
                         }
                     }
-                    R.id.action_like -> {
-                        // Gérer l'action de "like" ici
+                    R.id.action_like->{
+
+                    }
+                    R.id.action_share->{
+                        detailsViewModel.onEventChanged(DetailsScreenEvent.OnGetDynamicLink(movie))
                     }
                 }
                 return true
