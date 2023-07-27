@@ -7,12 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.oye.moviepedia.R
 import com.squareup.picasso.Picasso
 import kotlinx.parcelize.Parcelize
 
-class MovieInPlaylistViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+class MovieInPlaylistViewHolder(
+    v: View,
+    private val listener: MovieInPlaylistListAdapter.MovieListener,
+    private val longListener: MovieInPlaylistListAdapter.MovieLongListener
+) : RecyclerView.ViewHolder(v) {
+    private val cardPoster = v.findViewById<CardView>(R.id.card_poster)
     private val poster = v.findViewById<ImageView>(R.id.image_poster)
     private val title = v.findViewById<TextView>(R.id.text_title)
     private val description = v.findViewById<TextView>(R.id.text_description)
@@ -21,6 +27,15 @@ class MovieInPlaylistViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         Picasso.get().load(item.urlPoster).into(poster);
         title.text = item.name
         description.text = item.description
+
+        cardPoster.setOnLongClickListener {
+            longListener.onMovieLongClick(item.id)
+            true
+        }
+
+        cardPoster.setOnClickListener {
+            listener.onMovieCLick(item.id)
+        }
     }
 
 }
@@ -45,28 +60,15 @@ class MovieInPlaylistListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieInPlaylistViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.item_movie, parent, false)
-        val viewHolder = MovieInPlaylistViewHolder(view)
-
-        view.setOnLongClickListener {
-            val position = viewHolder.adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                longListener.onMovieLongClick(movies[position].id)
-            }
-            true
-        }
-
-        view.setOnClickListener {
-            val position = viewHolder.adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener.onMovieCLick(movies[position].id)
-            }
-        }
-
-        return MovieInPlaylistViewHolder(view).listen { pos, type ->
+        val viewHolder = MovieInPlaylistViewHolder(view, listener, longListener)
+        return viewHolder
+        /*
+        MovieInPlaylistViewHolder(view).listen { pos, type ->
             //listener.onMovieCLick(movies[pos].id)
             longListener.onMovieLongClick(movies[pos].id)
             print("Go to movie detail")
         }
+         */
     }
 
     override fun onBindViewHolder(holder: MovieInPlaylistViewHolder, position: Int) {
@@ -77,9 +79,17 @@ class MovieInPlaylistListAdapter(
         return movies.size
     }
 
-    private fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
+    private fun <T : RecyclerView.ViewHolder> T.listenOnClick(event: (position: Int, type: Int) -> Unit): T {
         itemView.setOnClickListener {
             event.invoke(adapterPosition, itemViewType)
+        }
+        return this
+    }
+
+    private fun <T : RecyclerView.ViewHolder> T.listenOnLongClick(event: (position: Int, type: Int) -> Unit): T {
+        itemView.setOnLongClickListener {
+            event.invoke(adapterPosition, itemViewType)
+            true
         }
         return this
     }
