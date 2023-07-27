@@ -26,7 +26,7 @@ class SearchViewModel @Inject constructor(
 
     private fun getSearchResult(query: String) {
         viewModelScope.launch {
-            interactor.searchUseCase.fetchSearchResult(query).collect {
+            interactor.searchUseCase.invoke(query).collect {
                 _searchState.value = it
             }
         }

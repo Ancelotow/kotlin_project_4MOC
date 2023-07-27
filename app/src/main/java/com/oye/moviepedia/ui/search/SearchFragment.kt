@@ -72,7 +72,6 @@ import com.oye.moviepedia.domain.entities.MovieSearchResult
 import com.oye.moviepedia.domain.entities.PersonSearchResult
 import com.oye.moviepedia.domain.entities.SearchResult
 import com.oye.moviepedia.domain.entities.TvSearchResult
-import com.oye.moviepedia.domain.uses_cases.SearchDataError
 import com.oye.moviepedia.domain.uses_cases.SearchError
 import com.oye.moviepedia.domain.uses_cases.SearchLoading
 import com.oye.moviepedia.domain.uses_cases.SearchSuccess
@@ -113,11 +112,6 @@ class SearchFragment : BaseFragment() {
                 is SearchSuccess -> {
                     searchResults.clear()
                     searchResults.addAll(it.results)
-                    isLoaded = true
-                }
-
-                is SearchDataError -> {
-                    Log.e("Data Error", it.ex.toString())
                     isLoaded = true
                 }
 
