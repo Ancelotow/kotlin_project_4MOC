@@ -127,55 +127,23 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
     }
 
     private fun initMovies() {
-        viewModel.playlistState.observe(viewLifecycleOwner) {
-            when (it) {
+        viewModel.playlistState.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is ListDetailSuccess -> {
                     playlistName = binding.playlistName
-                    playlistName.text = it.playlistDetail.name
+                    playlistName.text = state.playlistDetail.name
                     var nbMovies = binding.numberOfMovies
-                    nbMovies.text = "${it.playlistDetail.object_ids.size} film(s)"
-                    val movieIds = it.playlistDetail.object_ids.keys.toList()
-                    var movieDetailsReceived = 0
-                    for (movieId in movieIds) {
-                        val id = movieId.substringAfter(":").toInt()
-                        viewModel.getMovie(id)
+                    nbMovies.text = "${state.playlistDetail.object_ids.size} film(s)"
+                    movieList.clear()
 
-                        val movies = mutableListOf<MovieItem>()  // Réinitialiser la liste à chaque itération
-                        viewModel.movieDetails.observe(viewLifecycleOwner) { movieDetails ->
-                            when (movieDetails) {
-                                is MovieDetailsSuccess -> {
-                                    val movieItem = MovieItem(
-                                        movieDetails.movie.id,
-                                        movieDetails.movie.title,
-                                        movieDetails.movie.posterUrl,
-                                        movieDetails.movie.director
-                                    )
-                                    movies.add(movieItem)
-                                    movieDetailsReceived++
-
-                                    if (movieDetailsReceived == movieIds.size) {
-                                        movieList.add(ListMovieItem(movies))
-                                        binding.moviesRecyclerView.adapter = ListMovieInPlaylistListAdapter(movieList, activity, this, this)
-                                    }
-                                }
-                                is MovieDetailsDataError -> {
-                                    Log.e("DATA ERROR", movieDetails.ex.message!!)
-                                }
-                                is MovieDetailsError -> {
-                                    Log.e("ERROR", movieDetails.ex.message!!)
-                                }
-                                else -> {
-                                    Log.d("log", "detail dans else : ${movieDetails}")
-                                }
-                            }
-                        }
-                    }
+                    val movieIds = state.playlistDetail.object_ids.keys.toList()
+                    fetchMovieDetails(movieIds)
                 }
                 is ListDetailDataError -> {
-                    Log.e("DATA ERROR", it.ex.message)
+                    Log.e("DATA ERROR", state.ex.message)
                 }
                 is ListDetailError -> {
-                    Log.e("ERROR", it.ex.message!!)
+                    Log.e("ERROR", state.ex.message!!)
                 }
                 else -> {
                 }
@@ -183,6 +151,45 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
         }
     }
 
+    private fun fetchMovieDetails(movieIds: List<String>) {
+        var movieDetailsReceived = 0
+        val movies = mutableListOf<MovieItem>()
+
+        movieIds.forEach { movieId ->
+            val id = movieId.substringAfter(":").toInt()
+            viewModel.getMovie(id)
+        }
+
+        viewModel.movieDetails.observe(viewLifecycleOwner) { movieDetails ->
+            when (movieDetails) {
+                is MovieDetailsSuccess -> {
+                    val movieItem = MovieItem(
+                        movieDetails.movie.id,
+                        movieDetails.movie.title,
+                        movieDetails.movie.posterUrl,
+                        movieDetails.movie.director
+                    )
+                    movies.add(movieItem)
+                    movieDetailsReceived++
+
+                    if (movieDetailsReceived == movieIds.size) {
+                        movieList.add(ListMovieItem(movies))
+                        binding.moviesRecyclerView.adapter =
+                            ListMovieInPlaylistListAdapter(movieList, activity, this, this)
+                    }
+                }
+                is MovieDetailsDataError -> {
+                    Log.e("DATA ERROR", movieDetails.ex.message!!)
+                }
+                is MovieDetailsError -> {
+                    Log.e("ERROR", movieDetails.ex.message!!)
+                }
+                else -> {
+                    Log.d("log", "detail dans else : ${movieDetails}")
+                }
+            }
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
