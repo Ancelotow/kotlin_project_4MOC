@@ -59,7 +59,7 @@ class DetailPlaylistViewModel @Inject constructor(
 
     fun getMovie(id: Int) {
         viewModelScope.launch {
-            detailsInteractor.movieDetailsUseCase.getMovie(id).collect {
+            detailsInteractor.movieDetailsUseCase.invoke(id).collect {
                 _movieDetails.value = it
             }
         }

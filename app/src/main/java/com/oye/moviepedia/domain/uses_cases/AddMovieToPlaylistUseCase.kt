@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class AddMovieToPlaylistUseCase @Inject constructor(private val repository: PlaylistRepository) {
 
-    suspend fun addMovie(token: String, listId: Int, newItem: ListItems): Flow<AddMovieState> {
+    operator fun invoke(token: String, listId: Int, newItem: ListItems): Flow<AddMovieState> {
         return flow {
             emit(AddMovieLoading)
             try {
