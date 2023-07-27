@@ -47,13 +47,20 @@ class MovieInPlaylistListAdapter(
         val view = inflater.inflate(R.layout.item_movie, parent, false)
         val viewHolder = MovieInPlaylistViewHolder(view)
 
-        /*view.setOnLongClickListener {
+        view.setOnLongClickListener {
             val position = viewHolder.adapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 longListener.onMovieLongClick(movies[position].id)
             }
             true
-        }*/
+        }
+
+        view.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onMovieCLick(movies[position].id)
+            }
+        }
 
         return MovieInPlaylistViewHolder(view).listen { pos, type ->
             //listener.onMovieCLick(movies[pos].id)

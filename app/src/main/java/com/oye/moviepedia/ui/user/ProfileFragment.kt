@@ -198,10 +198,9 @@ class ProfileFragment : BaseFragment(), PlaylistListAdapter.PlaylistListener {
 
     override fun onPlaylistCLick(playlistId: Int) {
         Log.d("log", "playlist id : $playlistId")
-        val detailPlaylistFragment = DetailPlaylistFragment.newInstance(playlistId, accessToken!!)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.container, detailPlaylistFragment)
-            .commit()
+        (parentFragment as? UserFragment)?.let {
+            it.navigateToDetailPlaylist(playlistId, accessToken!!)
+        }
     }
 
     private fun setupUI() {

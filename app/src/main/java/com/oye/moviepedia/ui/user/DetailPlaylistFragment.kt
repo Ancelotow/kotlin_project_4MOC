@@ -17,6 +17,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.oye.moviepedia.R
 import com.oye.moviepedia.databinding.FragmentDetailPlaylistBinding
 import com.oye.moviepedia.domain.uses_cases.ListDetailDataError
@@ -42,6 +43,7 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
     private val movieList = ArrayList<ListMovieItem>()
     private var playlistId: Int = 0
     private var accessToken: String? = null
+    private val args: DetailPlaylistFragmentArgs by navArgs()
     val authData = SessionManager.getAuth()
     lateinit var playlistName: TextView
 
@@ -61,10 +63,8 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            playlistId = it.getInt(ARG_PLAYLIST_ID.toString())
-            accessToken = it.getString(ARG_ACCESS_TOKEN)
-        }
+        playlistId = args.playlistID
+        accessToken = args.accessToken
         viewModel.init(accessToken, playlistId)
     }
 
@@ -90,7 +90,7 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
         setupSupportActionBar(binding.toolbar)
         binding.toolbar.title = ""
         binding.toolbar.setNavigationOnClickListener {
-            showProfileView(authData)
+            onSupportNavigateUp()
         }
         setupMenu()
     }
@@ -133,7 +133,7 @@ class DetailPlaylistFragment : BaseFragment(), MovieInPlaylistListAdapter.MovieL
                     playlistName = binding.playlistName
                     playlistName.text = it.playlistDetail.name
                     var nbMovies = binding.numberOfMovies
-                    nbMovies.text = it.playlistDetail.object_ids.size.toString() + " film(s)"
+                    nbMovies.text = "${it.playlistDetail.object_ids.size} film(s)"
                     val movieIds = it.playlistDetail.object_ids.keys.toList()
                     var movieDetailsReceived = 0
                     for (movieId in movieIds) {
