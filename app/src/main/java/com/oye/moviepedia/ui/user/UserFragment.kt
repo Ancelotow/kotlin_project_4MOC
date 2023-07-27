@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.gson.Gson
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.AuthDto
-import com.oye.moviepedia.ui.details.DetailsFragmentDirections
 
 class UserFragment : Fragment() {
 
@@ -26,7 +24,7 @@ class UserFragment : Fragment() {
         return view
     }
 
-    fun showLoginView() {
+    private fun showLoginView() {
         val loginFragment = LoginFragment()
         childFragmentManager.beginTransaction()
             .replace(R.id.container, loginFragment)
@@ -38,6 +36,11 @@ class UserFragment : Fragment() {
         childFragmentManager.beginTransaction()
             .replace(R.id.container, profileFragment)
             .commit()
+    }
+
+    fun navigateToDetailPlaylist(playlistId: Int, accessToken: String) {
+        val action = UserFragmentDirections.actionUserFragmentToDetailPlaylistFragment(playlistId, accessToken)
+        findNavController().navigate(action)
     }
 
 }
