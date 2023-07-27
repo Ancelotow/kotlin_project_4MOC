@@ -48,7 +48,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getNewMovies() {
         viewModelScope.launch {
-            interactor.newMovieUseCase.fetchNewMovies().collect {
+            interactor.newMovieUseCase.invoke().collect {
                 _newMoviesState.value = it
             }
         }

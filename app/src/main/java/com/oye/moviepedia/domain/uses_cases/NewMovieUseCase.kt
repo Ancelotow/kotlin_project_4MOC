@@ -13,15 +13,13 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class NewMovieUseCase @Inject constructor(private val repository: MovieRepository) {
-    suspend fun fetchNewMovies(): Flow<NewMovieState> {
-        return flow {
-            emit(NewMovieLoading)
-            try {
-                emit(NewMovieSuccess(repository.getNewMovies()))
-            } catch (e: Exception) {
-                emit(NewMovieError(e))
-            }
-        }.flowOn(Dispatchers.IO)
+    operator fun invoke(): Flow<NewMovieState> = flow {
+        emit(NewMovieLoading)
+        try {
+            emit(NewMovieSuccess(repository.getNewMovies()))
+        } catch (e: Exception) {
+            emit(NewMovieError(e))
+        }
     }
 }
 
