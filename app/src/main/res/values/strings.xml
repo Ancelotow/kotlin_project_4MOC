@@ -11,6 +11,7 @@
     <string name="home_movies_showing">Films à l\'affiche</string>
     <string name="home_movies_upcoming">À venir</string>
     <string name="home_movies_popular">Populaire</string>
+    <string name="empty_movie_list">Aucun films pour le moment</string>
 
     <!-- Search -->
     <string name="search_hint">Rechercher un film, une série, …</string>

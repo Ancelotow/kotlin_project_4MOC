@@ -11,17 +11,13 @@ import javax.inject.Inject
 
 class SearchUseCase @Inject constructor(private val repository: MovieRepository) {
 
-    suspend fun fetchSearchResult(query: String): Flow<SearchState> {
-        return flow {
-            emit(SearchLoading)
-            try {
-                emit(SearchSuccess(repository.getSearchResult(query)))
-            } catch (e: DataException) {
-                emit(SearchDataError(e))
-            }  catch (e: Exception) {
-                emit(SearchError(e))
-            }
-        }.flowOn(Dispatchers.IO)
+    operator fun invoke(query: String): Flow<SearchState> = flow {
+        emit(SearchLoading)
+        try {
+            emit(SearchSuccess(repository.getSearchResult(query)))
+        } catch (e: Exception) {
+            emit(SearchError(e))
+        }
     }
 
 }
@@ -29,5 +25,4 @@ class SearchUseCase @Inject constructor(private val repository: MovieRepository)
 sealed class SearchState
 object SearchLoading: SearchState()
 data class SearchSuccess(val results: List<SearchResult>): SearchState()
-data class SearchDataError(val ex: DataException): SearchState()
 data class SearchError(val ex: Exception): SearchState()

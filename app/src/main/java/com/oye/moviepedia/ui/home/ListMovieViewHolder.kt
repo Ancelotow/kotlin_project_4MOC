@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.ui.res.stringResource
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.oye.moviepedia.R
@@ -18,15 +19,27 @@ class ListMovieViewHolder(
     private val movies = v.findViewById<RecyclerView>(R.id.recycler_movies)
     private val loader = v.findViewById<View>(R.id.loader)
     private val error = v.findViewById<TextView>(R.id.txtError)
+    private val emptyListText = v.findViewById<TextView>(R.id.textEmptyList)
 
     fun setItem(item: ListMovieItem) {
         title.text = item.title
-        val linearLayoutManager = LinearLayoutManager(itemView.context)
-        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        movies.layoutManager = linearLayoutManager
-        movies.adapter = MovieListAdapter(item.movies, null, movieListener)
+        if(item.movies.isEmpty()) {
+            movies.visibility = View.GONE
+            emptyListText.visibility = View.VISIBLE
+            emptyListText.text = itemView.context.getString(R.string.empty_movie_list)
+        } else {
+            movies.visibility = View.VISIBLE
+            emptyListText.visibility = View.GONE
+            val linearLayoutManager = LinearLayoutManager(itemView.context)
+            linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+            movies.layoutManager = linearLayoutManager
+            movies.adapter = MovieListAdapter(item.movies, null, movieListener)
+        }
+
         if(item.isLoading) {
             loader.visibility = View.VISIBLE
+            emptyListText.visibility = View.GONE
+
         } else {
             loader.visibility = View.GONE
         }
