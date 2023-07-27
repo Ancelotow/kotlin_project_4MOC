@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class MovieDetailsUseCase @Inject constructor(private val repository: MovieRepository) {
-    suspend fun getMovie(id: Int): Flow<MovieDetailsState> {
+    operator fun invoke(id: Int): Flow<MovieDetailsState> {
         return flow {
             emit(MovieDetailsLoading)
             try {

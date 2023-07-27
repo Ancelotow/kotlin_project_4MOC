@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class GetListsUseCase @Inject constructor(private val repository: PlaylistRepository) {
 
-    suspend fun getLists(token: String, accountId: String): Flow<GetListsState> {
+    operator fun invoke(token: String, accountId: String): Flow<GetListsState> {
         Log.d("log", "dans use case")
 
         return flow {

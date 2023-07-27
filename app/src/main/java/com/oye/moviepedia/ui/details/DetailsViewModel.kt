@@ -5,13 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.oye.moviepedia.domain.entities.Item
 import com.oye.moviepedia.domain.entities.ListItems
-import com.oye.moviepedia.domain.entities.Movie
 import com.oye.moviepedia.domain.entities.MovieDetails
 import com.oye.moviepedia.domain.interactors.DetailsInteractor
 import com.oye.moviepedia.domain.uses_cases.GetMovieDynamicLinkState
-import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 import com.oye.moviepedia.domain.uses_cases.AddMovieState
 import com.oye.moviepedia.domain.uses_cases.GetListsState
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsState
@@ -57,7 +54,7 @@ class DetailsViewModel @Inject constructor(
 
     fun getMovie(id: Int) {
         viewModelScope.launch {
-            detailsInteractor.movieDetailsUseCase.getMovie(id).collect {
+            detailsInteractor.movieDetailsUseCase.invoke(id).collect {
                 _movieDetails.value = it
             }
         }
@@ -73,7 +70,7 @@ class DetailsViewModel @Inject constructor(
 
     fun addMovie(token: String, listId: Int, newItem: ListItems) {
         viewModelScope.launch {
-            detailsInteractor.useCaseAddMovieToPlaylist.addMovie(token, listId, newItem).collect {
+            detailsInteractor.useCaseAddMovieToPlaylist.invoke(token, listId, newItem).collect {
                 _addMovie.value = it
             }
         }
@@ -84,7 +81,7 @@ class DetailsViewModel @Inject constructor(
         if (accessToken != null && accountId != null) {
             Log.d("log", "dans if view model")
             viewModelScope.launch {
-                detailsInteractor.useCaseGetLists.getLists(accessToken!!, accountId!!).collect {
+                detailsInteractor.useCaseGetLists.invoke(accessToken!!, accountId!!).collect {
                     _getListsState.value = it
                 }
             }

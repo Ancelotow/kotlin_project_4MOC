@@ -50,7 +50,7 @@ class UserViewModel @Inject constructor(
     private fun getLists() {
         if (accessToken != null && accountId != null) {
             viewModelScope.launch {
-                interactor.useCaseGetLists.getLists(accessToken!!, accountId!!).collect {
+                interactor.useCaseGetLists.invoke(accessToken!!, accountId!!).collect {
                     _getListsState.value = it
                 }
             }
