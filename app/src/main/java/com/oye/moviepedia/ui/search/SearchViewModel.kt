@@ -21,6 +21,7 @@ class SearchViewModel @Inject constructor(
     fun onEventChanged(event: SearchEvent){
         when(event){
             is SearchEvent.OnSearchMovies -> getSearchResult(event.search)
+            else -> {}
         }
     }
 
