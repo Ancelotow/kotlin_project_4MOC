@@ -11,14 +11,12 @@ import javax.inject.Inject
 
 class AuthUseCase @Inject constructor(private val repository: AuthRepository) {
 
-    fun getRequestToken(): Flow<AuthState> {
+    operator fun invoke(): Flow<AuthState> {
         return flow {
             emit(AuthLoading)
             try {
                 emit(AuthTokenSuccess(repository.getRequestToken()))
-            } catch (e: DataException) {
-                emit(AuthDataError(e))
-            }  catch (e: Exception) {
+            } catch (e: Exception) {
                 emit(AuthError(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -29,9 +27,7 @@ class AuthUseCase @Inject constructor(private val repository: AuthRepository) {
             emit(AuthLoading)
             try {
                 emit(AuthSuccess(repository.getAccountId(request_token)))
-            } catch (e: DataException) {
-                emit(AuthDataError(e))
-            }  catch (e: Exception) {
+            } catch (e: Exception) {
                 emit(AuthError(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -41,5 +37,4 @@ sealed class AuthState
 object AuthLoading: AuthState()
 data class AuthTokenSuccess(val token: String): AuthState()
 data class AuthSuccess(val auth: AuthDto): AuthState()
-data class AuthDataError(val ex: DataException): AuthState()
 data class AuthError(val ex: Exception): AuthState()

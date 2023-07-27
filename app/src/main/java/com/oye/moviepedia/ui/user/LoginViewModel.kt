@@ -1,21 +1,19 @@
 package com.oye.moviepedia.ui.user
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.domain.uses_cases.AuthState
 import com.oye.moviepedia.domain.uses_cases.AuthSuccess
-import com.oye.moviepedia.domain.uses_cases.AuthUseCase
+import com.oye.moviepedia.domain.interactors.LoginInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val useCaseAuth: AuthUseCase,
+    private val interactor: LoginInteractor,
 ) : ViewModel() {
 
     private val _authState = MutableLiveData<AuthState>()
@@ -23,13 +21,19 @@ class LoginViewModel @Inject constructor(
 
     val authData = MutableLiveData<AuthDto>()
 
+    fun onEventChanged(event: LoginEvent){
+        when(event){
+            LoginEvent.OnGetToken -> getRequestToken()
+        }
+    }
+
     init {
         getRequestToken()
     }
 
     private fun getRequestToken() {
         viewModelScope.launch {
-            useCaseAuth.getRequestToken().collect {
+            interactor.useCaseAuth.invoke().collect {
                 _authState.value = it
             }
         }
@@ -37,7 +41,7 @@ class LoginViewModel @Inject constructor(
 
     fun getAccountId(requestToken: String){
         viewModelScope.launch {
-            useCaseAuth.getAccountId(requestToken).collect { authState ->
+            interactor.useCaseAuth.getAccountId(requestToken).collect { authState ->
                 _authState.value = authState
                 if (authState is AuthSuccess) {
                     val authDto = authState.auth

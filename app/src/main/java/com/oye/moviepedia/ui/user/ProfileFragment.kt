@@ -12,7 +12,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -20,20 +19,16 @@ import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oye.moviepedia.R
 import com.oye.moviepedia.data.dto.AuthDto
 import com.oye.moviepedia.databinding.FragmentProfileBinding
-import com.oye.moviepedia.domain.uses_cases.GetListsDataError
 import com.oye.moviepedia.domain.uses_cases.GetListsError
 import com.oye.moviepedia.domain.uses_cases.GetListsSuccess
 import com.oye.moviepedia.ui.BaseFragment
 import com.oye.moviepedia.ui.home.ListMovieItem
-import com.oye.moviepedia.ui.home.MovieListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -107,28 +102,30 @@ class ProfileFragment : BaseFragment(), PlaylistListAdapter.PlaylistListener {
         return view
     }
 
-    private fun initPlaylist(){
-        viewModel.getListsState.observe(viewLifecycleOwner) {
-            when (it) {
+    private fun initPlaylist() {
+        viewModel.getListsState.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is GetListsSuccess -> {
                     if (!viewModel.isPlaylistExists("A voir")) {
                         accessToken?.let { it1 -> viewModel.createPlaylist(it1, "A voir") }
-                    } else if(!viewModel.isPlaylistExists("Favoris")){
+                    } else if (!viewModel.isPlaylistExists("Favoris")) {
                         accessToken?.let { it1 -> viewModel.createPlaylist(it1, "Favoris") }
                     }
                     val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid)
-                    val playlists = it.lists.map { e -> PlaylistItem(e.id, drawable!!, e.name, e.number_of_items.toString() + " film(s)") }
-                        .toMutableList()
+                    val playlists = state.lists.map { e ->
+                        PlaylistItem(
+                            e.id,
+                            drawable!!,
+                            e.name,
+                            e.number_of_items.toString() + " film(s)"
+                        )
+                    }.toMutableList()
                     playlistList[0] = ListPlaylistItem(playlists)
                     binding.recyclerPlaylist.adapter = ListPlaylistListAdapter(playlistList, activity, this)
                 }
 
-                is GetListsDataError -> {
-                    Log.e("DATA ERROR", it.ex.message)
-                }
-
                 is GetListsError -> {
-                    Log.e("ERROR", it.ex.message!!)
+                    Log.e("ERROR", state.ex.message!!)
                 }
 
                 else -> {
