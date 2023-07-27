@@ -6,6 +6,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -95,7 +96,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
     implementation("com.google.firebase:firebase-dynamic-links:21.1.0")
     implementation("com.google.firebase:firebase-dynamic-links-ktx")
-
+    implementation("com.google.firebase:firebase-crashlytics:18.4.0")
 }
 
 kapt {
