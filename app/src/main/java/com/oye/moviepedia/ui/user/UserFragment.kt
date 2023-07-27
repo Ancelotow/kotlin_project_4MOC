@@ -4,39 +4,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.oye.moviepedia.databinding.FragmentUserBinding
+import androidx.navigation.fragment.findNavController
+import com.oye.moviepedia.R
+import com.oye.moviepedia.data.dto.AuthDto
 
 class UserFragment : Fragment() {
 
-    private var _binding: FragmentUserBinding? = null
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_user, container, false)
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(UserViewModel::class.java)
-
-        _binding = FragmentUserBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textUser
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        if (SessionManager.isLoggedIn()) {
+            val authData = SessionManager.getAuth()
+            showProfileView(authData)
+        } else {
+            showLoginView()
         }
-        return root
+
+        return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun showLoginView() {
+        val loginFragment = LoginFragment()
+        childFragmentManager.beginTransaction()
+            .replace(R.id.container, loginFragment)
+            .commit()
     }
+
+    private fun showProfileView(authData: AuthDto) {
+        val profileFragment = ProfileFragment.newInstance(authData)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.container, profileFragment)
+            .commit()
+    }
+
+    fun navigateToDetailPlaylist(playlistId: Int, accessToken: String) {
+        val action = UserFragmentDirections.actionUserFragmentToDetailPlaylistFragment(playlistId, accessToken)
+        findNavController().navigate(action)
+    }
+
 }

@@ -2,6 +2,58 @@
     <string name="app_name">Moviepedia</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
+    <string name="title_details">Details</string>
     <string name="title_search">Search</string>
     <string name="title_you">You</string>
+
+    <!-- Home-->
+    <string name="home_new_movies">Nouvelles sorties</string>
+    <string name="home_movies_showing">Films à l\'affiche</string>
+    <string name="home_movies_upcoming">À venir</string>
+    <string name="home_movies_popular">Populaire</string>
+    <string name="empty_movie_list">Aucun films pour le moment</string>
+
+    <!-- Search -->
+    <string name="search_hint">Rechercher un film, une série, …</string>
+    <string name="search_no_result">Aucun résultats correspond à votre recherche</string>
+    <string name="search_indicator">Veuillez saisir une recherche…</string>
+    <string name="search_unknown_result">Inconnu</string>
+    <string name="search_person_content_description">person profil</string>
+    <string name="search_tv_content_description">tv poster</string>
+    <string name="search_movie_content_description">movie poster</string>
+    <string name="search_icon_content_description">search icon</string>
+    <string name="search_tv_first_air">Première diffusion : %s</string>
+    <string name="search_movie_release_date">Sortie le : %s</string>
+
+    <!-- ProfileFragment-->
+    <string name="liked_new_movies">Films favoris</string>
+    <string name="profile_text_view">Mes playlists</string>
+    <string name="playlist_text_view">Créer une playlist</string>
+    <string name="logout_button_text">Me deconnecter</string>
+    <string name="remove_playlist_text">Supprimer playlist</string>
+
+
+
+    <!-- LoginFragment-->
+    <string name="text_not_connected">Connectez-vous pour accéder à tous vos favoris et gérer vos playlists !</string>
+    <string name="login_button_text">Me connecter</string>
+
+    <!-- Item movie -->
+    <string name="item_movie_director">de %s</string>
+
+    <!-- DetailsFragment -->
+    <string name="details_separator">•</string>
+    <string name="movie_trailer">Bande annonce</string>
+    <string name="share_desc">Partager</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="headliners">Têtes d\'affiche</string>
+    <string name="no_trailer">Aucune bande annonce n\'est disponible pour ce film</string>
+    <string name="add_to_playlist">Ajouter à une playlist</string>
+    <string name="like">Aimé</string>
+    <string name="details_error_message">Une erreur s\'est produite. Impossible d\'afficher le contenue du film</string>
+
+    <string name="random_text">Lorem ipsum nota del ideluti, Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti </string>
+
+    <!-- Date format -->
+    <string name="date_format">dd/MM/yyyy</string>
 </resources>

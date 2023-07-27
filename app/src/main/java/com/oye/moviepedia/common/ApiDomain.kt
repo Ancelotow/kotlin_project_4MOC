@@ -1,0 +1,4 @@
+package com.oye.moviepedia.common
+
+const val BASE_URL = "https://api.themoviedb.org/"
+const val API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2YTY0ZTkyZGZkOGZiYzFiNGIyMTUxZDZmNjE0N2RmNiIsInN1YiI6IjY0YTE1MmIyOGMwYTQ4MDBhZTI0OGY4NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VBAr8Y4MNuG7ygqfqF6k_TCeFSliB2n-h74IUvc3Rj8"

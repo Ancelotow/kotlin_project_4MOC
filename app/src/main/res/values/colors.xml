@@ -8,8 +8,26 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="app_black">#FF121212</color>
     <color name="primary">#0D243F</color>
+    <color name="primary_variant">#243A53</color>
     <color name="secondary">#39495C</color>
+    <color name="dark_green">#769A7D</color>
     <color name="accent">#9CCCA5</color>
+    <color name="dark_orange">#B3732F</color>
+    <color name="light_orange">#D69147</color>
+    <color name="dark_red">#B3492F</color>
+    <color name="light_red">#E44A24</color>
     <color name="light_gray">#ACACAC</color>
+    <color name="gray">#989898</color>
+    <color name="blue">#51B1DF</color>
+    <color name="transparent">#00FFFFFF</color>
+
+
+    <!-- SearchFragment -->
+    <color name="search_background_card">#D4D4D4</color>
+    <color name="search_field_container">#66989898</color>
+    <color name="search_field_text">#D4D4D4</color>
+    <color name="search_field_label_focused">#51B1DF</color>
+    <color name="search_field_label_unfocused">#D4D4D4</color>
 </resources>
