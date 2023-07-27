@@ -2,6 +2,7 @@ package com.oye.moviepedia
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.trailer_fragment) {
+                navView.visibility = View.GONE
+            } else {
+                navView.visibility = View.VISIBLE
+            }
+        }
     }
 
     fun showLoader(){

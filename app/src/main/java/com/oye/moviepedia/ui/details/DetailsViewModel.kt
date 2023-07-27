@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.oye.moviepedia.domain.entities.Item
 import com.oye.moviepedia.domain.entities.ListItems
 import com.oye.moviepedia.domain.interactors.DetailsInteractor
+import com.oye.moviepedia.domain.uses_cases.MovieDetailsError
 import com.oye.moviepedia.domain.uses_cases.AddMovieState
 import com.oye.moviepedia.domain.uses_cases.GetListsState
 import com.oye.moviepedia.domain.uses_cases.MovieDetailsState
@@ -24,6 +25,14 @@ class DetailsViewModel @Inject constructor(
 
     private val _movieDetails = MutableLiveData<MovieDetailsState>()
     val movieDetails: LiveData<MovieDetailsState> = _movieDetails
+
+    fun onEventChanged(event: DetailsScreenEvent) {
+        when (event) {
+            is DetailsScreenEvent.OnGetMovie -> {
+                getMovie(event.movieId)
+            }
+        }
+    }
 
     private val _addMovie = MutableLiveData<AddMovieState>()
     val addMovie: LiveData<AddMovieState> = _addMovie

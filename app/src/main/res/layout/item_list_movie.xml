@@ -28,4 +28,40 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_list_title"/>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loader"
+        android:layout_width="@dimen/loader_size"
+        android:layout_height="@dimen/loader_size"
+        android:visibility="gone"
+        app:lottie_rawRes="@raw/moviepedia_loader"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:layout_constraintTop_toBottomOf="@id/text_list_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/txtError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/design_default_color_error"
+        android:textSize="@dimen/body_regular"
+        app:layout_constraintTop_toBottomOf="@id/text_list_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/textEmptyList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/body_regular"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:layout_constraintTop_toBottomOf="@id/text_list_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

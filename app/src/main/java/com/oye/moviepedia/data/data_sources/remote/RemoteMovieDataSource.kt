@@ -5,19 +5,18 @@ import com.oye.moviepedia.data.dto.CreditsResultDto
 import com.oye.moviepedia.data.dto.GenreDto
 import com.oye.moviepedia.data.dto.MovieDto
 import com.oye.moviepedia.data.dto.MovieTrailerDto
-import com.oye.moviepedia.data.dto.ListSearchResultDto
 import com.oye.moviepedia.data.dto.SearchDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
-import com.oye.moviepedia.data.services.RetrofitSingletonService
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemoteMovieDataSource @Inject constructor() : MovieDataSource {
-    private val service: ApiService = RetrofitSingletonService.getInstance().service
+class RemoteMovieDataSource @Inject constructor(
+    private val service: ApiService
+) : MovieDataSource {
 
     override fun fetchMovies(
         primaryDateRelease: LocalDate?,

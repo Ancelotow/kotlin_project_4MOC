@@ -31,201 +31,237 @@
             android:paddingBottom="@dimen/details_bottom_margin"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="@dimen/details_picture_width"
-                android:layout_height="@dimen/details_picture_height"
-                app:cardCornerRadius="@dimen/details_picture_corner_radius"
-                android:layout_gravity="center">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/details_error_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/details_error_layout_margin_top"
+                android:gravity="center"
+                android:visibility="gone">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/movie_picture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"/>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/movie_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/details_horizontal_margin"
-                android:paddingEnd="@dimen/details_horizontal_margin"
-                android:textSize="@dimen/h2"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:layout_marginTop="@dimen/details_section_margin"
-                tools:text="The Super Mario Bros Movie"/>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/details_horizontal_margin"
-                android:paddingEnd="@dimen/details_horizontal_margin"
-                android:orientation="horizontal">
+                    android:layout_width="@dimen/details_error_picture_width"
+                    android:layout_height="@dimen/details_error_picture_height"
+                    android:src="@drawable/ic_movie_error"
+                    android:tint="@color/gray" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/movie_types"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/body_regular"
                     android:textColor="@color/gray"
-                    tools:text="Action, Animation"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/point_separator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/body_regular"
-                    android:textColor="@color/gray"
-                    android:paddingStart="@dimen/details_movie_type_duration_separator_padding"
-                    android:paddingEnd="@dimen/details_movie_type_duration_separator_padding"
-                    android:text="@string/details_separator"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/movie_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/body_regular"
-                    android:textColor="@color/gray"
-                    tools:text="1h30"/>
+                    android:layout_marginTop="@dimen/details_section_margin"
+                    android:paddingStart="@dimen/details_horizontal_margin"
+                    android:paddingEnd="@dimen/details_horizontal_margin"
+                    android:text="@string/details_error_message"
+                    android:layout_gravity="center"
+                    android:textAlignment="center" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/details_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/details_horizontal_margin"
-                android:paddingEnd="@dimen/details_horizontal_margin"
-
-                android:layout_marginTop="@dimen/details_section_margin">
-
-                <ProgressBar
-                    android:id="@+id/rate_progress_indicator"
-                    style="@android:style/Widget.ProgressBar.Inverse"
-                    android:layout_width="@dimen/details_rate_indicator_size"
-                    android:layout_height="@dimen/details_rate_indicator_size"
-                    android:max="100"
-                    android:min="0"
-                    android:indeterminateOnly="false"
-                    android:progressDrawable="@drawable/rate_progress_bar"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <TextView
-                    android:id="@+id/rate_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    tools:text="75%"
-                    app:layout_constraintTop_toTopOf="@id/rate_progress_indicator"
-                    app:layout_constraintStart_toStartOf="@id/rate_progress_indicator"
-                    app:layout_constraintEnd_toEndOf="@id/rate_progress_indicator"
-                    app:layout_constraintBottom_toBottomOf="@id/rate_progress_indicator" />
+                android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/details_rate_button_start_margin"
-                    android:backgroundTint="@color/primary_variant"
-                    app:cardCornerRadius="@dimen/details_rate_button_corner_radius"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/rate_progress_indicator">
+                    android:layout_width="@dimen/details_picture_width"
+                    android:layout_height="@dimen/details_picture_height"
+                    app:cardCornerRadius="@dimen/details_picture_corner_radius"
+                    android:layout_gravity="center">
 
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/rate_button"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/movie_picture"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_star_stroke"
-                        android:contentDescription=" "
-                        android:padding="@dimen/details_rate_button_inner_padding"
-                        android:backgroundTint="@color/transparent"
-                        app:layout_constraintStart_toEndOf="@id/rate_progress_indicator"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        android:scaleType="centerCrop"/>
 
                 </androidx.cardview.widget.CardView>
 
-                <Button
-                    android:id="@+id/movie_trailer_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/primary_variant"
-                    android:paddingVertical="@dimen/details_rate_button_inner_padding"
-                    android:paddingHorizontal="@dimen/details_trailer_button_horizontal_padding"
-                    android:textSize="@dimen/body_regular"
-                    android:textStyle="normal"
-                    android:textColor="@color/white"
-                    android:text="@string/movie_trailer"
-                    android:textAllCaps="false"
-                    android:drawableStart="@drawable/ic_player"
-                    android:drawablePadding="@dimen/details_trailer_button_inner_padding"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/details_horizontal_margin"
-                android:paddingEnd="@dimen/details_horizontal_margin"
-                android:orientation="vertical"
-                android:layout_marginTop="@dimen/details_section_margin">
-
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/body_regular"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:text="@string/synopsis"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/movie_description"
+                    android:id="@+id/movie_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/movie_description_bg"
-                    android:textSize="@dimen/body_regular"
-                    android:textStyle="normal"
-                    android:textColor="@color/white"
-                    tools:text="@string/random_text"
-                    android:layout_marginTop="@dimen/details_description_top_margin"
-                    android:paddingStart="@dimen/details_description_start_padding"
-                    tools:ignore="RtlSymmetry" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/details_section_margin"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/details_horizontal_margin"
                     android:paddingEnd="@dimen/details_horizontal_margin"
-                    android:textSize="@dimen/body_regular"
-                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/details_section_margin"
+                    android:textSize="@dimen/h2"
                     android:textColor="@color/white"
-                    android:text="@string/headliners"/>
+                    android:textStyle="bold"
+                    tools:text="The Super Mario Bros Movie"/>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/actors_recycler_view"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/details_casting_top_margin"
-                    android:orientation="horizontal"
-                    tools:listitem="@layout/item_actor"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                    android:paddingStart="@dimen/details_horizontal_margin"
+                    android:paddingEnd="@dimen/details_horizontal_margin"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/movie_types"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/body_regular"
+                        android:textColor="@color/gray"
+                        tools:text="Action, Animation"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/point_separator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/body_regular"
+                        android:textColor="@color/gray"
+                        android:paddingStart="@dimen/details_movie_type_duration_separator_padding"
+                        android:paddingEnd="@dimen/details_movie_type_duration_separator_padding"
+                        android:text="@string/details_separator"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/movie_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/body_regular"
+                        android:textColor="@color/gray"
+                        tools:text="1h30"/>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/details_horizontal_margin"
+                    android:paddingEnd="@dimen/details_horizontal_margin"
+                    android:layout_marginTop="@dimen/details_section_margin">
+
+                    <ProgressBar
+                        android:id="@+id/rate_progress_indicator"
+                        style="@android:style/Widget.ProgressBar.Inverse"
+                        android:layout_width="@dimen/details_rate_indicator_size"
+                        android:layout_height="@dimen/details_rate_indicator_size"
+                        android:max="100"
+                        android:min="0"
+                        android:indeterminateOnly="false"
+                        android:progressDrawable="@drawable/rate_progress_bar"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/rate_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        tools:text="75%"
+                        app:layout_constraintTop_toTopOf="@id/rate_progress_indicator"
+                        app:layout_constraintStart_toStartOf="@id/rate_progress_indicator"
+                        app:layout_constraintEnd_toEndOf="@id/rate_progress_indicator"
+                        app:layout_constraintBottom_toBottomOf="@id/rate_progress_indicator" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/details_rate_button_start_margin"
+                        android:backgroundTint="@color/primary_variant"
+                        app:cardCornerRadius="@dimen/details_rate_button_corner_radius"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/rate_progress_indicator">
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/rate_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_star_stroke"
+                            android:contentDescription=" "
+                            android:padding="@dimen/details_rate_button_inner_padding"
+                            android:backgroundTint="@color/transparent"
+                            app:layout_constraintStart_toEndOf="@id/rate_progress_indicator"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <Button
+                        android:id="@+id/movie_trailer_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/primary_variant"
+                        android:paddingVertical="@dimen/details_rate_button_inner_padding"
+                        android:paddingHorizontal="@dimen/details_trailer_button_horizontal_padding"
+                        android:textSize="@dimen/body_regular"
+                        android:textStyle="normal"
+                        android:textColor="@color/white"
+                        android:text="@string/movie_trailer"
+                        android:textAllCaps="false"
+                        android:drawableStart="@drawable/ic_player"
+                        android:drawablePadding="@dimen/details_trailer_button_inner_padding"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/details_horizontal_margin"
+                    android:paddingEnd="@dimen/details_horizontal_margin"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/details_section_margin">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/body_regular"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:text="@string/synopsis"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/movie_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/movie_description_bg"
+                        android:textSize="@dimen/body_regular"
+                        android:textStyle="normal"
+                        android:textColor="@color/white"
+                        tools:text="@string/random_text"
+                        android:layout_marginTop="@dimen/details_description_top_margin"
+                        android:paddingStart="@dimen/details_description_start_padding"
+                        tools:ignore="RtlSymmetry" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/details_section_margin"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/details_horizontal_margin"
+                        android:paddingEnd="@dimen/details_horizontal_margin"
+                        android:textSize="@dimen/body_regular"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:text="@string/headliners"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/actors_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/details_casting_top_margin"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/item_actor"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

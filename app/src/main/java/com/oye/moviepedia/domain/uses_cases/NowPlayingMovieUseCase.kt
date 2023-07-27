@@ -15,9 +15,7 @@ class NowPlayingMovieUseCase @Inject constructor(private val repository: MovieRe
             emit(NowPlayingMovieLoading)
             try {
                 emit(NowPlayingMovieSuccess(repository.getNowPlayingMovies()))
-            } catch (e: DataException) {
-                emit(NowPlayingMovieDataError(e))
-            }  catch (e: Exception) {
+            } catch (e: Exception) {
                 emit(NowPlayingMovieError(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -27,5 +25,4 @@ class NowPlayingMovieUseCase @Inject constructor(private val repository: MovieRe
 sealed class NowPlayingMovieState
 object NowPlayingMovieLoading: NowPlayingMovieState()
 data class NowPlayingMovieSuccess(val movies: List<Movie>): NowPlayingMovieState()
-data class NowPlayingMovieDataError(val ex: DataException): NowPlayingMovieState()
 data class NowPlayingMovieError(val ex: Exception): NowPlayingMovieState()

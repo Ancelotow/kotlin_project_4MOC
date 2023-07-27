@@ -11,6 +11,7 @@
     <string name="home_movies_showing">Films à l\'affiche</string>
     <string name="home_movies_upcoming">À venir</string>
     <string name="home_movies_popular">Populaire</string>
+    <string name="empty_movie_list">Aucun films pour le moment</string>
 
     <!-- Search -->
     <string name="search_hint">Rechercher un film, une série, …</string>
@@ -48,7 +49,7 @@
     <string name="no_trailer">Aucune bande annonce n\'est disponible pour ce film</string>
     <string name="add_to_playlist">Ajouter à une playlist</string>
     <string name="like">Aimé</string>
-
+    <string name="details_error_message">Une erreur s\'est produite. Impossible d\'afficher le contenue du film</string>
 
     <string name="random_text">Lorem ipsum nota del ideluti, Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti Lorem ipsum nota del ideluti </string>
 

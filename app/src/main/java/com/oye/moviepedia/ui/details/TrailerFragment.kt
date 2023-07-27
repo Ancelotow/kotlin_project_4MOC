@@ -1,6 +1,7 @@
 package com.oye.moviepedia.ui.details
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ class TrailerFragment: BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         binding = FragmentTrailerBinding.inflate(inflater,container, false)
         return binding.root
     }
@@ -29,6 +31,11 @@ class TrailerFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
+    }
+
+    override fun onDestroyView() {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        super.onDestroyView()
     }
 
     @SuppressLint("SetJavaScriptEnabled")

@@ -27,7 +27,7 @@ class RemoteMovieRepository @Inject constructor(
             } catch (e: NoSuchElementException) {
                 "Unknow"
             }
-            movies.add(Movie.fromMovieDto(movie, director))
+            movies.add(movie.toMovie(director))
         }
         return movies;
     }
@@ -45,9 +45,9 @@ class RemoteMovieRepository @Inject constructor(
             } catch (e: NoSuchElementException) {
                 "Unknow"
             }
-            newMovies.add(Movie.fromMovieDto(movie, director))
+            newMovies.add(movie.toMovie(director))
         }
-        return newMovies;
+        return newMovies
     }
 
     override fun getNowPlayingMovies(): List<Movie> {
@@ -60,7 +60,7 @@ class RemoteMovieRepository @Inject constructor(
             } catch (e: NoSuchElementException) {
                 "Unknow"
             }
-            movies.add(Movie.fromMovieDto(movie, director))
+            movies.add(movie.toMovie(director))
         }
         return movies;
     }
@@ -75,7 +75,7 @@ class RemoteMovieRepository @Inject constructor(
             } catch (e: NoSuchElementException) {
                 "Unknow"
             }
-            movies.add(Movie.fromMovieDto(movie, director))
+            movies.add(movie.toMovie(director))
         }
         return movies;
     }
@@ -97,7 +97,7 @@ class RemoteMovieRepository @Inject constructor(
                     t.site == "YouTube" && t.type == "Trailer"
                 }
             }
-            return MovieDetails.fromMovieDto(movieDto, credits.cast, director, trailer?.key)
+            return movieDto.toMovieDetail(credits.cast, director, trailer?.key)
         }
         return null
     }

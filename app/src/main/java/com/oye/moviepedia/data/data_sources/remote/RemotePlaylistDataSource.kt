@@ -6,17 +6,12 @@ import com.oye.moviepedia.data.dto.DetailPlaylistDto
 import com.oye.moviepedia.data.dto.PlaylistDto
 import com.oye.moviepedia.data.exceptions.RemoteException
 import com.oye.moviepedia.data.services.ApiService
-import com.oye.moviepedia.data.services.RetrofitSingletonService
-import com.oye.moviepedia.domain.entities.Item
 import com.oye.moviepedia.domain.entities.ListItems
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemotePlaylistDataSource @Inject constructor() : PlaylistDataSource {
-    private val service: ApiService = RetrofitSingletonService.getInstance().service
+class RemotePlaylistDataSource @Inject constructor(val service: ApiService) : PlaylistDataSource {
 
     override fun createList(token: String, name: String): Int {
         val response = service.createList("Bearer $token", name, "fr").execute()
